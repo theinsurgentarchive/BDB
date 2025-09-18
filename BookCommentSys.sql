@@ -22,20 +22,12 @@ CREATE TABLE IF NOT EXISTS user_images (
     PRIMARY KEY (image_id)
 );
 
-CREATE TABLE IF NOT EXISTS book_images (
-    image_id BIGINT NOT NULL AUTO_INCREMENT,
-    filename VARCHAR(MAX) NOT NULL,
-    path VARCHAR(MAX) NOT NULL,
-    PRIMARY KEY (image_id)
-);
-
 CREATE TABLE IF NOT EXISTS books (
     book_id BIGINT NOT NULL AUTO_INCREMENT,
     add_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     summary VARCHAR(MAX),
-    image_id BIGINT NOT NULL,
+    image_path VARCHAR(MAX),
 --  Only allow image files to be a max size of 2048px by 2048px
-    FOREIGN KEY image_id REFERENCES book_images(image_id),
     PRIMARY KEY (book_id)
 );
 
