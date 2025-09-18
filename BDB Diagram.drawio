@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="R2lEEEUBdFMjLlhIrx00" name="Page-1">
-        <mxGraphModel dx="898" dy="419" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0" extFonts="Permanent Marker^https://fonts.googleapis.com/css?family=Permanent+Marker">
+        <mxGraphModel dx="743" dy="698" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0" extFonts="Permanent Marker^https://fonts.googleapis.com/css?family=Permanent+Marker">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -191,7 +191,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="U-U-GfYKarlf4OOhgMv9-28" value="&lt;div&gt;Look-Across&lt;/div&gt;&lt;div&gt;Notation&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=#314354;fillColor=#EBEBEB;rounded=1;glass=0;fontColor=#F7F7F7;strokeWidth=4;" parent="1" vertex="1">
+                <mxCell id="U-U-GfYKarlf4OOhgMv9-28" value="&lt;div&gt;Look-Across&lt;/div&gt;&lt;div&gt;Notation&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=#314354;fillColor=#EBEBEB;rounded=1;glass=0;fontColor=#000000;strokeWidth=4;" parent="1" vertex="1">
                     <mxGeometry x="396" y="790" width="90" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="BT7zFztmOr8-_txrLHxJ-1" value="Date Published" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
