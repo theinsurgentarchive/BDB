@@ -47,3 +47,9 @@ CREATE TABLE IF NOT EXISTS forms (
 --  Only allow image files to be a max size of 2048px by 2048px
     FOREIGN KEY user_id REFERENCES users(user_id)
 );
+
+CREATE TABLE IF NOT EXISTS genres (
+    genre VARCHAR(MAX) NOT NULL,
+    book_id BIGINT NOT NULL,
+    FOREIGN KEY book_id REFERENCES books(book_id)
+);
