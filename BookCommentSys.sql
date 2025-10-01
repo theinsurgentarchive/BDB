@@ -50,6 +50,6 @@ CREATE TABLE IF NOT EXISTS forms (
 
 CREATE TABLE IF NOT EXISTS genres (
     genre VARCHAR(MAX) NOT NULL,
-    book_id BIGINT NOT NULL,
+    book_id BIGINT PRIMARY KEY NOT NULL,
     FOREIGN KEY book_id REFERENCES books(book_id)
 );
