@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS books (
     summary TEXT,
     image_path VARCHAR(1024),
     created_by BIGINT DEFAULT NULL,
+    author VARCHAR(256),
     FOREIGN KEY (created_by) REFERENCES forms(form_id) ON DELETE SET NULL
 );
 
@@ -54,24 +55,4 @@ CREATE TABLE IF NOT EXISTS genres (
     book_id BIGINT NOT NULL,
     PRIMARY KEY (genre, book_id),
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS authors (
-    author_id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    name VARCHAR(156) NOT NULL
-);
-
-CREATE TABLE book_authors (
-    book_id BIGINT NOT NULL,
-    author_id BIGINT NOT NULL,
-    PRIMARY KEY (book_id, author_id),
-    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
-    FOREIGN KEY (author_id) REFERENCES authors(author_id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS form_authors (
-    form_id BIGINT NOT NULL,
-    author_name VARCHAR(256) NOT NULL,
-    PRIMARY KEY (form_id, author_name),
-    FOREIGN KEY (form_id) REFERENCES forms(form_id) ON DELETE CASCADE
 );
