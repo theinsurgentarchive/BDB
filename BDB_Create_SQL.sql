@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS forms (
     book_name TEXT NOT NULL,
     image_path VARCHAR(1024),
     author VARCHAR(256) NOT NULL,
+    genre TEXT DEFAULT NULL,
     summary TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
@@ -51,8 +52,19 @@ CREATE TABLE IF NOT EXISTS comments (
 );
 
 CREATE TABLE IF NOT EXISTS genres (
-    genre VARCHAR(256) NOT NULL,
-    book_id BIGINT NOT NULL,
-    PRIMARY KEY (genre, book_id),
+    genre VARCHAR(256) PRIMARY KEY NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS bookGenres (
+    book_id BIGINT PRIMARY KEY NOT NULL,
+    genre VARCHAR(256) PRIMARY KEY NOT NULL,
+    FOREIGN KEY (genre) REFERENCES genres(genre) ON DELETE CASCADE,
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS formGenres (
+    form_id BIGINT PRIMARY KEY NOT NULL,
+    genre VARCHAR(256) PRIMARY KEY NOT NULL,
+    FOREIGN KEY (genre) REFERENCES genres(genre) ON DELETE CASCADE,
+    FOREIGN KEY (form_id) REFERENCES forms(form_id) ON DELETE CASCADE
 );
