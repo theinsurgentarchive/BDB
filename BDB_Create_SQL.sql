@@ -56,15 +56,17 @@ CREATE TABLE IF NOT EXISTS genres (
 );
 
 CREATE TABLE IF NOT EXISTS bookGenres (
-    book_id BIGINT PRIMARY KEY NOT NULL,
-    genre VARCHAR(256) PRIMARY KEY NOT NULL,
+    book_id BIGINT NOT NULL,
+    genre VARCHAR(256) NOT NULL,
+    PRIMARY KEY (book_id, genre),
     FOREIGN KEY (genre) REFERENCES genres(genre) ON DELETE CASCADE,
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS formGenres (
-    form_id BIGINT PRIMARY KEY NOT NULL,
-    genre VARCHAR(256) PRIMARY KEY NOT NULL,
+    form_id BIGINT NOT NULL,
+    genre VARCHAR(256) NOT NULL,
+    PRIMARY KEY (form_id, genre),
     FOREIGN KEY (genre) REFERENCES genres(genre) ON DELETE CASCADE,
     FOREIGN KEY (form_id) REFERENCES forms(form_id) ON DELETE CASCADE
 );
