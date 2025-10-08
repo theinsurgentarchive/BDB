@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-    user_id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    user_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     image_path VARCHAR(1024),
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     username VARCHAR(64) UNIQUE NOT NULL,
@@ -8,14 +8,14 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS admins (
-    admin_id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    user_id BIGINT NOT NULL,
+    admin_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS forms (
-    form_id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    user_id BIGINT NOT NULL,
+    form_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
     book_name TEXT NOT NULL,
     image_path VARCHAR(1024),
     author VARCHAR(256) NOT NULL,
@@ -25,21 +25,21 @@ CREATE TABLE IF NOT EXISTS forms (
 );
 
 CREATE TABLE IF NOT EXISTS books (
-    book_id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    book_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     added TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     published TIMESTAMP NULL DEFAULT NULL,
     summary TEXT,
     image_path VARCHAR(1024),
-    created_by BIGINT DEFAULT NULL,
+    created_by INT DEFAULT NULL,
     author VARCHAR(256),
     FOREIGN KEY (created_by) REFERENCES forms(form_id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS comments (
-    book_id BIGINT NOT NULL,
-    comment_id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    user_id BIGINT NOT NULL,
-    parent_id BIGINT DEFAULT NULL,
+    book_id INT NOT NULL,
+    comment_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    parent_id INT DEFAULT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     comment TEXT,
 --  The Average rating is going to be a Derived Attribute
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS genres (
 );
 
 CREATE TABLE IF NOT EXISTS bookGenres (
-    book_id BIGINT NOT NULL,
+    book_id INT NOT NULL,
     genre VARCHAR(256) NOT NULL,
     PRIMARY KEY (book_id, genre),
     FOREIGN KEY (genre) REFERENCES genres(genre) ON DELETE CASCADE,
@@ -64,9 +64,14 @@ CREATE TABLE IF NOT EXISTS bookGenres (
 );
 
 CREATE TABLE IF NOT EXISTS formGenres (
-    form_id BIGINT NOT NULL,
+    form_id INT NOT NULL,
     genre VARCHAR(256) NOT NULL,
     PRIMARY KEY (form_id, genre),
     FOREIGN KEY (genre) REFERENCES genres(genre) ON DELETE CASCADE,
     FOREIGN KEY (form_id) REFERENCES forms(form_id) ON DELETE CASCADE
 );
+
+INSERT INTO genres (genre) VALUES 
+    ("Adventure"), ("Sci-Fi"), ("Horror"), ("Mystery"), ("Thriller"),
+    ("Romance"), ("Historical"), ("Fantasy"), ("Action");
+
