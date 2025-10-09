@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS users (
     image_path VARCHAR(1024),
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     username VARCHAR(64) UNIQUE NOT NULL,
-    pass_hash VARCHAR(1024) NOT NULL,
-    salt VARCHAR(1024) NOT NULL
+--Use Password Hashing for Security
+    password VARCHAR(255) NOT NULL,
 );
 
 CREATE TABLE IF NOT EXISTS admins (
@@ -75,3 +75,8 @@ INSERT INTO genres (genre) VALUES
     ("Adventure"), ("Sci-Fi"), ("Horror"), ("Mystery"), ("Thriller"),
     ("Romance"), ("Historical"), ("Fantasy"), ("Action");
 
+--Username: Test password: userTest
+INSERT INTO users(username, password) VALUES (
+    "Test",
+    "$2y$10$jzsdFb/NVamhUzXHKu/VhuLU3mWSkLJC1b6gRh0qmBr38t4UmwCE2"
+);
