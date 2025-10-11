@@ -4,8 +4,9 @@
     echo "Hashing Password...\n";
     $passhash = password_hash($password, PASSWORD_DEFAULT);
     echo "Verifying Hash...\n";
-    if (!password_verify($password, $passhash)) {
-        echo "ERROR, Hashing Failed.....\n";
+    $verify = readline("Enter Password Again: ");
+    if (!password_verify($verify, $passhash)) {
+        echo "ERROR, Password Incorrect.....\n";
         exit();
     }
     echo "Success!! Hashing Complete, Your New Password Hash: " . $passhash . "\n";
