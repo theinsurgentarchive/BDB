@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS forms (
     user_id INT NOT NULL,
     book_name TEXT NOT NULL,
     image_path VARCHAR(1024),
-    author VARCHAR(256) NOT NULL,
+    author VARCHAR(255) NOT NULL,
     genre TEXT DEFAULT NULL,
     summary TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
@@ -26,12 +26,13 @@ CREATE TABLE IF NOT EXISTS forms (
 
 CREATE TABLE IF NOT EXISTS books (
     book_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
     added TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     published TIMESTAMP NULL DEFAULT NULL,
     summary TEXT,
     image_path VARCHAR(1024),
     created_by INT DEFAULT NULL,
-    author VARCHAR(256),
+    author VARCHAR(255),
     FOREIGN KEY (created_by) REFERENCES forms(form_id) ON DELETE SET NULL
 );
 
@@ -60,12 +61,12 @@ CREATE TABLE IF NOT EXISTS comments (
 );
 
 CREATE TABLE IF NOT EXISTS genres (
-    genre VARCHAR(256) PRIMARY KEY NOT NULL
+    genre VARCHAR(255) PRIMARY KEY NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS bookGenres (
     book_id INT NOT NULL,
-    genre VARCHAR(256) NOT NULL,
+    genre VARCHAR(255) NOT NULL,
     PRIMARY KEY (book_id, genre),
     FOREIGN KEY (genre) REFERENCES genres(genre) ON DELETE CASCADE,
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
@@ -73,7 +74,7 @@ CREATE TABLE IF NOT EXISTS bookGenres (
 
 CREATE TABLE IF NOT EXISTS formGenres (
     form_id INT NOT NULL,
-    genre VARCHAR(256) NOT NULL,
+    genre VARCHAR(255) NOT NULL,
     PRIMARY KEY (form_id, genre),
     FOREIGN KEY (genre) REFERENCES genres(genre) ON DELETE CASCADE,
     FOREIGN KEY (form_id) REFERENCES forms(form_id) ON DELETE CASCADE
