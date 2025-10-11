@@ -35,6 +35,18 @@ CREATE TABLE IF NOT EXISTS books (
     FOREIGN KEY (created_by) REFERENCES forms(form_id) ON DELETE SET NULL
 );
 
+CREATE TABLE IF NOT EXISTS ratings (
+    rating_id INT PRIMARY KEY NOT NULL,
+    book_id INT NOT NULL,
+    user_id INT NOT NULL,
+--  The Average rating is going to be a Derived Attribute
+--  Average Formula: (Tallied value of ratings divided by number of ratings)
+    rating INT NOT NULL,
+    CONSTRAINT constrain_rating CHECK(rating BETWEEN 0 AND 5),
+    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)  ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS comments (
     book_id INT NOT NULL,
     comment_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -42,10 +54,6 @@ CREATE TABLE IF NOT EXISTS comments (
     parent_id INT DEFAULT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     comment TEXT,
---  The Average rating is going to be a Derived Attribute
---  Average Formula: (Tallied value of ratings divided by number of ratings)
-    rating TINYINT NOT NULL,
-    CONSTRAINT constrain_rating CHECK(rating BETWEEN 0 AND 5),
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (parent_id) REFERENCES comments(comment_id) ON DELETE CASCADE
