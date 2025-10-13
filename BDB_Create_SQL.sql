@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS users (
     user_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    image_path VARCHAR(1024),
+    image_path VARCHAR(1024) DEFAULT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     username VARCHAR(64) UNIQUE NOT NULL,
 --Use Password Hashing for Security
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS forms (
     form_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL,
     book_name TEXT NOT NULL,
-    image_path VARCHAR(1024),
+    image_path VARCHAR(1024) DEFAULT NULL,
     author VARCHAR(255) NOT NULL,
     genre TEXT DEFAULT NULL,
     summary TEXT NOT NULL,
@@ -29,10 +29,10 @@ CREATE TABLE IF NOT EXISTS books (
     name VARCHAR(255) NOT NULL,
     added TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     published TIMESTAMP NULL DEFAULT NULL,
-    summary TEXT,
-    image_path VARCHAR(1024),
+    summary TEXT DEFAULT NULL,
+    image_path VARCHAR(1024) DEFAULT NULL,
     created_by INT DEFAULT NULL,
-    author VARCHAR(255),
+    author VARCHAR(255) NOT NULL,
     FOREIGN KEY (created_by) REFERENCES forms(form_id) ON DELETE SET NULL
 );
 
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS comments (
     user_id INT NOT NULL,
     parent_id INT DEFAULT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    comment TEXT,
+    comment TEXT NOT NULL,
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (parent_id) REFERENCES comments(comment_id) ON DELETE CASCADE
