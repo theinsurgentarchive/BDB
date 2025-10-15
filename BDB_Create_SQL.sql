@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS books (
     book_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     added TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    published TIMESTAMP NULL DEFAULT NULL,
+    published DATE NULL DEFAULT NULL,
     summary TEXT DEFAULT NULL,
     image_path VARCHAR(1024) DEFAULT NULL,
     created_by INT DEFAULT NULL,
@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS ratings (
     user_id INT NOT NULL,
 --  The Average rating is going to be a Derived Attribute
 --  Average Formula: (Tallied value of ratings divided by number of ratings)
+    creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     rating INT NOT NULL,
     CONSTRAINT constrain_rating CHECK(rating BETWEEN 0 AND 5),
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
