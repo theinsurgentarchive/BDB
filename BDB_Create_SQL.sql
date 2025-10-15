@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS users (
     user_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    image_path VARCHAR(1024) DEFAULT NULL,
+    image_path VARCHAR(512) DEFAULT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     username VARCHAR(64) UNIQUE NOT NULL,
 --Use Password Hashing for Security
@@ -16,21 +16,23 @@ CREATE TABLE IF NOT EXISTS admins (
 CREATE TABLE IF NOT EXISTS forms (
     form_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL,
+--Cleanse ISBN input when preparing insert to exclude non-digits
+    isbn VARCHAR(13) NOT NULL,
     book_name TEXT NOT NULL,
-    image_path VARCHAR(1024) DEFAULT NULL,
+    image_path VARCHAR(512) DEFAULT NULL,
     author VARCHAR(255) NOT NULL,
-    genre TEXT DEFAULT NULL,
     summary TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS books (
     book_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    isbn VARCHAR(13) NOT NULL,
     name VARCHAR(255) NOT NULL,
     added TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     published DATE NULL DEFAULT NULL,
     summary TEXT DEFAULT NULL,
-    image_path VARCHAR(1024) DEFAULT NULL,
+    image_path VARCHAR(512) DEFAULT NULL,
     created_by INT DEFAULT NULL,
     author VARCHAR(255) NOT NULL,
     FOREIGN KEY (created_by) REFERENCES forms(form_id) ON DELETE SET NULL

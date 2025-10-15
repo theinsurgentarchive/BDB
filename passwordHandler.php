@@ -3,8 +3,7 @@
     $password = readline("Enter Password, Minimum Length is 8: ");
     echo "Hashing Password...\n";
     $passhash = password_hash($password, PASSWORD_DEFAULT);
-    echo "Verifying Hash...\n";
-    $verify = readline("Enter Password Again: ");
+    $verify = readline("Verify Password: ");
     if (!password_verify($verify, $passhash)) {
         echo "ERROR, Password Incorrect.....\n";
         exit();
