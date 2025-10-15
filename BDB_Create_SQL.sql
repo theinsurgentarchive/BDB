@@ -62,12 +62,12 @@ CREATE TABLE IF NOT EXISTS comments (
 );
 
 CREATE TABLE IF NOT EXISTS genres (
-    genre VARCHAR(255) PRIMARY KEY NOT NULL
+    genre VARCHAR(16) PRIMARY KEY NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS bookGenres (
     book_id INT NOT NULL,
-    genre VARCHAR(255) NOT NULL,
+    genre VARCHAR(16) NOT NULL,
     PRIMARY KEY (book_id, genre),
     FOREIGN KEY (genre) REFERENCES genres(genre) ON DELETE CASCADE,
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS bookGenres (
 
 CREATE TABLE IF NOT EXISTS formGenres (
     form_id INT NOT NULL,
-    genre VARCHAR(255) NOT NULL,
+    genre VARCHAR(16) NOT NULL,
     PRIMARY KEY (form_id, genre),
     FOREIGN KEY (genre) REFERENCES genres(genre) ON DELETE CASCADE,
     FOREIGN KEY (form_id) REFERENCES forms(form_id) ON DELETE CASCADE
