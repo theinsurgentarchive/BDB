@@ -16,13 +16,15 @@ CREATE TABLE IF NOT EXISTS admins (
 CREATE TABLE IF NOT EXISTS forms (
     form_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL,
+    admin_id INT DEFAULT NULL,
 --Cleanse ISBN input when preparing insert to exclude non-digits
     isbn VARCHAR(13) NOT NULL,
     book_name TEXT NOT NULL,
     image_path VARCHAR(512) DEFAULT NULL,
     author VARCHAR(255) NOT NULL,
     summary TEXT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (admin_id) REFERENCES admins(admin_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS books (
