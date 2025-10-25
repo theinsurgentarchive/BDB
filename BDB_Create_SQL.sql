@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS formGenres (
 
 INSERT INTO genres (genre) VALUES 
     ("Adventure"), ("Sci-Fi"), ("Horror"), ("Mystery"), ("Thriller"),
-    ("Romance"), ("Historical"), ("Fantasy"), ("Action");
+    ("Romance"), ("Historical"), ("Fantasy"), ("Action"), ("Crime");
 
 --Username: Test password: userTest
 INSERT INTO users(username, password) VALUES (
