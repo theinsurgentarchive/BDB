@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS forms (
     author VARCHAR(255) NOT NULL,
     summary TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (admin_id) REFERENCES admins(admin_id) ON DELETE CASCADE
+    FOREIGN KEY (admin_id) REFERENCES admins(admin_id)
 );
 
 CREATE TABLE IF NOT EXISTS books (
