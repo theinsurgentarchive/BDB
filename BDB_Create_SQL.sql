@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS forms (
     admin_id INT DEFAULT NULL,
 --Cleanse ISBN input when preparing insert to exclude non-digits
     isbn VARCHAR(13) NOT NULL,
-    book_name TEXT NOT NULL,
+    book_name VARCHAR(255) NOT NULL,
     image_path VARCHAR(512) DEFAULT NULL,
     author VARCHAR(255) NOT NULL,
     summary TEXT NOT NULL,
