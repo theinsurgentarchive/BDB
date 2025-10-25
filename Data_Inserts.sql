@@ -6,7 +6,7 @@ INSERT INTO admins(user_id) SELECT user_id FROM users
 WHERE username = "";
 
 --Books Insert
---Example: ("Test", "YYYY-MM_DD", "This is an Example, "Example Author", 12041024)
+--Example: ('Test', 'YYYY-MM-DD', 'This is an Example', 'Example Author', '12041024')
 INSERT INTO books (name, published, summary, author, isbn) VALUES
 (),
 (),
