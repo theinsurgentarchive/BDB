@@ -8,6 +8,6 @@
         echo "ERROR, Password Incorrect.....\n";
         exit();
     }
-    echo "Success!! Hashing Complete, Your New Password Hash: " . $passhash . "\n";
+    echo "Success!! Hashing Complete, Your New Password Hash:\n\n" . $passhash . "\n\n";
     exit();
 ?>
