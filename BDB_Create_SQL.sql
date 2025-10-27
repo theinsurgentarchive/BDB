@@ -86,11 +86,12 @@ CREATE TABLE IF NOT EXISTS formGenres (
 );
 
 INSERT INTO genres (genre) VALUES 
-    ("Adventure"), ("Sci-Fi"), ("Horror"), ("Mystery"), ("Thriller"),
-    ("Romance"), ("Historical"), ("Fantasy"), ("Action"), ("Crime");
+    ('Adventure'), ('Sci-Fi'), ('Horror'), ('Mystery'), ('Thriller'),
+    ('Romance'), ('Historical'), ('Fantasy'), ('Action'), ('Crime'),
+    ('Dystopian'), ('Classic'), ('Non-Fiction');
 
 --Username: Test password: userTest
 INSERT INTO users(username, password) VALUES (
-    "Test",
-    "$2y$10$jzsdFb/NVamhUzXHKu/VhuLU3mWSkLJC1b6gRh0qmBr38t4UmwCE2"
+    'Test',
+    '$2y$10$jzsdFb/NVamhUzXHKu/VhuLU3mWSkLJC1b6gRh0qmBr38t4UmwCE2'
 );
