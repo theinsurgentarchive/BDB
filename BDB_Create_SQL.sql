@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS users (
     image_path VARCHAR(512) DEFAULT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     username VARCHAR(64) UNIQUE NOT NULL,
---Use Password Hashing for Security
+    /*Use Password Hashing for Security*/
     password VARCHAR(255) NOT NULL,
 );
 
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS forms (
     form_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL,
     admin_id INT DEFAULT NULL,
---Cleanse ISBN input when preparing insert to exclude non-digits
+    /*Cleanse ISBN input when preparing insert to exclude non-digits*/
     isbn VARCHAR(13) NOT NULL,
     book_name VARCHAR(255) NOT NULL,
     image_path VARCHAR(512) DEFAULT NULL,
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS ratings (
     rating_id INT PRIMARY KEY NOT NULL,
     book_id INT NOT NULL,
     user_id INT NOT NULL,
---  The Average rating is going to be a Derived Attribute
---  Average Formula: (Tallied value of ratings divided by number of ratings)
+    /*The Average rating is going to be a Derived Attribute
+    Average Formula: (Tallied value of ratings divided by number of ratings)*/
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     rating INT NOT NULL,
     CONSTRAINT constrain_rating CHECK(rating BETWEEN 0 AND 5),
