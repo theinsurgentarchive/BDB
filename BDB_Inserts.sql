@@ -1,5 +1,5 @@
 --Users Insert
-INSERT IGNORE INTO users(username, password) VALUES 
+INSERT INTO users(username, password) VALUES 
 ('ChuFam', '$2y$10$G4vkc6sjFB0QmAKWISRtZOh7RoF0k95NjpHu8vEhIsG92mZnaI/Wa'),
 ('DangerMANN', '$2y$10$HAvcc8eIO52Q9oZglyU.N.Z.7.e/nFQt66d3lCvuex1MvFGLFPdb.'),
 ('SillyPuddle', '$2y$10$2Pmg87ImZimWa5Kaq3wmGuKEI.snx/xdZWU36I2ZWIjNrPXU/T2sS'),
@@ -42,12 +42,13 @@ INSERT IGNORE INTO users(username, password) VALUES
 ('papertrail', '$2y$12$GGK9ElS4KpDNGxofddfR/eV18FVCRvk6fmZo6e6ZOglWQrn9QiOyy'),
 ('curiousreader', '$2y$12$g24E9vSw9hLEvuDRH7vNPu4.j1GDykLCCZ5Jm3cAvKERA5oPF4ZnS'),
 ('bookmarkit', '$2y$12$xBB5tEi/tnDQBtTC4wloa.RFC6jNQFvk1HHCSMHnd9pbM5J3nTShu');
+
 --Admins Insert
-INSERT IGNORE INTO admins(user_id) SELECT user_id FROM users
+INSERT INTO admins(user_id) SELECT user_id FROM users
 WHERE username IN ('ChuFam','acorona','obeltranbelt','jvillalobos');
 
 --Books Insert
-INSERT IGNORE INTO books(name, published, summary, author, isbn) VALUES
+INSERT INTO books(name, published, summary, author, isbn) VALUES
 ('Scythe', '2016-11-22',
 '"Thou shalt kill"\n\n A world with no hunger. No disease. No war. No misery. Humanity has conquered all those things, and has even conquered death. Now scythes are the only ones who can end life—and they are commanded to do so, in order to keep the size of the population under control.\n\nCitra and Rowan are chosen to apprentice to a scythe—a role that neither wants. These teens must master the "art" of taking life, knowing that the consequence of failure could mean losing their own. They learn living in a perfect world comes only with a heavy price.',
 'Neal Shusterman', '9781442472433'),
@@ -475,566 +476,946 @@ INSERT IGNORE INTO books(name, published, summary, author, isbn) VALUES
 'A new generation faces corruption and rebellion in a futuristic world.',
 'Marie Lu', '9781250221704');
 
---BookGenres Inserts
-INSERT IGNORE INTO bookGenres (book_id, genre) VALUES
-((SELECT book_id FROM books WHERE isbn = '9781442472433'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9781442472433'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781406379532'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9781406379532'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781481497060'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9781481497060'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781101974490'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9781101974490'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9781101974490'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9780786838653'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780786838653'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780786838653'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9781423103349'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781423103349'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781423103349'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9781423101499'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781423101499'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781423101499'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9781423101475'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781423101475'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781423101475'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9781368098175'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781368098175'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781368098175'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9781368107631'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781368107631'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781368107631'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780593640456'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780593640456'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780064404990'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780064404990'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9798491060887'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780804139021'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780804139021'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780593135204'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780593135204'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780593135204'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780593135204'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780307887436'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780307887436'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780307887436'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9781524761356'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9781524761356'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781524761356'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781524761356'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9781400052929'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9781400052929'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781400052929'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781250803825'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9781250803825'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9781250803825'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9781665954884'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9781665954884'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781668078181'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9781668078181'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9781668078181'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9781668078181'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9781668078181'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780063291324'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780062652850'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780062652850'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780062652850'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780062847355'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780062847355'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780062847355'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780756404079'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780756404079'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780756404734'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780756404734'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780765311788'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780765311788'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780765326355'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780765326355'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780765326362'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780765326362'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781627792127'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781627792127'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781627792127'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780385534635'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780385534635'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780385534635'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780316556347'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780316556347'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780062060624'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780062060624'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780062060624'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9781635570281'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781635570281'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780062662590'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780062662590'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780593725429'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780593725429'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780593725429'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780593725429'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9780441007462'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780441007462'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780441007462'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780441007462'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780593599730'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780593599730'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780593599730'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780593599730'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780765382030'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780765382030'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780441007318'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780441007318'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780441007318'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780060853983'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780060853983'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780062472106'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780062472106'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9781400078776'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9781400078776'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9781400078776'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9781400078776'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780385732550'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780385732550'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780385732550'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780385732550'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780451528018'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780451528018'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780451528018'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9780451528018'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780399590504'), 'Non-Fiction'),
-((SELECT book_id FROM books WHERE isbn = '9780553296983'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780553296983'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780553296983'), 'Non-Fiction'),
-((SELECT book_id FROM books WHERE isbn = '9781524763138'), 'Non-Fiction'),
-((SELECT book_id FROM books WHERE isbn = '9781524763138'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780147514011'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780147514011'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780147514011'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780061120084'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780061120084'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780451524935'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780451524935'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780553213690'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780553213690'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780441172719'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780441172719'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780679720201'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9780679720201'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780375842207'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9781503290563'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9781503290563'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9781503290563'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780307474278'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780307474278'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780486411095'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9780486411095'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780486411095'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780590353427'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780590353427'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780547928227'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780547928227'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780743273565'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780743273565'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780743273565'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780060850524'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780060850524'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780486282114'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9780486282114'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780486282114'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780486282114'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780316769488'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780547928210'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780547928210'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780547928203'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780547928203'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780547928197'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780547928197'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781451673319'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9781451673319'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780061122415'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780061122415'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780061122415'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781503280786'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9781503280786'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781503280786'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780486415871'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9780486415871'), 'Classic'),  
-((SELECT book_id FROM books WHERE isbn = '9780141439570'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780141439570'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9780451419432'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780451419432'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780140449266'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780140449266'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9781594631931'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9781594631931'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780156027328'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780156027328'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780307387899'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780307387899'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780307387899'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9780307387899'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780553103540'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780553103540'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780553108033'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780553108033'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780553106633'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780553106633'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780553801507'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780553801507'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780553801477'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780553801477'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780439023481'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780439023481'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780439023481'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780439023498'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780439023498'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780439023498'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780439023511'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780439023511'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780439023511'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780439023511'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780439023511'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780525478812'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780307743657'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9780307743657'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9781501142970'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9781501142970'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9781501142970'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781501142970'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9781501142970'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780140385724'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780140385724'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780451526342'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780451526342'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780451526342'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780451526342'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780142437209'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780142437209'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780141439556'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780141439556'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780141439556'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780060837020'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780156028356'), 'Historical'),
-((SELECT book_id FROM books WHERE isbn = '9780156028356'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780812550702'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780812550702'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780062024039'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780062024039'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780062024039'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780062024039'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780062024039'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780062024039'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780062024046'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780062024046'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780062024046'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780062024046'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780062024046'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780062024046'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780062024060'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780062024060'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780062024060'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780062024060'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780062024060'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780062024060'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780385737952'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780385737952'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780385737952'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780385737952'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780385737952'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780385737952'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780385738768'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780385738768'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780385738768'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780385738768'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780385738768'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780385738768'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780385738768'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780385738775'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780385738775'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780385738775'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780385738775'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780385738775'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780812511819'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780812511819'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780812517729'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780812517729'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780812513714'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780812513714'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780375826689'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780375826689'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780375840401'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780375840401'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780375826726'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780375826726'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780375846311'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780375846311'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780553448122'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780345538994'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780312924584'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780312924584'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780440224679'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780440224679'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9780440224679'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780440224679'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9780307588371'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780307588371'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780307588371'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9780307341556'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780307341556'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780307341556'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9780307341570'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780307341570'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780307341570'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9780307454546'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780307454546'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780307454546'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9780307454553'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780307454553'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780307454553'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9780307454560'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780307454560'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780307454560'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9781338635171'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9781338635171'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9781338635171'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781338635171'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781338635171'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9781338635171'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780307743688'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9780307743688'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780307743688'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780307743688'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780307743688'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780450417399'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9780450417399'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780450417399'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780450417399'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9781501156700'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9781501156700'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9781501156700'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781501156700'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780307743664'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9780307743664'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780307743664'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780307743664'), 'Classic'),
-((SELECT book_id FROM books WHERE isbn = '9780307743671'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9780307743671'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780307743671'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780307743671'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9781476727653'), 'Horror'),
-((SELECT book_id FROM books WHERE isbn = '9781476727653'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9781476727653'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781476727653'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780062678416'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780062678416'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780062678416'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9780062060563'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780062060563'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780062060563'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9780735221109'), 'Mystery'),
-((SELECT book_id FROM books WHERE isbn = '9780735221109'), 'Thriller'),
-((SELECT book_id FROM books WHERE isbn = '9780735221109'), 'Crime'),
-((SELECT book_id FROM books WHERE isbn = '9781595148032'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781595148032'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9781595148032'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9781595148032'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781595148032'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9781101998885'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781101998885'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9781101998885'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9781101998885'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781101998885'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780448494500'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780448494500'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780448494500'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780448494500'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780448494500'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780448494531'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780448494531'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780448494531'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780448494531'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780448494531'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780345539786'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780345539786'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780345539786'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780345539786'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780345539816'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780345539816'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780345539816'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780345539816'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780345539847'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780345539847'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780345539847'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780345539847'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780425285954'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780425285954'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780425285954'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780425285954'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780425285985'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780425285985'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780425285985'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780425285985'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780399256752'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780399256752'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780399256752'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780399256752'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780399256752'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780399256752'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780399256776'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780399256776'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780399256776'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780399256776'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780399256776'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780399256776'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9780399256783'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9780399256783'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9780399256783'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9780399256783'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9780399256783'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9780399256783'), 'Romance'),
-((SELECT book_id FROM books WHERE isbn = '9781250221704'), 'Action'),
-((SELECT book_id FROM books WHERE isbn = '9781250221704'), 'Dystopian'),
-((SELECT book_id FROM books WHERE isbn = '9781250221704'), 'Fantasy'),
-((SELECT book_id FROM books WHERE isbn = '9781250221704'), 'Sci-Fi'),
-((SELECT book_id FROM books WHERE isbn = '9781250221704'), 'Adventure'),
-((SELECT book_id FROM books WHERE isbn = '9781250221704'), 'Romance');
+--BookGenres Insert
+INSERT INTO bookGenres (book_id, genre)
+SELECT B.book_id, V.genre
+FROM (
+    SELECT '9781442472433' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9781442472433' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781406379532' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9781406379532' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781481497060' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9781481497060' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781101974490' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9781101974490' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9781101974490' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9780786838653' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780786838653' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780786838653' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9781423103349' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781423103349' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781423103349' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9781423101499' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781423101499' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781423101499' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9781423101475' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781423101475' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781423101475' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9781368098175' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781368098175' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781368098175' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9781368107631' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781368107631' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781368107631' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780593640456' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780593640456' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780064404990' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780064404990' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9798491060887' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780804139021' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780804139021' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780593135204' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780593135204' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780593135204' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780593135204' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780307887436' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780307887436' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780307887436' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9781524761356' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9781524761356' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781524761356' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781524761356' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9781400052929' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9781400052929' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781400052929' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781250803825' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9781250803825' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9781250803825' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9781665954884' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9781665954884' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781668078181' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9781668078181' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9781668078181' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9781668078181' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9781668078181' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780063291324' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780062652850' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780062652850' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780062652850' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780062847355' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780062847355' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780062847355' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780756404079' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780756404079' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780756404734' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780756404734' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780765311788' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780765311788' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780765326355' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780765326355' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780765326362' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780765326362' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781627792127' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781627792127' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781627792127' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780385534635' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780385534635' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780385534635' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780316556347' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780316556347' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780062060624' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780062060624' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780062060624' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9781635570281' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781635570281' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780062662590' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780062662590' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780593725429' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780593725429' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780593725429' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780593725429' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9780441007462' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780441007462' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780441007462' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780441007462' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780593599730' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780593599730' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780593599730' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780593599730' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780765382030' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780765382030' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780441007318' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780441007318' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780441007318' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780060853983' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780060853983' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780062472106' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780062472106' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9781400078776' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9781400078776' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9781400078776' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9781400078776' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780385732550' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780385732550' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780385732550' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780385732550' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780451528018' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780451528018' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780451528018' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9780451528018' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780399590504' AS isbn, 'Non-Fiction' AS genre
+    UNION ALL
+    SELECT '9780553296983' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780553296983' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780553296983' AS isbn, 'Non-Fiction' AS genre
+    UNION ALL
+    SELECT '9781524763138' AS isbn, 'Non-Fiction' AS genre
+    UNION ALL
+    SELECT '9781524763138' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780147514011' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780147514011' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780147514011' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780061120084' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780061120084' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780451524935' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780451524935' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780553213690' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780553213690' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780441172719' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780441172719' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780679720201' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9780679720201' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780375842207' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9781503290563' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9781503290563' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9781503290563' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780307474278' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780307474278' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780486411095' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9780486411095' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780486411095' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780590353427' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780590353427' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780547928227' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780547928227' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780743273565' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780743273565' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780743273565' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780060850524' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780060850524' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780486282114' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9780486282114' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780486282114' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780486282114' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780316769488' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780547928210' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780547928210' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780547928203' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780547928203' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780547928197' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780547928197' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781451673319' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9781451673319' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780061122415' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780061122415' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780061122415' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781503280786' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9781503280786' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781503280786' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780486415871' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9780486415871' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780141439570' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780141439570' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9780451419432' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780451419432' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780140449266' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780140449266' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9781594631931' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9781594631931' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780156027328' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780156027328' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780307387899' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780307387899' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780307387899' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9780307387899' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780553103540' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780553103540' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780553108033' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780553108033' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780553106633' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780553106633' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780553801507' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780553801507' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780553801477' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780553801477' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780439023481' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780439023481' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780439023481' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780439023498' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780439023498' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780439023498' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780439023511' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780439023511' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780439023511' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780439023511' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780439023511' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780525478812' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780307743657' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9780307743657' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9781501142970' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9781501142970' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9781501142970' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781501142970' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9781501142970' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780140385724' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780140385724' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780451526342' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780451526342' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780451526342' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780451526342' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780142437209' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780142437209' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780141439556' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780141439556' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780141439556' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780060837020' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780156028356' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT '9780156028356' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780812550702' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780812550702' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780062024039' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780062024039' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780062024039' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780062024039' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780062024039' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780062024039' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780062024046' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780062024046' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780062024046' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780062024046' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780062024046' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780062024046' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780062024060' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780062024060' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780062024060' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780062024060' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780062024060' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780062024060' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780385737952' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780385737952' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780385737952' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780385737952' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780385737952' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780385737952' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780385738768' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780385738768' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780385738768' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780385738768' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780385738768' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780385738768' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780385738768' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780385738775' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780385738775' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780385738775' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780385738775' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780385738775' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780812511819' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780812511819' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780812517729' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780812517729' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780812513714' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780812513714' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780375826689' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780375826689' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780375840401' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780375840401' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780375826726' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780375826726' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780375846311' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780375846311' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780553448122' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780345538994' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780312924584' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780312924584' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780440224679' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780440224679' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9780440224679' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780440224679' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9780307588371' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780307588371' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780307588371' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9780307341556' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780307341556' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780307341556' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9780307341570' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780307341570' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780307341570' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9780307454546' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780307454546' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780307454546' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9780307454553' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780307454553' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780307454553' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9780307454560' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780307454560' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780307454560' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9781338635171' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9781338635171' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9781338635171' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781338635171' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781338635171' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9781338635171' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780307743688' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9780307743688' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780307743688' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780307743688' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780307743688' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780450417399' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9780450417399' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780450417399' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780450417399' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9781501156700' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9781501156700' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9781501156700' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781501156700' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780307743664' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9780307743664' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780307743664' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780307743664' AS isbn, 'Classic' AS genre
+    UNION ALL
+    SELECT '9780307743671' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9780307743671' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780307743671' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780307743671' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9781476727653' AS isbn, 'Horror' AS genre
+    UNION ALL
+    SELECT '9781476727653' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9781476727653' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781476727653' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780062678416' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780062678416' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780062678416' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9780062060563' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780062060563' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780062060563' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9780735221109' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT '9780735221109' AS isbn, 'Thriller' AS genre
+    UNION ALL
+    SELECT '9780735221109' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT '9781595148032' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781595148032' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9781595148032' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9781595148032' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781595148032' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9781101998885' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781101998885' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9781101998885' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9781101998885' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781101998885' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780448494500' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780448494500' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780448494500' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780448494500' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780448494500' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780448494531' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780448494531' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780448494531' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780448494531' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780448494531' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780345539786' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780345539786' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780345539786' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780345539786' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780345539816' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780345539816' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780345539816' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780345539816' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780345539847' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780345539847' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780345539847' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780345539847' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780425285954' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780425285954' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780425285954' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780425285954' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780425285985' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780425285985' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780425285985' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780425285985' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780399256752' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780399256752' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780399256752' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780399256752' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780399256752' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780399256752' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780399256776' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780399256776' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780399256776' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780399256776' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780399256776' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780399256776' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9780399256783' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9780399256783' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9780399256783' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9780399256783' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9780399256783' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9780399256783' AS isbn, 'Romance' AS genre
+    UNION ALL
+    SELECT '9781250221704' AS isbn, 'Action' AS genre
+    UNION ALL
+    SELECT '9781250221704' AS isbn, 'Dystopian' AS genre
+    UNION ALL
+    SELECT '9781250221704' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT '9781250221704' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT '9781250221704' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT '9781250221704' AS isbn, 'Romance' AS genre
+) AS V JOIN books B ON B.isbn = V.isbn
+ON DUPLICATE KEY UPDATE genre = VALUES(genre);
 
---Forms Inserts
-INSERT IGNORE INTO forms(
-    book_name, published, summary, author, isbn, user_id, attempt_no)
-VALUES
-('Steve Jobs', '2011-10-01',
-'Walter Isaacson\'s worldwide bestselling biography of Apple cofounder Steve Jobs. Based on more than forty interviews with Steve Jobs conducted over two years--as well as interviews with more than 100 family members, friends, adversaries, competitors, and colleagues--Walter Isaacson has written a riveting story of the roller-coaster life and searingly intense personality of a creative entrepreneur whose passion for perfection and ferocious drive revolutionized six industries: personal computers, animated movies, music, phones, tablet computing, and digital publishing. Isaacson\'s portrait touched millions of readers. At a time when America is seeking ways to sustain its innovative edge, Jobs stands as the ultimate icon of inventiveness and applied imagination. He knew that the best way to create value in the twenty-first century was to connect creativity with technology. He built a company where leaps of the imagination were combined with remarkable feats of engineering. Although Jobs cooperated with the author, he asked for no control over what was written. He put nothing off-limits. He encouraged the people he knew to speak honestly. He himself spoke candidly about the people he worked with and competed against. His friends, foes, and colleagues offer an unvarnished view of the passions, perfectionism, obsessions, artistry, devilry, and compulsion for control that shaped his approach to business and the innovative products that resulted. His tale is instructive and cautionary, filled with lessons about innovation, character, leadership, and values. Steve Jobs is the inspiration for the movie of the same name starring Michael Fassbender, Kate Winslet, Seth Rogen, and Jeff Daniels, directed by Danny Boyle with a screenplay by Aaron Sorkin.',
-'Walter Isaacson', '9781451648539',
-(SELECT user_id FROM users WHERE username = 'Chufam'),
-COALESCE((
-    SELECT MAX(dupe_num) + 1 FROM forms
-    WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam')
-    AND isbn = '9781451648539'
-), 0)),
-('Leviathan', '2009-10-06',
-'Prince Aleksander, would-be heir to the Austro-Hungarian throne, is on the run. His own people have turned on him. His title is worthless. All he has is a battletorn war machine and a loyal crew of men.\n\nDeryn Sharp is a commoner, disguised as a boy in the British Air Service. She\'s a brilliant airman. But her secret is in constant danger of being discovered.\n\nWith World War I brewing, Alek and Deryn\'s paths cross in the most unexpected way…taking them on a fantastical, around-the-world adventure that will change both their lives forever.',
-'Scott Westerfeld', '9781416971733',
-(SELECT user_id FROM users WHERE username = 'Chufam'),
-COALESCE((
-    SELECT MAX(dupe_num) + 1 FROM forms
-    WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam')
-    AND isbn = '9781416971733'
-), 0)),
-('Behemoth', '2010-10-05',
-'The behemoth is the fiercest creature in the British navy. It can swallow enemy battleships with one bite. The Darwinists will need it, now that they are at war with the Clanker powers.\n\nDeryn is a girl posing as a boy in the British Air Service, and Alek is the heir to an empire posing as a commoner. Finally together aboard the airship Leviathan, they hope to bring the war to a halt. But when disaster strikes the Leviathan\'s peacekeeping mission, they find themselves alone and hunted in enemy territory. ',
-'Scott Westerfeld', '9781416971757',
-(SELECT user_id FROM users WHERE username = 'Chufam'),
-COALESCE((
-    SELECT MAX(dupe_num) + 1 FROM forms
-    WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam')
-    AND isbn = '9781416971757'
-), 0)),
-('Goliath', '2011-01-24',
-'Alek and Deryn are abroad the Leviathan when the ship is ordered to pick up an unusual passenger. This brilliant/maniacal inventor claims to have a weapon called Goliath that can end the war. But whose side is he really on?\n\nWhile on their top-secret mission, Alek finally discovers Deryn\'s deeply kept secret. Two, actually. Not only is Deryn a girl disguised as a guy...she has feelings for Alek.\n\nThe crown, true love with a commoner, and the destruction of a great city all hang on Alek\'s next--and final--move.\n\nThe thunderous conclusion to Scott Westerfeld\'s Leviathan series, which was called "sure to become a classic" (SLJ).',
-'Scott Westerfeld', '9781416971771',
-(SELECT user_id FROM users WHERE username = 'Chufam'),
-COALESCE((
-    SELECT MAX(dupe_num) + 1 FROM forms
-    WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam')
-    AND isbn = '9781416971771'
-), 0)),
-('Instinct', '2017-06-26',
-'The life Dr. Dylan Reinhart saves may be his own\n\nDr. Dylan Reinhart wrote the book on criminal behavior. Literally--he\'s a renowned, bestselling Ivy League expert on the subject. When a copy of his book turns up at a gruesome murder scene--along with a threatening message from the killer--it looks like someone has been taking notes.\n\nElizabeth Needham is the headstrong and brilliant NYPD Detective in charge of the case who recruits Dylan to help investigate another souvenir left at the scene--a playing card. Another murder, another card--and now Dylan suspects that the cards aren\'t a signature, they\'re a deadly hint--pointing directly toward the next victim.\n\nAs tabloid headlines about the killer known as "The Dealer" scream from newstands, New York City descends into panic. With the cops at a loss, it\'s up to Dylan to hunt down a serial killer unlike any the city has ever seen. Only someone with Dylan\'s expertise can hope to go inside the mind of a criminal and convince The Dealer to lay down his cards. But after thinking like a criminal--could Dylan become one?',
-'James Patterson', '9781478945185   ',
-(SELECT user_id FROM users WHERE username = 'Jebediah_KSP'),
-COALESCE((
-    SELECT MAX(dupe_num) + 1 FROM forms
-    WHERE user_id = (SELECT user_id FROM users WHERE username = 'Jebediah_KSP')
-    AND isbn = '9781478945185'
-), 0));
+--Forms Insert
+INSERT INTO forms (book_name, published, summary, author, isbn, user_id, dupe_num)
+SELECT V.book_name, V.published, V.summary, V.author, V.isbn, U.user_id,
+       COALESCE((SELECT MAX(F2.dupe_num) + 1 FROM forms F2 WHERE F2.user_id = U.user_id AND F2.isbn = V.isbn), 0) AS dupe_num
+FROM (
+    SELECT 'Steve Jobs' AS book_name, '2011-10-01' AS published,
+    'Walter Isaacson\'s worldwide bestselling biography of Apple cofounder Steve Jobs. Based on more than forty interviews with Steve Jobs conducted over two years--as well as interviews with more than 100 family members, friends, adversaries, competitors, and colleagues--Walter Isaacson has written a riveting story of the roller-coaster life and searingly intense personality of a creative entrepreneur whose passion for perfection and ferocious drive revolutionized six industries: personal computers, animated movies, music, phones, tablet computing, and digital publishing. Isaacson\'s portrait touched millions of readers. At a time when America is seeking ways to sustain its innovative edge, Jobs stands as the ultimate icon of inventiveness and applied imagination. He knew that the best way to create value in the twenty-first century was to connect creativity with technology. He built a company where leaps of the imagination were combined with remarkable feats of engineering. Although Jobs cooperated with the author, he asked for no control over what was written. He put nothing off-limits. He encouraged the people he knew to speak honestly. He himself spoke candidly about the people he worked with and competed against. His friends, foes, and colleagues offer an unvarnished view of the passions, perfectionism, obsessions, artistry, devilry, and compulsion for control that shaped his approach to business and the innovative products that resulted. His tale is instructive and cautionary, filled with lessons about innovation, character, leadership, and values. Steve Jobs is the inspiration for the movie of the same name starring Michael Fassbender, Kate Winslet, Seth Rogen, and Jeff Daniels, directed by Danny Boyle with a screenplay by Aaron Sorkin.' AS summary, 'Walter Isaacson' AS author, '9781451648539' AS isbn, 'ChuFam' AS username
+    UNION ALL
+    SELECT 'Leviathan' AS book_name, '2009-10-06' AS published,
+    'Prince Aleksander, would-be heir to the Austro-Hungarian throne, is on the run. His own people have turned on him. His title is worthless. All he has is a battletorn war machine and a loyal crew of men.\n\nDeryn Sharp is a commoner, disguised as a boy in the British Air Service. She\'s a brilliant airman. But her secret is in constant danger of being discovered.\n\nWith World War I brewing, Alek and Deryn\'s paths cross in the most unexpected way…taking them on a fantastical, around-the-world adventure that will change both their lives forever.' AS summary, 'Scott Westerfeld' AS author, '9781416971733' AS isbn, 'ChuFam' AS username
+    UNION ALL
+    SELECT 'Behemoth' AS book_name, '2010-10-05' AS published,
+    'The behemoth is the fiercest creature in the British navy. It can swallow enemy battleships with one bite. The Darwinists will need it, now that they are at war with the Clanker powers.\n\nDeryn is a girl posing as a boy in the British Air Service, and Alek is the heir to an empire posing as a commoner. Finally together aboard the airship Leviathan, they hope to bring the war to a halt. But when disaster strikes the Leviathan\'s peacekeeping mission, they find themselves alone and hunted in enemy territory. ' AS summary, 'Scott Westerfeld' AS author, '9781416971757' AS isbn, 'ChuFam' AS username
+    UNION ALL
+    SELECT 'Goliath' AS book_name, '2011-01-24' AS published,
+    'Alek and Deryn are abroad the Leviathan when the ship is ordered to pick up an unusual passenger. This brilliant/maniacal inventor claims to have a weapon called Goliath that can end the war. But whose side is he really on?\n\nWhile on their top-secret mission, Alek finally discovers Deryn\'s deeply kept secret. Two, actually. Not only is Deryn a girl disguised as a guy...she has feelings for Alek.\n\nThe crown, true love with a commoner, and the destruction of a great city all hang on Alek\'s next--and final--move.\n\nThe thunderous conclusion to Scott Westerfeld\'s Leviathan series, which was called "sure to become a classic" (SLJ).' AS summary, 'Scott Westerfeld' AS author, '9781416971771' AS isbn, 'ChuFam' AS username
+    UNION ALL
+    SELECT 'Instinct' AS book_name, '2017-06-26' AS published,
+    'The life Dr. Dylan Reinhart saves may be his own\n\nDr. Dylan Reinhart wrote the book on criminal behavior. Literally--he\'s a renowned, bestselling Ivy League expert on the subject. When a copy of his book turns up at a gruesome murder scene--along with a threatening message from the killer--it looks like someone has been taking notes.\n\nElizabeth Needham is the headstrong and brilliant NYPD Detective in charge of the case who recruits Dylan to help investigate another souvenir left at the scene--a playing card. Another murder, another card--and now Dylan suspects that the cards aren\'t a signature, they\'re a deadly hint--pointing directly toward the next victim.\n\nAs tabloid headlines about the killer known as "The Dealer" scream from newstands, New York City descends into panic. With the cops at a loss, it\'s up to Dylan to hunt down a serial killer unlike any the city has ever seen. Only someone with Dylan\'s expertise can hope to go inside the mind of a criminal and convince The Dealer to lay down his cards. But after thinking like a criminal--could Dylan become one?' AS summary, 'James Patterson' AS author, '9781478945185' AS isbn, 'Jebediah_KSP' AS username
+) AS V
+JOIN users U ON U.username = V.username;
 
---FormGenres Inserts
-INSERT IGNORE INTO FormGenres(form_id, genre) VALUES
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781451648539', and dupe_num = 0), 'Non-Fiction'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781451648539', and dupe_num = 0), 'Historical'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781416971733', and dupe_num = 0), 'Fantasy'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781416971733', and dupe_num = 0), 'Sci-Fi'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781416971733', and dupe_num = 0), 'Historical'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781416971733', and dupe_num = 0), 'Adventure'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781416971757', and dupe_num = 0), 'Fantasy'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781416971757', and dupe_num = 0), 'Sci-Fi'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781416971757', and dupe_num = 0), 'Historical'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781416971757', and dupe_num = 0), 'Adventure'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781416971771', and dupe_num = 0), 'Fantasy'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781416971771', and dupe_num = 0), 'Sci-Fi'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781416971771', and dupe_num = 0), 'Historical'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
-isbn = '9781416971771', and dupe_num = 0), 'Adventure'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Jebediah_KSP') AND
-isbn = '9781478945185', and dupe_num = 0), 'Mystery'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Jebediah_KSP') AND
-isbn = '9781478945185', and dupe_num = 0), 'Crime'),
-((SELECT form_id FROM forms
-WHERE user_id = (SELECT user_id FROM users WHERE username = 'Jebediah_KSP') AND
-isbn = '9781478945185', and dupe_num = 0), 'Thriller');
+--FormGenres Insert
+INSERT INTO formGenres (form_id, genre)
+SELECT F.form_id, V.genre
+FROM (
+    SELECT 'ChuFam' AS username, '9781451648539' AS isbn, 'Non-Fiction' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781451648539' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781416971733' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781416971733' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781416971733' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781416971733' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781416971757' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781416971757' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781416971757' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781416971757' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781416971771' AS isbn, 'Fantasy' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781416971771' AS isbn, 'Sci-Fi' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781416971771' AS isbn, 'Historical' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781416971771' AS isbn, 'Adventure' AS genre
+    UNION ALL
+    SELECT 'Jebediah_KSP' AS username, '9781478945185' AS isbn, 'Mystery' AS genre
+    UNION ALL
+    SELECT 'Jebediah_KSP' AS username, '9781478945185' AS isbn, 'Crime' AS genre
+    UNION ALL
+    SELECT 'Jebediah_KSP' AS username, '9781478945185' AS isbn, 'Thriller' AS genre
+) AS V JOIN users U ON U.username = V.username
+JOIN forms F ON F.user_id = U.user_id AND F.isbn = V.isbn AND F.dupe_num = 0;
 
---Comments Inserts
-INSERT IGNORE INTO comments(user_id, book_id, comment) VALUES
-((SELECT user_id FROM users WHERE username = 'Chufam'),
-(SELECT book_id FROM books WHERE isbn = '9780062652850'),
-'Great Book I loved the setting that this book was set in, 5/5 Stars for sure.'),
-((SELECT user_id FROM users WHERE username = 'Jebediah_KSP'),
-(SELECT book_id FROM books WHERE isbn = '9780062652850'),
-'Good, but could have done with less romance'),
-((SELECT user_id FROM users WHERE username = 'Jebediah_KSP'),
-(SELECT book_id FROM books WHERE isbn = '9781101974490'),
-'Loved the description of the damages that the strain caused on our technology, very interesting'),
-((SELECT user_id FROM users WHERE username = 'SillyPuddle'),
-(SELECT book_id FROM books WHERE isbn = '9780307387899'),
-'Puddle is pleased, but wishes for more interaction between the characters...'),
-((SELECT user_id FROM users WHERE username = 'DangerMANN'),
-(SELECT book_id FROM books WHERE isbn = '9780307387899'),
-'Didn\'t like the atmosphere the book was giving, also the characters seemed meh'),
-((SELECT user_id FROM users WHERE username = 'DangerMANN'),
-(SELECT book_id FROM books WHERE isbn = '9780399256783'),
-'REBEL!!!, I greatly enjoyed this book but I am left wondering about somethings the characters seemed to leave out.');
+--Comments Insert
+INSERT INTO comments (user_id, book_id, comment)
+SELECT U.user_id, B.book_id, V.comment
+FROM (
+    SELECT 'Chufam' AS username, '9780062652850' AS isbn, 'Great Book I loved the setting that this book was set in, 5/5 Stars for sure.' AS comment
+    UNION ALL
+    SELECT 'Jebediah_KSP' AS username, '9780062652850' AS isbn, 'Good, but could have done with less romance' AS comment
+    UNION ALL
+    SELECT 'Jebediah_KSP' AS username, '9781101974490' AS isbn, 'Loved the description of the damages that the strain caused on our technology, very interesting' AS comment
+    UNION ALL
+    SELECT 'SillyPuddle' AS username, '9780307387899' AS isbn, 'Puddle is pleased, but wishes for more interaction between the characters...' AS comment
+    UNION ALL
+    SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 'REBEL!!!, I greatly enjoyed this book but I am left wondering about somethings the characters seemed to leave out.' AS comment
+) AS V
+JOIN users U ON U.username = V.username
+JOIN books B ON B.isbn = V.isbn;
 
-
---Ratings Inserts
-INSERT IGNORE INTO ratings(user_id, book_id, rating) VALUES
-((SELECT user_id FROM users WHERE username = 'Chufam'),
-(SELECT book_id FROM books WHERE isbn = '9780062652850'), 5),
-((SELECT user_id FROM users WHERE username = 'Jebediah_KSP'),
-(SELECT book_id FROM books WHERE isbn = '9780062652850'), 3),
-((SELECT user_id FROM users WHERE username = 'Jebediah_KSP'),
-(SELECT book_id FROM books WHERE isbn = '9781101974490'), 5),
-((SELECT user_id FROM users WHERE username = 'SillyPuddle'),
-(SELECT book_id FROM books WHERE isbn = '9780307387899'), 4),
-((SELECT user_id FROM users WHERE username = 'DangerMANN'),
-(SELECT book_id FROM books WHERE isbn = '9780307387899'), 1),
-((SELECT user_id FROM users WHERE username = 'DangerMANN'),
-(SELECT book_id FROM books WHERE isbn = '9780399256783'), 5);
+--Ratings Insert
+INSERT INTO ratings (user_id, book_id, rating)
+SELECT U.user_id, B.book_id, V.rating
+FROM (
+    SELECT 'Chufam' AS username, '9780062652850' AS isbn, 5 AS rating
+    UNION ALL
+    SELECT 'Jebediah_KSP' AS username, '9780062652850' AS isbn, 3 AS rating
+    UNION ALL
+    SELECT 'Jebediah_KSP' AS username, '9781101974490' AS isbn, 5 AS rating
+    UNION ALL
+    SELECT 'SillyPuddle' AS username, '9780307387899' AS isbn, 4 AS rating
+    UNION ALL
+    SELECT 'DangerMANN' AS username, '9780307387899' AS isbn, 1 AS rating
+    UNION ALL
+    SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 5 AS rating
+) AS V
+JOIN users U ON U.username = V.username
+JOIN books B ON B.isbn = V.isbn;
