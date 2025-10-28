@@ -1,5 +1,5 @@
 --Users Insert
-INSERT INTO users(username, password) VALUES 
+INSERT IGNORE INTO users(username, password) VALUES 
 ('ChuFam', '$2y$10$G4vkc6sjFB0QmAKWISRtZOh7RoF0k95NjpHu8vEhIsG92mZnaI/Wa'),
 ('DangerMANN', '$2y$10$HAvcc8eIO52Q9oZglyU.N.Z.7.e/nFQt66d3lCvuex1MvFGLFPdb.'),
 ('SillyPuddle', '$2y$10$2Pmg87ImZimWa5Kaq3wmGuKEI.snx/xdZWU36I2ZWIjNrPXU/T2sS'),
@@ -43,17 +43,11 @@ INSERT INTO users(username, password) VALUES
 ('curiousreader', '$2y$12$g24E9vSw9hLEvuDRH7vNPu4.j1GDykLCCZ5Jm3cAvKERA5oPF4ZnS'),
 ('bookmarkit', '$2y$12$xBB5tEi/tnDQBtTC4wloa.RFC6jNQFvk1HHCSMHnd9pbM5J3nTShu');
 --Admins Insert
-INSERT INTO admins(user_id) SELECT user_id FROM users 
-WHERE username = 'ChuFam';
-INSERT INTO admins(user_id) SELECT user_id FROM users 
-WHERE username = 'acorona';
-INSERT INTO admins(user_id) SELECT user_id FROM users
-WHERE username = 'obeltranbelt';
-INSERT INTO admins(user_id) SELECT user_id FROM users
-WHERE username = 'jvillalobos';
+INSERT IGNORE INTO admins(user_id) SELECT user_id FROM users
+WHERE username IN ('ChuFam','acorona','obeltranbelt','jvillalobos');
 
 --Books Insert
-INSERT INTO books (name, published, summary, author, isbn) VALUES
+INSERT IGNORE INTO books(name, published, summary, author, isbn) VALUES
 ('Scythe', '2016-11-22',
 '"Thou shalt kill"\n\n A world with no hunger. No disease. No war. No misery. Humanity has conquered all those things, and has even conquered death. Now scythes are the only ones who can end life—and they are commanded to do so, in order to keep the size of the population under control.\n\nCitra and Rowan are chosen to apprentice to a scythe—a role that neither wants. These teens must master the "art" of taking life, knowing that the consequence of failure could mean losing their own. They learn living in a perfect world comes only with a heavy price.',
 'Neal Shusterman', '9781442472433'),
@@ -482,7 +476,7 @@ INSERT INTO books (name, published, summary, author, isbn) VALUES
 'Marie Lu', '9781250221704');
 
 --BookGenres Inserts
-INSERT INTO bookGenres (book_id, genre) VALUES
+INSERT IGNORE INTO bookGenres (book_id, genre) VALUES
 ((SELECT book_id FROM books WHERE isbn = '9781442472433'), 'Sci-Fi'),
 ((SELECT book_id FROM books WHERE isbn = '9781442472433'), 'Adventure'),
 ((SELECT book_id FROM books WHERE isbn = '9781406379532'), 'Sci-Fi'),
@@ -903,3 +897,35 @@ INSERT INTO bookGenres (book_id, genre) VALUES
 ((SELECT book_id FROM books WHERE isbn = '9781250221704'), 'Sci-Fi'),
 ((SELECT book_id FROM books WHERE isbn = '9781250221704'), 'Adventure'),
 ((SELECT book_id FROM books WHERE isbn = '9781250221704'), 'Romance');
+
+--Form Inserts
+INSERT IGNORE INTO forms(book_name, published, summary, author, isbn, user_id)
+VALUES
+(),
+(),
+(),
+(),
+();
+
+--Comment Inserts
+INSERT IGNORE INTO comments(user_id, book_id, comment) VALUES
+(),
+(),
+(),
+(),
+(),
+(),
+(),
+();
+
+
+--Ratings Inserts
+INSERT IGNORE INTO ratings(user_id, book_id, rating) VALUES
+(),
+(),
+(),
+(),
+(),
+(),
+(),
+();
