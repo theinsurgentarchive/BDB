@@ -898,34 +898,143 @@ INSERT IGNORE INTO bookGenres (book_id, genre) VALUES
 ((SELECT book_id FROM books WHERE isbn = '9781250221704'), 'Adventure'),
 ((SELECT book_id FROM books WHERE isbn = '9781250221704'), 'Romance');
 
---Form Inserts
-INSERT IGNORE INTO forms(book_name, published, summary, author, isbn, user_id)
+--Forms Inserts
+INSERT IGNORE INTO forms(
+    book_name, published, summary, author, isbn, user_id, attempt_no)
 VALUES
-(),
-(),
-(),
-(),
-();
+('Steve Jobs', '2011-10-01',
+'Walter Isaacson\'s worldwide bestselling biography of Apple cofounder Steve Jobs. Based on more than forty interviews with Steve Jobs conducted over two years--as well as interviews with more than 100 family members, friends, adversaries, competitors, and colleagues--Walter Isaacson has written a riveting story of the roller-coaster life and searingly intense personality of a creative entrepreneur whose passion for perfection and ferocious drive revolutionized six industries: personal computers, animated movies, music, phones, tablet computing, and digital publishing. Isaacson\'s portrait touched millions of readers. At a time when America is seeking ways to sustain its innovative edge, Jobs stands as the ultimate icon of inventiveness and applied imagination. He knew that the best way to create value in the twenty-first century was to connect creativity with technology. He built a company where leaps of the imagination were combined with remarkable feats of engineering. Although Jobs cooperated with the author, he asked for no control over what was written. He put nothing off-limits. He encouraged the people he knew to speak honestly. He himself spoke candidly about the people he worked with and competed against. His friends, foes, and colleagues offer an unvarnished view of the passions, perfectionism, obsessions, artistry, devilry, and compulsion for control that shaped his approach to business and the innovative products that resulted. His tale is instructive and cautionary, filled with lessons about innovation, character, leadership, and values. Steve Jobs is the inspiration for the movie of the same name starring Michael Fassbender, Kate Winslet, Seth Rogen, and Jeff Daniels, directed by Danny Boyle with a screenplay by Aaron Sorkin.',
+'Walter Isaacson', '9781451648539',
+(SELECT user_id FROM users WHERE username = 'Chufam'),
+COALESCE((
+    SELECT MAX(dupe_num) + 1 FROM forms
+    WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam')
+    AND isbn = '9781451648539'
+), 0)),
+('Leviathan', '2009-10-06',
+'Prince Aleksander, would-be heir to the Austro-Hungarian throne, is on the run. His own people have turned on him. His title is worthless. All he has is a battletorn war machine and a loyal crew of men.\n\nDeryn Sharp is a commoner, disguised as a boy in the British Air Service. She\'s a brilliant airman. But her secret is in constant danger of being discovered.\n\nWith World War I brewing, Alek and Deryn\'s paths cross in the most unexpected way…taking them on a fantastical, around-the-world adventure that will change both their lives forever.',
+'Scott Westerfeld', '9781416971733',
+(SELECT user_id FROM users WHERE username = 'Chufam'),
+COALESCE((
+    SELECT MAX(dupe_num) + 1 FROM forms
+    WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam')
+    AND isbn = '9781416971733'
+), 0)),
+('Behemoth', '2010-10-05',
+'The behemoth is the fiercest creature in the British navy. It can swallow enemy battleships with one bite. The Darwinists will need it, now that they are at war with the Clanker powers.\n\nDeryn is a girl posing as a boy in the British Air Service, and Alek is the heir to an empire posing as a commoner. Finally together aboard the airship Leviathan, they hope to bring the war to a halt. But when disaster strikes the Leviathan\'s peacekeeping mission, they find themselves alone and hunted in enemy territory. ',
+'Scott Westerfeld', '9781416971757',
+(SELECT user_id FROM users WHERE username = 'Chufam'),
+COALESCE((
+    SELECT MAX(dupe_num) + 1 FROM forms
+    WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam')
+    AND isbn = '9781416971757'
+), 0)),
+('Goliath', '2011-01-24',
+'Alek and Deryn are abroad the Leviathan when the ship is ordered to pick up an unusual passenger. This brilliant/maniacal inventor claims to have a weapon called Goliath that can end the war. But whose side is he really on?\n\nWhile on their top-secret mission, Alek finally discovers Deryn\'s deeply kept secret. Two, actually. Not only is Deryn a girl disguised as a guy...she has feelings for Alek.\n\nThe crown, true love with a commoner, and the destruction of a great city all hang on Alek\'s next--and final--move.\n\nThe thunderous conclusion to Scott Westerfeld\'s Leviathan series, which was called "sure to become a classic" (SLJ).',
+'Scott Westerfeld', '9781416971771',
+(SELECT user_id FROM users WHERE username = 'Chufam'),
+COALESCE((
+    SELECT MAX(dupe_num) + 1 FROM forms
+    WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam')
+    AND isbn = '9781416971771'
+), 0)),
+('Instinct', '2017-06-26',
+'The life Dr. Dylan Reinhart saves may be his own\n\nDr. Dylan Reinhart wrote the book on criminal behavior. Literally--he\'s a renowned, bestselling Ivy League expert on the subject. When a copy of his book turns up at a gruesome murder scene--along with a threatening message from the killer--it looks like someone has been taking notes.\n\nElizabeth Needham is the headstrong and brilliant NYPD Detective in charge of the case who recruits Dylan to help investigate another souvenir left at the scene--a playing card. Another murder, another card--and now Dylan suspects that the cards aren\'t a signature, they\'re a deadly hint--pointing directly toward the next victim.\n\nAs tabloid headlines about the killer known as "The Dealer" scream from newstands, New York City descends into panic. With the cops at a loss, it\'s up to Dylan to hunt down a serial killer unlike any the city has ever seen. Only someone with Dylan\'s expertise can hope to go inside the mind of a criminal and convince The Dealer to lay down his cards. But after thinking like a criminal--could Dylan become one?',
+'James Patterson', '9781478945185   ',
+(SELECT user_id FROM users WHERE username = 'Jebediah_KSP'),
+COALESCE((
+    SELECT MAX(dupe_num) + 1 FROM forms
+    WHERE user_id = (SELECT user_id FROM users WHERE username = 'Jebediah_KSP')
+    AND isbn = '9781478945185'
+), 0));
 
---Comment Inserts
+--FormGenres Inserts
+INSERT IGNORE INTO FormGenres(form_id, genre) VALUES
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781451648539', and dupe_num = 0), 'Non-Fiction'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781451648539', and dupe_num = 0), 'Historical'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781416971733', and dupe_num = 0), 'Fantasy'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781416971733', and dupe_num = 0), 'Sci-Fi'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781416971733', and dupe_num = 0), 'Historical'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781416971733', and dupe_num = 0), 'Adventure'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781416971757', and dupe_num = 0), 'Fantasy'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781416971757', and dupe_num = 0), 'Sci-Fi'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781416971757', and dupe_num = 0), 'Historical'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781416971757', and dupe_num = 0), 'Adventure'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781416971771', and dupe_num = 0), 'Fantasy'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781416971771', and dupe_num = 0), 'Sci-Fi'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781416971771', and dupe_num = 0), 'Historical'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Chufam') AND
+isbn = '9781416971771', and dupe_num = 0), 'Adventure'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Jebediah_KSP') AND
+isbn = '9781478945185', and dupe_num = 0), 'Mystery'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Jebediah_KSP') AND
+isbn = '9781478945185', and dupe_num = 0), 'Crime'),
+((SELECT form_id FROM forms
+WHERE user_id = (SELECT user_id FROM users WHERE username = 'Jebediah_KSP') AND
+isbn = '9781478945185', and dupe_num = 0), 'Thriller');
+
+--Comments Inserts
 INSERT IGNORE INTO comments(user_id, book_id, comment) VALUES
-(),
-(),
-(),
-(),
-(),
-(),
-(),
-();
+((SELECT user_id FROM users WHERE username = 'Chufam'),
+(SELECT book_id FROM books WHERE isbn = '9780062652850'),
+'Great Book I loved the setting that this book was set in, 5/5 Stars for sure.'),
+((SELECT user_id FROM users WHERE username = 'Jebediah_KSP'),
+(SELECT book_id FROM books WHERE isbn = '9780062652850'),
+'Good, but could have done with less romance'),
+((SELECT user_id FROM users WHERE username = 'Jebediah_KSP'),
+(SELECT book_id FROM books WHERE isbn = '9781101974490'),
+'Loved the description of the damages that the strain caused on our technology, very interesting'),
+((SELECT user_id FROM users WHERE username = 'SillyPuddle'),
+(SELECT book_id FROM books WHERE isbn = '9780307387899'),
+'Puddle is pleased, but wishes for more interaction between the characters...'),
+((SELECT user_id FROM users WHERE username = 'DangerMANN'),
+(SELECT book_id FROM books WHERE isbn = '9780307387899'),
+'Didn\'t like the atmosphere the book was giving, also the characters seemed meh'),
+((SELECT user_id FROM users WHERE username = 'DangerMANN'),
+(SELECT book_id FROM books WHERE isbn = '9780399256783'),
+'REBEL!!!, I greatly enjoyed this book but I am left wondering about somethings the characters seemed to leave out.');
 
 
 --Ratings Inserts
 INSERT IGNORE INTO ratings(user_id, book_id, rating) VALUES
-(),
-(),
-(),
-(),
-(),
-(),
-(),
-();
+((SELECT user_id FROM users WHERE username = 'Chufam'),
+(SELECT book_id FROM books WHERE isbn = '9780062652850'), 5),
+((SELECT user_id FROM users WHERE username = 'Jebediah_KSP'),
+(SELECT book_id FROM books WHERE isbn = '9780062652850'), 3),
+((SELECT user_id FROM users WHERE username = 'Jebediah_KSP'),
+(SELECT book_id FROM books WHERE isbn = '9781101974490'), 5),
+((SELECT user_id FROM users WHERE username = 'SillyPuddle'),
+(SELECT book_id FROM books WHERE isbn = '9780307387899'), 4),
+((SELECT user_id FROM users WHERE username = 'DangerMANN'),
+(SELECT book_id FROM books WHERE isbn = '9780307387899'), 1),
+((SELECT user_id FROM users WHERE username = 'DangerMANN'),
+(SELECT book_id FROM books WHERE isbn = '9780399256783'), 5);
