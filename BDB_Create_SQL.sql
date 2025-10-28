@@ -4,13 +4,14 @@ CREATE TABLE IF NOT EXISTS users (
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     username VARCHAR(64) UNIQUE NOT NULL,
     /*Use Password Hashing for Security*/
-    password VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS admins (
     admin_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    promotion_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS forms (
@@ -21,15 +22,17 @@ CREATE TABLE IF NOT EXISTS forms (
     isbn VARCHAR(13) NOT NULL,
     book_name VARCHAR(255) NOT NULL,
     image_path VARCHAR(512) DEFAULT NULL,
+    published DATE NULL DEFAULT NULL,
     author VARCHAR(255) NOT NULL,
     summary TEXT NOT NULL,
+    creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (admin_id) REFERENCES admins(admin_id)
 );
 
 CREATE TABLE IF NOT EXISTS books (
     book_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    isbn VARCHAR(13) NOT NULL,
+    isbn VARCHAR(13) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     added TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     published DATE NULL DEFAULT NULL,
@@ -50,7 +53,7 @@ CREATE TABLE IF NOT EXISTS ratings (
     rating INT NOT NULL,
     CONSTRAINT constrain_rating CHECK(rating BETWEEN 0 AND 5),
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)  ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS comments (
@@ -61,8 +64,8 @@ CREATE TABLE IF NOT EXISTS comments (
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     comment TEXT NOT NULL,
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (parent_id) REFERENCES comments(comment_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (parent_id) REFERENCES comments(comment_id)
 );
 
 CREATE TABLE IF NOT EXISTS genres (
