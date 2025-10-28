@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS forms (
     author VARCHAR(255) NOT NULL,
     summary TEXT NOT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    dupe_num INT NOT NULL DEFAULT 0
+    dupe_num INT NOT NULL DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (admin_id) REFERENCES admins(admin_id)
 );
