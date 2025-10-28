@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS books (
 );
 
 CREATE TABLE IF NOT EXISTS ratings (
-    rating_id INT PRIMARY KEY NOT NULL,
+    rating_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     book_id INT NOT NULL,
     user_id INT NOT NULL,
     /*The Average rating is going to be a Derived Attribute
