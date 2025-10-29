@@ -1397,9 +1397,25 @@ FROM (
     SELECT 'SillyPuddle' AS username, '9780307387899' AS isbn, 'Puddle is pleased, but wishes for more interaction between the characters...' AS comment
     UNION ALL
     SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 'REBEL!!!, I greatly enjoyed this book but I am left wondering about somethings the characters seemed to leave out.' AS comment
-) AS V
-JOIN users U ON U.username = V.username
-JOIN books B ON B.isbn = V.isbn;
+) AS V JOIN users U ON U.username = V.username JOIN books B ON B.isbn = V.isbn;
+
+--Child Comments Inserts
+INSERT INTO comments (user_id, book_id, parent_id, comment)
+SELECT U.user_id, B.book_id, V.parent_id, V.comment
+FROM (
+    SELECT 'SillyPuddle' AS username, '9780062652850' AS isbn, 1 AS parent_id, 'Puddle also enjoyed the world these characters live in, makes Puddle want to see more.' AS comment
+    UNION ALL
+    SELECT 'Jebediah_KSP' AS username, '9780062652850' AS isbn, 6 AS parent_id, 'Agreed, I\'d love to as well' AS comment
+    UNION ALL
+    SELECT 'Jebediah_KSP' AS username, '9780399256783' AS isbn, 5 AS parent_id, 'I think that you probably just need to reread the book' AS comment
+    UNION ALL
+    SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 8 AS parent_id, 'No way, They just don\'t have as much depth as I wanted, but it still made for a quite the book' AS comment
+    UNION ALL
+    SELECT 'Jebediah_KSP' AS username, '9780399256783' AS isbn, 9 AS parent_id, 'If that\'s how you feel then ok, just saying...' AS comment
+    UNION ALL
+    SELECT 'Chufam' AS username, '9781101974490' AS isbn, 3 AS parent_id, 'I also loved that, especially since the technology is limited to what might have been possible in the 1960s' AS comment
+) AS V JOIN users U ON U.username = V.username JOIN books B ON B.isbn = V.isbn;
+
 
 --Ratings Insert
 INSERT INTO ratings (user_id, book_id, rating)
@@ -1416,6 +1432,4 @@ FROM (
     SELECT 'DangerMANN' AS username, '9780307387899' AS isbn, 1 AS rating
     UNION ALL
     SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 5 AS rating
-) AS V
-JOIN users U ON U.username = V.username
-JOIN books B ON B.isbn = V.isbn;
+) AS V JOIN users U ON U.username = V.username JOIN books B ON B.isbn = V.isbn;

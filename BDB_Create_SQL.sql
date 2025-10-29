@@ -2,9 +2,11 @@ CREATE TABLE IF NOT EXISTS users (
     user_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     image_path VARCHAR(512) DEFAULT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    deletion_date TIMESTAMP NULL DEFAULT NULL,
     username VARCHAR(64) UNIQUE NOT NULL,
     /*Use Password Hashing for Security*/
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    is_active BOOLEAN DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS admins (
@@ -27,6 +29,7 @@ CREATE TABLE IF NOT EXISTS forms (
     summary TEXT NOT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     dupe_num INT NOT NULL DEFAULT 0,
+    UNIQUE KEY dupe_id (user_id, isbn, dupe_num),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (admin_id) REFERENCES admins(admin_id)
 );
@@ -64,6 +67,7 @@ CREATE TABLE IF NOT EXISTS comments (
     parent_id INT DEFAULT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     comment TEXT NOT NULL,
+    depth INT NOT NULL DEFAULT 0,
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (parent_id) REFERENCES comments(comment_id)
