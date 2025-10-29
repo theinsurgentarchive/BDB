@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS admins (
     admin_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
+    user_id INT UNIQUE NOT NULL,
     promotion_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
@@ -28,8 +28,9 @@ CREATE TABLE IF NOT EXISTS forms (
     author VARCHAR(255) NOT NULL,
     summary TEXT NOT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    dupe_num INT NOT NULL DEFAULT 0,
+    dupe_num INT DEFAULT NULL,
     UNIQUE KEY dupe_id (user_id, isbn, dupe_num),
+    CONSTRAINT constrain_isbn CHECK (isbn REGEXP '^[0-9]{13}$'),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (admin_id) REFERENCES admins(admin_id)
 );
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS books (
     image_path VARCHAR(512) DEFAULT NULL,
     created_by INT DEFAULT NULL,
     author VARCHAR(255) NOT NULL,
+    CONSTRAINT constrain_isbn CHECK (isbn REGEXP '^[0-9]{13}$'),
     FOREIGN KEY (created_by) REFERENCES forms(form_id) ON DELETE SET NULL
 );
 
@@ -63,13 +65,13 @@ CREATE TABLE IF NOT EXISTS ratings (
 CREATE TABLE IF NOT EXISTS comments (
     book_id INT NOT NULL,
     comment_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
+    user_id INT DEFAULT NULL,
     parent_id INT DEFAULT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     comment TEXT NOT NULL,
     depth INT NOT NULL DEFAULT 0,
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE NULL,
     FOREIGN KEY (parent_id) REFERENCES comments(comment_id)
 );
 
@@ -77,7 +79,7 @@ CREATE TABLE IF NOT EXISTS genres (
     genre VARCHAR(16) PRIMARY KEY NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS bookGenres (
+CREATE TABLE IF NOT EXISTS bookgenres (
     book_id INT NOT NULL,
     genre VARCHAR(16) NOT NULL,
     PRIMARY KEY (book_id, genre),
@@ -85,7 +87,7 @@ CREATE TABLE IF NOT EXISTS bookGenres (
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS formGenres (
+CREATE TABLE IF NOT EXISTS formgenres (
     form_id INT NOT NULL,
     genre VARCHAR(16) NOT NULL,
     PRIMARY KEY (form_id, genre),
