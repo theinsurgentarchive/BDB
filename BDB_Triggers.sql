@@ -3,7 +3,7 @@ DROP TRIGGER IF EXISTS set_form_dupes//
 DROP TRIGGER IF EXISTS toggle_users_active//
 DROP TRIGGER IF EXISTS delete_comments//
 DROP TRIGGER IF EXISTS set_comment_depth//
-
+--This is an example
 --Answers Question:
 --"How does a user differentiate between forms where they have the same user_id and isbn when searching?"
 CREATE TRIGGER set_form_dupes
@@ -67,14 +67,15 @@ END//
 CREATE TRIGGER delete_comments
 BEFORE DELETE ON comments FOR EACH ROW BEGIN
     DECLARE has_child INT DEFAULT 0;
-    SELECT EXISTS (
-        SELECT 1 FROM comments C1 WHERE C.parent_id = OLD.comment_id 
-    ) INTO has_child;
+    IF @SKIP_TRIG IS NULL THEN
+        SELECT EXISTS (
+            SELECT 1 FROM comments C1 WHERE C.parent_id = OLD.comment_id 
+        ) INTO has_child;
 
-    IF has_child THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
-        /*Insert the name of the procedure to delete comments in ____ when available*/
-        'Cannot hard-delete a comment that has replies, use ____';
+        IF has_child THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
+            'Cannot hard-delete a comment that has replies, use deleteComment(INT comment_id, INT user_id, ENUM reason)';
+        END IF;
     END IF;
 END//
 
