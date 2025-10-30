@@ -73,7 +73,8 @@ BEFORE DELETE ON comments FOR EACH ROW BEGIN
 
     IF has_child THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
-        'Cannot hard-delete a comment that has replies';
+        /*Insert the name of the procedure to delete comments in ____ when available*/
+        'Cannot hard-delete a comment that has replies, use ____';
     END IF;
 END//
 
