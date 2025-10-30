@@ -1341,6 +1341,9 @@ FROM (
     UNION ALL
     SELECT 'Instinct' AS book_name, '2017-06-26' AS published,
     'The life Dr. Dylan Reinhart saves may be his own\n\nDr. Dylan Reinhart wrote the book on criminal behavior. Literally--he\'s a renowned, bestselling Ivy League expert on the subject. When a copy of his book turns up at a gruesome murder scene--along with a threatening message from the killer--it looks like someone has been taking notes.\n\nElizabeth Needham is the headstrong and brilliant NYPD Detective in charge of the case who recruits Dylan to help investigate another souvenir left at the scene--a playing card. Another murder, another card--and now Dylan suspects that the cards aren\'t a signature, they\'re a deadly hint--pointing directly toward the next victim.\n\nAs tabloid headlines about the killer known as "The Dealer" scream from newstands, New York City descends into panic. With the cops at a loss, it\'s up to Dylan to hunt down a serial killer unlike any the city has ever seen. Only someone with Dylan\'s expertise can hope to go inside the mind of a criminal and convince The Dealer to lay down his cards. But after thinking like a criminal--could Dylan become one?' AS summary, 'James Patterson' AS author, '9781478945185' AS isbn, 'Jebediah_KSP' AS username
+    UNION ALL
+    SELECT 'Steve Jobs' AS book_name, '2011-10-01' AS published,
+    'Walter Isaacson\'s worldwide bestselling biography of Apple cofounder Steve Jobs. Based on more than forty interviews with Steve Jobs conducted over two years--as well as interviews with more than 100 family members, friends, adversaries, competitors, and colleagues--Walter Isaacson has written a riveting story of the roller-coaster life and searingly intense personality of a creative entrepreneur whose passion for perfection and ferocious drive revolutionized six industries: personal computers, animated movies, music, phones, tablet computing, and digital publishing. Isaacson\'s portrait touched millions of readers. At a time when America is seeking ways to sustain its innovative edge, Jobs stands as the ultimate icon of inventiveness and applied imagination. He knew that the best way to create value in the twenty-first century was to connect creativity with technology. He built a company where leaps of the imagination were combined with remarkable feats of engineering. Although Jobs cooperated with the author, he asked for no control over what was written. He put nothing off-limits. He encouraged the people he knew to speak honestly. He himself spoke candidly about the people he worked with and competed against. His friends, foes, and colleagues offer an unvarnished view of the passions, perfectionism, obsessions, artistry, devilry, and compulsion for control that shaped his approach to business and the innovative products that resulted. His tale is instructive and cautionary, filled with lessons about innovation, character, leadership, and values. Steve Jobs is the inspiration for the movie of the same name starring Michael Fassbender, Kate Winslet, Seth Rogen, and Jeff Daniels, directed by Danny Boyle with a screenplay by Aaron Sorkin.' AS summary, 'Walter Isaacson' AS author, '9781451648539' AS isbn, 'ChuFam' AS username
 ) AS V
 JOIN users U ON U.username = V.username;
 
@@ -1383,6 +1386,15 @@ FROM (
     SELECT 'Jebediah_KSP' AS username, '9781478945185' AS isbn, 'Thriller' AS genre
 ) AS V JOIN users U ON U.username = V.username
 JOIN forms F ON F.user_id = U.user_id AND F.isbn = V.isbn AND F.dupe_num = 0;
+
+INSERT INTO formGenres (form_id, genre)
+SELECT F.form_id, V.genre
+FROM (
+    SELECT 'ChuFam' AS username, '9781451648539' AS isbn, 'Non-Fiction' AS genre
+    UNION ALL
+    SELECT 'ChuFam' AS username, '9781451648539' AS isbn, 'Historical' AS genre
+) AS V JOIN users U ON U.username = V.username
+JOIN forms F ON F.user_id = U.user_id AND F.isbn = V.isbn AND F.dupe_num = 1;
 
 --Comments Insert
 INSERT INTO comments (user_id, book_id, comment)
