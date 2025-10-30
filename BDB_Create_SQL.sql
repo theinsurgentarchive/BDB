@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS shadowcomments (
     comment_data LONGBLOB NOT NULL,
     deleted_by INT NULL
     deletion_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    is_active BOOLEAN DEFAULT 1,
-    reason ENUM() NULL,
+    reason ENUM('USER', 'ADMIN', 'BOOK', 'NONE') NULL,
+    action ENUM('HARD', 'SOFT') NULL,
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
 );

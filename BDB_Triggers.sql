@@ -43,7 +43,7 @@ BEFORE INSERT ON comments FOR EACH ROW BEGIN
         ) SELECT MAX(d) INTO D FROM DS;
         
         IF D IS NULL THEN
-            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'invalid parent chain';
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid parent chain';
         END IF;
 
         SET NEW.depth = D;
