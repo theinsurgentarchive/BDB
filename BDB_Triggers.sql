@@ -3,7 +3,7 @@ DROP TRIGGER IF EXISTS set_form_dupes//
 DROP TRIGGER IF EXISTS toggle_users_active//
 DROP TRIGGER IF EXISTS delete_comments//
 DROP TRIGGER IF EXISTS set_comment_depth//
---This is an example
+
 --Answers Question:
 --"How does a user differentiate between forms where they have the same user_id and isbn when searching?"
 CREATE TRIGGER set_form_dupes
