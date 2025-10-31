@@ -67,7 +67,7 @@ END//
 CREATE TRIGGER delete_comments
 BEFORE DELETE ON comments FOR EACH ROW BEGIN
     DECLARE has_child INT DEFAULT 0;
-    IF @SKIP_TRIG IS NULL THEN
+    IF @skip_trig IS NULL THEN
         SELECT EXISTS (
             SELECT 1 FROM comments C1 WHERE C.parent_id = OLD.comment_id 
         ) INTO has_child;

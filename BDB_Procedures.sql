@@ -1,9 +1,22 @@
 DELIMITER //
-DROP PROCEDURE IF EXISTS delete_comment
+DROP PROCEDURE IF EXISTS deleteComment//
+DROP PROCEDURE IF EXISTS restoreComment//
+CREATE PROCEDURE deleteComment(
+    IN cid INT, IN uid INT, IN reason ENUM('USER', 'ADMIN', 'NONE')
+) BEGIN
+    DECLARE C_uid INT;
+    DECLARE C_pid INT;
+    DECLARE C_bid INT;
+    DECLARE C_text TEXT;
+    DECLARE C_depth INT;
+    DECLARE C_creation_date TIMESTAMP;
 
-CREATE PROCEDURE delete_comment(IN cid INT, IN uid INT, IN R INT) BEGIN
-    DECLARE LB LONGBLOB;
-    DECLARE LT LONGTEXT;
+    DECLARE has_child INT DEFAULT 0;
+    DECLARE A INT;
+    SELECT EXISTS (
+        SELECT 1 FROM comments C1 WHERE C.parent_id = OLD.comment_id 
+    ) INTO has_child;
+
     IF NOT EXISTS (
         SELECT 1 FROM comments WHERE comment_id = cid FOR UPDATE
     ) THEN
@@ -11,92 +24,52 @@ CREATE PROCEDURE delete_comment(IN cid INT, IN uid INT, IN R INT) BEGIN
         'Comment not found';
     END IF;
 
-    SELECT JSON_OBJECT(
-    ) INTO LT FROM comments C WHERE C.comment_id = cid;
-    SET LB = TO_BASE64(COMPRESS(LT));
+    IF NOT EXISTS (
+        SELECT 1 FROM comments WHERE comment_id = cid AND deleted_by IS NULL
+    ) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Comment already deleted';
+    END IF;
+
+    SET A = has_child;
+    IF (A > 1 OR A < 0) OR A IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid action state';
+    END IF;
     
+    SELECT C.user_id, C.parent_id, C.book_id,
+    C.comment_text, C.depth, C.creation_date INTO
+    C_uid, C_pid, C_bid, C_text, C_depth, C_creation_date FROM comments C
+    WHERE C.comment_id = p_comment_id;
+
+    SET @parent_id_hash = UNHEX(SHA2(C_pid), 256);
+    SET @text_hash = UNHEX(SHA2(C_text), 256);
+    SET @row_hash = UNHEX(
+        SHA2(CONCAT_WS(
+            '::', @parent_id_hash, ',', @text_hash
+        ), 256)
+    );
+
     INSERT INTO shadowcomments (
-        book_id, comment_id, creation_date, comment_data, deleted_by, reason
-    ) SELECT C.book_id, C.comment_id, C.creation_date, LB, uid, R, A FROM
-    comment C WHERE C.comment_id = cid ON DUPLICATE KEY UPDATE 
-    deleted_by = VALUES(deleted_by),
-    comment_data = VALUES(comment_data),
-    deletion_date = CURRENT_TIMESTAMP;
-    
+        book_id, comment_id, creation_date, user_id, parent_id,
+        comment_text, depth, row_hash, deleted_by, reason, action
+    ) VALUES(
+      C_bid, cid, C_creation_date, C_uid, @parent_id_hash,
+      @text_hash, C_depth, @row_hash, uid, reason, A
+    );
 
+    INSERT INTO shadowidmaps (C_uid, hashs) VALUES (C_uid, JSON_OBJECT(
+        'parent_id', @parent_id_hash, 'comment_text', @text_hash)
+    );
+
+    IF has_child THEN
+        UPDATE comments SET user_id = NULL, comment = '[DELETED COMMENT]'
+        WHERE comment_id = cid;
+    ELSE
+        SET @skip_trig = 1;
+        DELETE FROM comments WHERE comment_id = cid;
+        SET @skip_trig = NULL;
+    END IF;
 END//
 
---ChatGPT Procedure, modify and understand first
-/*
-CREATE PROCEDURE sp_user_delete_comment_auto(
-  IN p_comment_id INT,
-  IN p_deleted_by INT
-)
-BEGIN
-  DECLARE v_book_id INT;
-  DECLARE v_payload LONGBLOB;
-  DECLARE v_has_child BOOLEAN DEFAULT FALSE;
-
-  -- 1) Lock the target row so it can't change while we work
-  SELECT book_id
-    INTO v_book_id
-  FROM comments
-  WHERE comment_id = p_comment_id
-  FOR UPDATE;
-
-  IF v_book_id IS NULL THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Comment not found';
-  END IF;
-
-  -- 2) Build snapshot as JSON, then obfuscate: BASE64(COMPRESS(JSON))
-  SELECT TO_BASE64(COMPRESS(JSON_OBJECT(
-           'comment_id',    c.comment_id,
-           'book_id',       c.book_id,
-           'user_id',       c.user_id,
-           'parent_id',     c.parent_id,
-           'creation_date', DATE_FORMAT(c.creation_date, '%Y-%m-%d %H:%i:%s'),
-           'comment',       c.comment,
-           'depth',         c.depth,
-           'deletion_date', IFNULL(DATE_FORMAT(c.deletion_date, '%Y-%m-%d %H:%i:%s'), NULL),
-           'is_active',     c.is_active
-         )))
-    INTO v_payload
-  FROM comments c
-  WHERE c.comment_id = p_comment_id;
-
-  -- 3) Lock the "children" key-range to avoid a race (prevents new replies)
-  -- Requires InnoDB + REPEATABLE READ (default) and an index on parent_id.
-  SELECT EXISTS(
-           SELECT 1
-           FROM comments
-           WHERE parent_id = p_comment_id
-           FOR UPDATE
-         )
-    INTO v_has_child;
-
-  -- 4) Archive once per comment_id (idempotent)
-  INSERT INTO deleted_comments (comment_id, book_id, deleted_by, action, codec, payload)
-  VALUES (p_comment_id, v_book_id, p_deleted_by, IF(v_has_child,'SOFT','HARD'), 'JSONZ', v_payload)
-  ON DUPLICATE KEY UPDATE
-    deleted_by = VALUES(deleted_by),
-    action     = VALUES(action),
-    payload    = VALUES(payload),
-    deleted_at = CURRENT_TIMESTAMP;
-
-  -- 5) Apply deletion policy
-  IF v_has_child THEN
-    -- Soft delete: keep row to preserve thread structure
-    UPDATE comments
-       SET comment       = '[deleted]',
-           is_active     = 0,
-           deletion_date = NOW()
-     WHERE comment_id = p_comment_id;
-  ELSE
-    -- Hard delete: safe because no children and we've locked the range
-    DELETE FROM comments
-     WHERE comment_id = p_comment_id;
-  END IF;
+CREATE PROCEDURE restoreComment(IN cid INT, IN uid INT) BEGIN
 END//
-*/
-
-DELIMTER ;
+DELIMITER ;

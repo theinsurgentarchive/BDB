@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS comments (
     user_id INT NULL DEFAULT NULL,
     parent_id INT NULL DEFAULT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    comment TEXT NOT NULL,
+    comment_text TEXT NOT NULL,
     depth INT NOT NULL DEFAULT 0,
     deletion_date TIMESTAMP NULL DEFAULT NULL,
     is_active BOOLEAN DEFAULT 1,
@@ -114,10 +114,21 @@ CREATE TABLE IF NOT EXISTS shadowcomments (
     book_id INT NOT NULL,
     comment_id INT PRIMARY KEY NOT NULL,
     creation_date TIMESTAMP NULL,
-    comment_data LONGBLOB NOT NULL,
-    deleted_by INT NULL
+    user_id INT NOT NULL,
+    parent_id BINARY(32) NOT NULL,
+    comment_text BINARY(32) NOT NULL,
+    depth INT NOT NULL,
+    row_hash BINARY(32) UNIQUE NOT NULL,
+    deleted_by INT NULL,
     deletion_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    reason ENUM('USER', 'ADMIN', 'BOOK', 'NONE') NULL,
+    reason ENUM('USER', 'ADMIN', 'NONE') NULL,
     action ENUM('HARD', 'SOFT') NULL,
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
+    FOREIGN KEY (deleted_by) REFERENCES users(user_id) ON DELETE SET NULL
 );
+
+CREATE TABLE IF NOT EXISTS shadowidmaps (
+    user_id INT NOT NULL,
+    hashs JSON NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+)
