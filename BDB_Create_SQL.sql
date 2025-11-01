@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS forms (
     summary TEXT NOT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     dupe_num INT NULL DEFAULT NULL,
-    UNIQUE KEY dupe_id (user_id, isbn, dupe_num),
+    UNIQUE KEY dedupe (user_id, isbn, dupe_num),
     CONSTRAINT constrain_isbn CHECK (isbn REGEXP '^[0-9]{13}$'),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (admin_id) REFERENCES admins(admin_id)
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS comments (
     comment_text TEXT NOT NULL,
     depth INT NOT NULL DEFAULT 0,
     deletion_date TIMESTAMP NULL DEFAULT NULL,
-    is_active BOOLEAN DEFAULT 1,
+    UNIQUE KEY dedupe (book_id, user_id, parent_id, comment_text),
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL,
     FOREIGN KEY (parent_id) REFERENCES comments(comment_id)
@@ -115,10 +115,9 @@ CREATE TABLE IF NOT EXISTS shadowcomments (
     comment_id INT PRIMARY KEY NOT NULL,
     creation_date TIMESTAMP NULL,
     user_id INT NOT NULL,
-    parent_id BINARY(32) NOT NULL,
-    comment_text BINARY(32) NOT NULL,
+    parent_id INT NOT NULL,
+    comment_text TEXT NOT NULL,
     depth INT NOT NULL,
-    row_hash BINARY(32) UNIQUE NOT NULL,
     deleted_by INT NULL,
     deletion_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     reason ENUM('USER', 'ADMIN', 'NONE') NULL,
@@ -126,9 +125,3 @@ CREATE TABLE IF NOT EXISTS shadowcomments (
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
     FOREIGN KEY (deleted_by) REFERENCES users(user_id) ON DELETE SET NULL
 );
-
-CREATE TABLE IF NOT EXISTS shadowidmaps (
-    user_id INT NOT NULL,
-    hashs JSON NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-)

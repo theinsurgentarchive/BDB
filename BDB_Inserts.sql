@@ -1428,6 +1428,31 @@ FROM (
     SELECT 'Chufam' AS username, '9781101974490' AS isbn, 3 AS parent_id, 'I also loved that, especially since the technology is limited to what might have been possible in the 1960s' AS comment
 ) AS V JOIN users U ON U.username = V.username JOIN books B ON B.isbn = V.isbn;
 
+--More Comment Inserts
+INSERT INTO comments (user_id, book_id, comment)
+SELECT U.user_id, B.book_id, V.comment
+FROM (
+    SELECT 'DangerMANN' AS username, '9780590353427' AS isbn, 'Classic! I wish I could go to Hogwarts myself. 10/10 childhood nostalgia.' AS comment
+    UNION ALL
+    SELECT 'mangafan' AS username, '9780590353427' AS isbn, 'This book started my love for fantasy! Still reread it every winter.' AS comment
+    UNION ALL
+    SELECT 'bookworm' AS username, '9780451524935' AS isbn, '1984 feels more real every year... terrifyingly good.' AS comment
+    UNION ALL
+    SELECT 'fictionaddict' AS username, '9780061120084' AS isbn, 'Atticus Finch remains one of the best-written characters in literature.' AS comment
+    UNION ALL
+    SELECT 'romancereader' AS username, '9781503290563' AS isbn, 'Mr. Darcy supremacy. That\'s it, that\'s the review.' AS comment
+    UNION ALL
+    SELECT 'Hero' AS username, '9780307387899' AS isbn, 'One of the most haunting books I\'ve read. The ending stuck with me for weeks.' AS comment
+    UNION ALL
+    SELECT 'papertrail' AS username, '9780375826689' AS isbn, 'I was 13 when I first read Eragon, and it blew my mind. The nostalgia is strong.' AS comment
+    UNION ALL
+    SELECT 'quillquake' AS username, '9780439023481' AS isbn, 'Katniss is such a strong character. Love the pacing and worldbuilding.' AS comment
+    UNION ALL
+    SELECT 'inklover' AS username, '9780743273565' AS isbn, 'So tragic yet so beautiful. Fitzgerald\'s writing is unmatched.' AS comment
+    UNION ALL
+    SELECT 'storyseeker' AS username, '9780307588371' AS isbn, 'One of the best mystery thrillers ever. Kept me guessing until the end!' AS comment
+) AS V JOIN users U ON U.username = V.usernameJOIN books B ON B.isbn = V.isbn;
+
 
 --Ratings Insert
 INSERT INTO ratings (user_id, book_id, rating)

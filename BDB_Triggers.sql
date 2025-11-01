@@ -48,7 +48,6 @@ BEFORE INSERT ON comments FOR EACH ROW BEGIN
 
         SET NEW.depth = D;
     END IF;
-
 END//
 
 --Answers Question:
