@@ -1451,7 +1451,7 @@ FROM (
     SELECT 'inklover' AS username, '9780743273565' AS isbn, 'So tragic yet so beautiful. Fitzgerald\'s writing is unmatched.' AS comment
     UNION ALL
     SELECT 'storyseeker' AS username, '9780307588371' AS isbn, 'One of the best mystery thrillers ever. Kept me guessing until the end!' AS comment
-) AS V JOIN users U ON U.username = V.usernameJOIN books B ON B.isbn = V.isbn;
+) AS V JOIN users U ON U.username = V.username JOIN books B ON B.isbn = V.isbn;
 
 
 --Ratings Insert

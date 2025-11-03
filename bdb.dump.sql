@@ -16,6 +16,21 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Temporary table structure for view `MostCommentedBooks`
+--
+
+DROP TABLE IF EXISTS `MostCommentedBooks`;
+/*!50001 DROP VIEW IF EXISTS `MostCommentedBooks`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `MostCommentedBooks` AS SELECT
+ 1 AS `book_id`,
+  1 AS `name`,
+  1 AS `author`,
+  1 AS `total_comments` */;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `admins`
 --
 
@@ -124,7 +139,7 @@ CREATE TABLE `comments` (
   CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE,
   CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
   CONSTRAINT `comments_ibfk_3` FOREIGN KEY (`parent_id`) REFERENCES `comments` (`comment_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci `ENCRYPTION_KEY_ID`=100;
+) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci `ENCRYPTION_KEY_ID`=100;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,7 +148,7 @@ CREATE TABLE `comments` (
 
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-INSERT INTO `comments` VALUES (24,1,3,NULL,'2025-10-28 05:51:50','Great Book I loved the setting that this book was set in, 5/5 Stars for sure.'),(24,2,6,NULL,'2025-10-28 05:51:50','Good, but could have done with less romance'),(4,3,6,NULL,'2025-10-28 05:51:50','Loved the description of the damages that the strain caused on our technology, very interesting'),(78,4,5,NULL,'2025-10-28 05:51:50','Puddle is pleased, but wishes for more interaction between the characters...'),(140,5,4,NULL,'2025-10-28 05:51:50','REBEL!!!, I greatly enjoyed this book but I am left wondering about somethings the characters seemed to leave out.');
+INSERT INTO `comments` VALUES (24,1,3,NULL,'2025-10-28 05:51:50','Great Book I loved the setting that this book was set in, 5/5 Stars for sure.'),(24,2,6,NULL,'2025-10-28 05:51:50','Good, but could have done with less romance'),(4,3,6,NULL,'2025-10-28 05:51:50','Loved the description of the damages that the strain caused on our technology, very interesting'),(78,4,5,NULL,'2025-10-28 05:51:50','Puddle is pleased, but wishes for more interaction between the characters...'),(140,5,4,NULL,'2025-10-28 05:51:50','REBEL!!!, I greatly enjoyed this book but I am left wondering about somethings the characters seemed to leave out.'),(60,8,4,NULL,'2025-11-01 20:02:07','Classic! I wish I could go to Hogwarts myself. 10/10 childhood nostalgia.'),(60,9,18,NULL,'2025-11-01 20:02:07','This book started my love for fantasy! Still reread it every winter.'),(52,10,16,NULL,'2025-11-01 20:02:07','1984 feels more real every year... terrifyingly good.'),(51,11,24,NULL,'2025-11-01 20:02:07','Atticus Finch remains one of the best-written characters in literature.'),(57,12,30,NULL,'2025-11-01 20:02:07','Mr. Darcy supremacy. That\'s it, that\'s the review.'),(78,13,11,NULL,'2025-11-01 20:02:07','One of the most haunting books I\'ve read. The ending stuck with me for weeks.'),(106,14,42,NULL,'2025-11-01 20:02:07','I was 13 when I first read Eragon, and it blew my mind. The nostalgia is strong.'),(84,15,9,NULL,'2025-11-01 20:02:07','Katniss is such a strong character. Love the pacing and worldbuilding.'),(62,16,20,NULL,'2025-11-01 20:02:07','So tragic yet so beautiful. Fitzgerald\'s writing is unmatched.'),(114,17,22,NULL,'2025-11-01 20:02:07','One of the best mystery thrillers ever. Kept me guessing until the end!');
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -283,6 +298,24 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES (1,NULL,'2025-10-28 05:50:59','Test','$2y$10$jzsdFb/NVamhUzXHKu/VhuLU3mWSkLJC1b6gRh0qmBr38t4UmwCE2'),(3,NULL,'2025-10-28 05:51:50','ChuFam','$2y$10$G4vkc6sjFB0QmAKWISRtZOh7RoF0k95NjpHu8vEhIsG92mZnaI/Wa'),(4,NULL,'2025-10-28 05:51:50','DangerMANN','$2y$10$HAvcc8eIO52Q9oZglyU.N.Z.7.e/nFQt66d3lCvuex1MvFGLFPdb.'),(5,NULL,'2025-10-28 05:51:50','SillyPuddle','$2y$10$2Pmg87ImZimWa5Kaq3wmGuKEI.snx/xdZWU36I2ZWIjNrPXU/T2sS'),(6,NULL,'2025-10-28 05:51:50','Jebediah_KSP','$2y$10$rWlq8ldqQv7KRtnUXNCUZeK.uh1dDF8IqfD.sQ96BY1x6txVl4ZOi'),(7,NULL,'2025-10-28 05:51:50','acorona','$2y$12$7xQv3s1c4uKqP8p3XyZ8YuH0W3Y6mJk0x9b1v2Lr8Qf5E1d7KcH2a'),(8,NULL,'2025-10-28 05:51:50','pixelpapyrus','$2y$12$Z8Lr1cQn6TgQe3Vb5Kp9BuWw2r7YhNn8Qd4Ue6Zt1Lk2Jp5Qw9EKa'),(9,NULL,'2025-10-28 05:51:50','quillquake','$2y$12$H1Qp7Zs2Lk8Bn4Tj5Cw9UrYi6Mf3Na4Rz7Ux1We2Qp6Lt8Vb3Jd2'),(10,NULL,'2025-10-28 05:51:50','obeltranbelt','$2y$12$86LhqhABfsELKfojUX5/..z59bDyZ2KO5PPK/BCLRnRKkPSU7/yWS'),(11,NULL,'2025-10-28 05:51:50','Hero','$2y$12$eTUDqXgkgbssSpcCPkKAJuoW4.8CjZlmZMtENW5CHRWZM4R1Yo3Ey'),(12,NULL,'2025-10-28 05:51:50','DaBookGuru','$2y$12$HT9yPRtrdieS3wBZNZL2Xuc2paclqgvjhO4YRx5fj854ULMfeF0I2'),(13,NULL,'2025-10-28 05:51:50','ABCDE','$2y$12$cuBq40OW/GCP2jYwEFMDl.rODyUCokvLiU9USJ..BaJWJ3Ctmq0Cm'),(14,NULL,'2025-10-28 05:51:50','jvillalobos','$2y$12$bxkUliRrPJ2pcj/Vdgkb6uIbDpvzc2P6TeoP8D9LU/6WH.xhJPJIG'),(15,NULL,'2025-10-28 05:51:50','readah','$2y$12$SXC.FHnPBVE1jrNtFD7A1OCKPLowApeBz7Fp3Uqy86yoxHO4cNb4u'),(16,NULL,'2025-10-28 05:51:50','bookworm','$2y$12$ZezQCSTaW/iRFGmDGrDoVetlpRTmwlZcjfA4YC./yfbGQ.eWaGcim'),(17,NULL,'2025-10-28 05:51:50','literati','$2y$12$04ZhiYs5ilWt4qEDt6pzSOjzFgtVwuI4rMuLXTyS1WZdFV7IwVYPK'),(18,NULL,'2025-10-28 05:51:50','mangafan','$2y$12$PVNdy/SncarymSN9s1zuQOt5ovqS1oHBwGEjNZHOQ4CVK5qLiHw.G'),(19,NULL,'2025-10-28 05:51:50','pageflipper','$2y$12$5Fp.S15V0hNgTbzyRxQZI.obVydKDXJRAEh8KBJSbggArF.DVagby'),(20,NULL,'2025-10-28 05:51:50','inklover','$2y$12$HACx.VDbPuETgRBKDkmMieE50HjnGcz1wmq1TJFiJQogKXqkS4jL.'),(21,NULL,'2025-10-28 05:51:50','novelnerd','$2y$12$5FlhNB237h/6/O2dfR9imO.h5JljBWRFpikSbDn3STFkcQhzmsvg.'),(22,NULL,'2025-10-28 05:51:50','storyseeker','$2y$12$zJEkNzfupFxiTp70zhKQju9fbJpXBCYMtjMreUPj.ISbUVmbnwl2G'),(23,NULL,'2025-10-28 05:51:50','wordsmith','$2y$12$HOfh8wDs.Y86ICNeZl.Nieyq7USV5QgETYr1zaaiKu0w9yIuo7S2K'),(24,NULL,'2025-10-28 05:51:50','fictionaddict','$2y$12$biEQeMjNfQYBOd5CreWpGeJm1VSyYHd7xMi00f4OfosPEUITUP56.'),(25,NULL,'2025-10-28 05:51:50','classiclvr','$2y$12$sbA.lltWCzFfq7nn18vbAeCImoUn7.4aPHM4DL2eiQVcTPTI.Kyi6'),(26,NULL,'2025-10-28 05:51:50','fantasyfiend','$2y$12$tFgK5oRPHh9z1Inrf1UPd.DTUfIbfMjSXnuU6iB3Cjb9aaSA5Cg7u'),(27,NULL,'2025-10-28 05:51:50','sciquest','$2y$12$HjFv66ZjP0/46bkAIcQAIe0GQ4CboFXqR8Kb.Tigc0fZkNRC7bDCS'),(28,NULL,'2025-10-28 05:51:50','mysterybuff','$2y$12$HZtuyAJZ2frRQNSkqnwnyeSMt6OQc0SEmCasaQu3BtJ2Vy0Irrw/e'),(29,NULL,'2025-10-28 05:51:50','horrorhound','$2y$12$DeJ247qK3W.9/zXme3m9t.sol81iwVapbnC1JyDkjjKIY263AUJ/K'),(30,NULL,'2025-10-28 05:51:50','romancereader','$2y$12$WtQ2yCzJm.1Gv0gptYilEuk4SkFLUCp.EUBOhpC3rWpHGeYWTlIVa'),(31,NULL,'2025-10-28 05:51:50','thrillerthrill','$2y$12$sepQB/qXgAf4JXS5wd.I/OgR7PYfmpBMw8dxGsqp8xQcdlO73FiN2'),(32,NULL,'2025-10-28 05:51:50','historyhunter','$2y$12$cK8LbbbKMv6Txb.3xr7X9OFeraN0OURiHFGizkm0u9q1nUZ8qBSp2'),(33,NULL,'2025-10-28 05:51:50','austenfan','$2y$12$QncU1qH71BQ4QwqByBpyauhpiqGxweJWORz8wmKpa1gQPNBaNK8g6'),(34,NULL,'2025-10-28 05:51:50','camusvibes','$2y$12$esP01r10vQx3amaJRjcLGeVUfszHTUIg87gTQFXqpKEBjMgYKImzO'),(35,NULL,'2025-10-28 05:51:50','bookhoarder','$2y$12$6GacBarkSXysLkDFvo8m.u0Nc68vCsBYPlwC62pa9.FbUjw2oAZOK'),(36,NULL,'2025-10-28 05:51:50','dunelord','$2y$12$AK4w08Kg3dhlo86qAqKrkOP4.hcv/p7d8o2Si7qB.uKudQeN4Ksqq'),(37,NULL,'2025-10-28 05:51:50','magicreader','$2y$12$YKMCD6iVCstiyHCoCOAaxeLuQGo.5NmyG7Zt/mjx4A3Pkt5QiVxEK'),(38,NULL,'2025-10-28 05:51:50','prosepilot','$2y$12$S2aSw0Gnl6iY8rMxX7Urn.q.IGe4RESHV9vjJnD1ZxbIfq29fGqQC'),(39,NULL,'2025-10-28 05:51:50','plotplunge','$2y$12$z2XodZIZA4T4D0izmgoiduuHIvEvpTXDoA8zuQMbzBxCYdFLrWOze'),(40,NULL,'2025-10-28 05:51:50','covercollector','$2y$12$cI5XKIZ/emG0Yo.6ivoTueRmQdM95nddYbSGQwQQYAzeBOkaH5Wp6'),(41,NULL,'2025-10-28 05:51:50','librarianmode','$2y$12$mLegBNGXjS4dlc1Hqm.57ObeZbNmLX9P5g6/cfa30Rw8HIwilghgS'),(42,NULL,'2025-10-28 05:51:50','papertrail','$2y$12$GGK9ElS4KpDNGxofddfR/eV18FVCRvk6fmZo6e6ZOglWQrn9QiOyy'),(43,NULL,'2025-10-28 05:51:50','curiousreader','$2y$12$g24E9vSw9hLEvuDRH7vNPu4.j1GDykLCCZ5Jm3cAvKERA5oPF4ZnS'),(44,NULL,'2025-10-28 05:51:50','bookmarkit','$2y$12$xBB5tEi/tnDQBtTC4wloa.RFC6jNQFvk1HHCSMHnd9pbM5J3nTShu');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Final view structure for view `MostCommentedBooks`
+--
+
+/*!50001 DROP VIEW IF EXISTS `MostCommentedBooks`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`jvillalobos`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `MostCommentedBooks` AS select `b`.`book_id` AS `book_id`,`b`.`name` AS `name`,`b`.`author` AS `author`,count(`c`.`comment_id`) AS `total_comments` from (`books` `b` join `comments` `c` on(`b`.`book_id` = `c`.`book_id`)) group by `b`.`book_id`,`b`.`name`,`b`.`author` order by count(`c`.`comment_id`) desc limit 3 */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -293,4 +326,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-27 23:18:17
+-- Dump completed on 2025-11-03 12:34:48
