@@ -48,7 +48,7 @@ INSERT INTO admins(user_id) SELECT user_id FROM users
 WHERE username IN ('ChuFam','acorona','obeltranbelt','jvillalobos');
 
 --Books Insert
-INSERT INTO books(name, published, summary, author, isbn) VALUES
+INSERT INTO books(title, published, summary, author, isbn) VALUES
 ('Scythe', '2016-11-22',
 '"Thou shalt kill"\n\n A world with no hunger. No disease. No war. No misery. Humanity has conquered all those things, and has even conquered death. Now scythes are the only ones who can end life—and they are commanded to do so, in order to keep the size of the population under control.\n\nCitra and Rowan are chosen to apprentice to a scythe—a role that neither wants. These teens must master the "art" of taking life, knowing that the consequence of failure could mean losing their own. They learn living in a perfect world comes only with a heavy price.',
 'Neal Shusterman', '9781442472433'),
@@ -477,7 +477,7 @@ INSERT INTO books(name, published, summary, author, isbn) VALUES
 'Marie Lu', '9781250221704');
 
 --BookGenres Insert
-INSERT INTO bookGenres(book_id, genre)
+INSERT INTO bookgenres(book_id, genre)
 SELECT B.book_id, V.genre
 FROM (
     SELECT '9781442472433' AS isbn, 'Sci-Fi' AS genre
@@ -1323,32 +1323,26 @@ FROM (
 ON DUPLICATE KEY UPDATE genre = VALUES(genre);
 
 --Forms Insert
-INSERT INTO forms(book_name, published, summary, author, isbn, user_id, dupe_num)
-SELECT V.book_name, V.published, V.summary, V.author, V.isbn, U.user_id,
-       COALESCE((SELECT MAX(F2.dupe_num) + 1 FROM forms F2 WHERE F2.user_id = U.user_id AND F2.isbn = V.isbn), 0) AS dupe_num
-FROM (
-    SELECT 'Steve Jobs' AS book_name, '2011-10-01' AS published,
+INSERT INTO forms(title, published, summary, author, isbn, user_id)
+SELECT V.title, V.published, V.summary, V.author, V.isbn, U.user_id FROM (
+    SELECT 'Steve Jobs' AS title, '2011-10-01' AS published,
     'Walter Isaacson\'s worldwide bestselling biography of Apple cofounder Steve Jobs. Based on more than forty interviews with Steve Jobs conducted over two years--as well as interviews with more than 100 family members, friends, adversaries, competitors, and colleagues--Walter Isaacson has written a riveting story of the roller-coaster life and searingly intense personality of a creative entrepreneur whose passion for perfection and ferocious drive revolutionized six industries: personal computers, animated movies, music, phones, tablet computing, and digital publishing. Isaacson\'s portrait touched millions of readers. At a time when America is seeking ways to sustain its innovative edge, Jobs stands as the ultimate icon of inventiveness and applied imagination. He knew that the best way to create value in the twenty-first century was to connect creativity with technology. He built a company where leaps of the imagination were combined with remarkable feats of engineering. Although Jobs cooperated with the author, he asked for no control over what was written. He put nothing off-limits. He encouraged the people he knew to speak honestly. He himself spoke candidly about the people he worked with and competed against. His friends, foes, and colleagues offer an unvarnished view of the passions, perfectionism, obsessions, artistry, devilry, and compulsion for control that shaped his approach to business and the innovative products that resulted. His tale is instructive and cautionary, filled with lessons about innovation, character, leadership, and values. Steve Jobs is the inspiration for the movie of the same name starring Michael Fassbender, Kate Winslet, Seth Rogen, and Jeff Daniels, directed by Danny Boyle with a screenplay by Aaron Sorkin.' AS summary, 'Walter Isaacson' AS author, '9781451648539' AS isbn, 'ChuFam' AS username
     UNION ALL
-    SELECT 'Leviathan' AS book_name, '2009-10-06' AS published,
+    SELECT 'Leviathan' AS title, '2009-10-06' AS published,
     'Prince Aleksander, would-be heir to the Austro-Hungarian throne, is on the run. His own people have turned on him. His title is worthless. All he has is a battletorn war machine and a loyal crew of men.\n\nDeryn Sharp is a commoner, disguised as a boy in the British Air Service. She\'s a brilliant airman. But her secret is in constant danger of being discovered.\n\nWith World War I brewing, Alek and Deryn\'s paths cross in the most unexpected way…taking them on a fantastical, around-the-world adventure that will change both their lives forever.' AS summary, 'Scott Westerfeld' AS author, '9781416971733' AS isbn, 'ChuFam' AS username
     UNION ALL
-    SELECT 'Behemoth' AS book_name, '2010-10-05' AS published,
+    SELECT 'Behemoth' AS title, '2010-10-05' AS published,
     'The behemoth is the fiercest creature in the British navy. It can swallow enemy battleships with one bite. The Darwinists will need it, now that they are at war with the Clanker powers.\n\nDeryn is a girl posing as a boy in the British Air Service, and Alek is the heir to an empire posing as a commoner. Finally together aboard the airship Leviathan, they hope to bring the war to a halt. But when disaster strikes the Leviathan\'s peacekeeping mission, they find themselves alone and hunted in enemy territory. ' AS summary, 'Scott Westerfeld' AS author, '9781416971757' AS isbn, 'ChuFam' AS username
     UNION ALL
-    SELECT 'Goliath' AS book_name, '2011-01-24' AS published,
+    SELECT 'Goliath' AS title, '2011-01-24' AS published,
     'Alek and Deryn are abroad the Leviathan when the ship is ordered to pick up an unusual passenger. This brilliant/maniacal inventor claims to have a weapon called Goliath that can end the war. But whose side is he really on?\n\nWhile on their top-secret mission, Alek finally discovers Deryn\'s deeply kept secret. Two, actually. Not only is Deryn a girl disguised as a guy...she has feelings for Alek.\n\nThe crown, true love with a commoner, and the destruction of a great city all hang on Alek\'s next--and final--move.\n\nThe thunderous conclusion to Scott Westerfeld\'s Leviathan series, which was called "sure to become a classic" (SLJ).' AS summary, 'Scott Westerfeld' AS author, '9781416971771' AS isbn, 'ChuFam' AS username
     UNION ALL
-    SELECT 'Instinct' AS book_name, '2017-06-26' AS published,
+    SELECT 'Instinct' AS title, '2017-06-26' AS published,
     'The life Dr. Dylan Reinhart saves may be his own\n\nDr. Dylan Reinhart wrote the book on criminal behavior. Literally--he\'s a renowned, bestselling Ivy League expert on the subject. When a copy of his book turns up at a gruesome murder scene--along with a threatening message from the killer--it looks like someone has been taking notes.\n\nElizabeth Needham is the headstrong and brilliant NYPD Detective in charge of the case who recruits Dylan to help investigate another souvenir left at the scene--a playing card. Another murder, another card--and now Dylan suspects that the cards aren\'t a signature, they\'re a deadly hint--pointing directly toward the next victim.\n\nAs tabloid headlines about the killer known as "The Dealer" scream from newstands, New York City descends into panic. With the cops at a loss, it\'s up to Dylan to hunt down a serial killer unlike any the city has ever seen. Only someone with Dylan\'s expertise can hope to go inside the mind of a criminal and convince The Dealer to lay down his cards. But after thinking like a criminal--could Dylan become one?' AS summary, 'James Patterson' AS author, '9781478945185' AS isbn, 'Jebediah_KSP' AS username
-    UNION ALL
-    SELECT 'Steve Jobs' AS book_name, '2011-10-01' AS published,
-    'Walter Isaacson\'s worldwide bestselling biography of Apple cofounder Steve Jobs. Based on more than forty interviews with Steve Jobs conducted over two years--as well as interviews with more than 100 family members, friends, adversaries, competitors, and colleagues--Walter Isaacson has written a riveting story of the roller-coaster life and searingly intense personality of a creative entrepreneur whose passion for perfection and ferocious drive revolutionized six industries: personal computers, animated movies, music, phones, tablet computing, and digital publishing. Isaacson\'s portrait touched millions of readers. At a time when America is seeking ways to sustain its innovative edge, Jobs stands as the ultimate icon of inventiveness and applied imagination. He knew that the best way to create value in the twenty-first century was to connect creativity with technology. He built a company where leaps of the imagination were combined with remarkable feats of engineering. Although Jobs cooperated with the author, he asked for no control over what was written. He put nothing off-limits. He encouraged the people he knew to speak honestly. He himself spoke candidly about the people he worked with and competed against. His friends, foes, and colleagues offer an unvarnished view of the passions, perfectionism, obsessions, artistry, devilry, and compulsion for control that shaped his approach to business and the innovative products that resulted. His tale is instructive and cautionary, filled with lessons about innovation, character, leadership, and values. Steve Jobs is the inspiration for the movie of the same name starring Michael Fassbender, Kate Winslet, Seth Rogen, and Jeff Daniels, directed by Danny Boyle with a screenplay by Aaron Sorkin.' AS summary, 'Walter Isaacson' AS author, '9781451648539' AS isbn, 'ChuFam' AS username
-) AS V
-JOIN users U ON U.username = V.username;
+) AS V JOIN users U ON U.username = V.username;
 
 --FormGenres Insert
-INSERT INTO formGenres(form_id, genre)
+INSERT INTO formgenres(form_id, genre)
 SELECT F.form_id, V.genre
 FROM (
     SELECT 'ChuFam' AS username, '9781451648539' AS isbn, 'Non-Fiction' AS genre
@@ -1385,72 +1379,63 @@ FROM (
     UNION ALL
     SELECT 'Jebediah_KSP' AS username, '9781478945185' AS isbn, 'Thriller' AS genre
 ) AS V JOIN users U ON U.username = V.username
-JOIN forms F ON F.user_id = U.user_id AND F.isbn = V.isbn AND F.dupe_num = 0;
-
-INSERT INTO formGenres(form_id, genre)
-SELECT F.form_id, V.genre
-FROM (
-    SELECT 'ChuFam' AS username, '9781451648539' AS isbn, 'Non-Fiction' AS genre
-    UNION ALL
-    SELECT 'ChuFam' AS username, '9781451648539' AS isbn, 'Historical' AS genre
-) AS V JOIN users U ON U.username = V.username
-JOIN forms F ON F.user_id = U.user_id AND F.isbn = V.isbn AND F.dupe_num = 1;
+JOIN forms F ON F.user_id = U.user_id AND F.isbn = V.isbn;
 
 --Comments Insert
-INSERT INTO comments(user_id, book_id, comment)
-SELECT U.user_id, B.book_id, V.comment
+INSERT INTO comments(user_id, book_id, comment_text)
+SELECT U.user_id, B.book_id, V.comment_text
 FROM (
-    SELECT 'Chufam' AS username, '9780062652850' AS isbn, 'Great Book I loved the setting that this book was set in, 5/5 Stars for sure.' AS comment
+    SELECT 'Chufam' AS username, '9780062652850' AS isbn, 'Great Book I loved the setting that this book was set in, 5/5 Stars for sure.' AS comment_text
     UNION ALL
-    SELECT 'Jebediah_KSP' AS username, '9780062652850' AS isbn, 'Good, but could have done with less romance' AS comment
+    SELECT 'Jebediah_KSP' AS username, '9780062652850' AS isbn, 'Good, but could have done with less romance' AS comment_text
     UNION ALL
-    SELECT 'Jebediah_KSP' AS username, '9781101974490' AS isbn, 'Loved the description of the damages that the strain caused on our technology, very interesting' AS comment
+    SELECT 'Jebediah_KSP' AS username, '9781101974490' AS isbn, 'Loved the description of the damages that the strain caused on our technology, very interesting' AS comment_text
     UNION ALL
-    SELECT 'SillyPuddle' AS username, '9780307387899' AS isbn, 'Puddle is pleased, but wishes for more interaction between the characters...' AS comment
+    SELECT 'SillyPuddle' AS username, '9780307387899' AS isbn, 'Puddle is pleased, but wishes for more interaction between the characters...' AS comment_text
     UNION ALL
-    SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 'REBEL!!!, I greatly enjoyed this book but I am left wondering about somethings the characters seemed to leave out.' AS comment
+    SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 'REBEL!!!, I greatly enjoyed this book but I am left wondering about somethings the characters seemed to leave out.' AS comment_text
 ) AS V JOIN users U ON U.username = V.username JOIN books B ON B.isbn = V.isbn;
 
 --Child Comments Inserts
-INSERT INTO comments(user_id, book_id, parent_id, comment)
-SELECT U.user_id, B.book_id, V.parent_id, V.comment
+INSERT INTO comments(user_id, book_id, parent_id, comment_text)
+SELECT U.user_id, B.book_id, V.parent_id, V.comment_text
 FROM (
-    SELECT 'SillyPuddle' AS username, '9780062652850' AS isbn, 1 AS parent_id, 'Puddle also enjoyed the world these characters live in, makes Puddle want to see more.' AS comment
+    SELECT 'SillyPuddle' AS username, '9780062652850' AS isbn, 1 AS parent_id, 'Puddle also enjoyed the world these characters live in, makes Puddle want to see more.' AS comment_text
     UNION ALL
-    SELECT 'Jebediah_KSP' AS username, '9780062652850' AS isbn, 6 AS parent_id, 'Agreed, I\'d love to as well' AS comment
+    SELECT 'Jebediah_KSP' AS username, '9780062652850' AS isbn, 6 AS parent_id, 'Agreed, I\'d love to as well' AS comment_text
     UNION ALL
-    SELECT 'Jebediah_KSP' AS username, '9780399256783' AS isbn, 5 AS parent_id, 'I think that you probably just need to reread the book' AS comment
+    SELECT 'Jebediah_KSP' AS username, '9780399256783' AS isbn, 5 AS parent_id, 'I think that you probably just need to reread the book' AS comment_text
     UNION ALL
-    SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 8 AS parent_id, 'No way, They just don\'t have as much depth as I wanted, but it still made for a quite the book' AS comment
+    SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 8 AS parent_id, 'No way, They just don\'t have as much depth as I wanted, but it still made for a quite the book' AS comment_text
     UNION ALL
-    SELECT 'Jebediah_KSP' AS username, '9780399256783' AS isbn, 9 AS parent_id, 'If that\'s how you feel then ok, just saying...' AS comment
+    SELECT 'Jebediah_KSP' AS username, '9780399256783' AS isbn, 9 AS parent_id, 'If that\'s how you feel then ok, just saying...' AS comment_text
     UNION ALL
-    SELECT 'Chufam' AS username, '9781101974490' AS isbn, 3 AS parent_id, 'I also loved that, especially since the technology is limited to what might have been possible in the 1960s' AS comment
+    SELECT 'Chufam' AS username, '9781101974490' AS isbn, 3 AS parent_id, 'I also loved that, especially since the technology is limited to what might have been possible in the 1960s' AS comment_text
 ) AS V JOIN users U ON U.username = V.username JOIN books B ON B.isbn = V.isbn;
 
 --More Comment Inserts
-INSERT INTO comments (user_id, book_id, comment)
-SELECT U.user_id, B.book_id, V.comment
+INSERT INTO comments (user_id, book_id, comment_text)
+SELECT U.user_id, B.book_id, V.comment_text
 FROM (
-    SELECT 'DangerMANN' AS username, '9780590353427' AS isbn, 'Classic! I wish I could go to Hogwarts myself. 10/10 childhood nostalgia.' AS comment
+    SELECT 'DangerMANN' AS username, '9780590353427' AS isbn, 'Classic! I wish I could go to Hogwarts myself. 10/10 childhood nostalgia.' AS comment_text
     UNION ALL
-    SELECT 'mangafan' AS username, '9780590353427' AS isbn, 'This book started my love for fantasy! Still reread it every winter.' AS comment
+    SELECT 'mangafan' AS username, '9780590353427' AS isbn, 'This book started my love for fantasy! Still reread it every winter.' AS comment_text
     UNION ALL
-    SELECT 'bookworm' AS username, '9780451524935' AS isbn, '1984 feels more real every year... terrifyingly good.' AS comment
+    SELECT 'bookworm' AS username, '9780451524935' AS isbn, '1984 feels more real every year... terrifyingly good.' AS comment_text
     UNION ALL
-    SELECT 'fictionaddict' AS username, '9780061120084' AS isbn, 'Atticus Finch remains one of the best-written characters in literature.' AS comment
+    SELECT 'fictionaddict' AS username, '9780061120084' AS isbn, 'Atticus Finch remains one of the best-written characters in literature.' AS comment_text
     UNION ALL
-    SELECT 'romancereader' AS username, '9781503290563' AS isbn, 'Mr. Darcy supremacy. That\'s it, that\'s the review.' AS comment
+    SELECT 'romancereader' AS username, '9781503290563' AS isbn, 'Mr. Darcy supremacy. That\'s it, that\'s the review.' AS comment_text
     UNION ALL
-    SELECT 'Hero' AS username, '9780307387899' AS isbn, 'One of the most haunting books I\'ve read. The ending stuck with me for weeks.' AS comment
+    SELECT 'Hero' AS username, '9780307387899' AS isbn, 'One of the most haunting books I\'ve read. The ending stuck with me for weeks.' AS comment_text
     UNION ALL
-    SELECT 'papertrail' AS username, '9780375826689' AS isbn, 'I was 13 when I first read Eragon, and it blew my mind. The nostalgia is strong.' AS comment
+    SELECT 'papertrail' AS username, '9780375826689' AS isbn, 'I was 13 when I first read Eragon, and it blew my mind. The nostalgia is strong.' AS comment_text
     UNION ALL
-    SELECT 'quillquake' AS username, '9780439023481' AS isbn, 'Katniss is such a strong character. Love the pacing and worldbuilding.' AS comment
+    SELECT 'quillquake' AS username, '9780439023481' AS isbn, 'Katniss is such a strong character. Love the pacing and worldbuilding.' AS comment_text
     UNION ALL
-    SELECT 'inklover' AS username, '9780743273565' AS isbn, 'So tragic yet so beautiful. Fitzgerald\'s writing is unmatched.' AS comment
+    SELECT 'inklover' AS username, '9780743273565' AS isbn, 'So tragic yet so beautiful. Fitzgerald\'s writing is unmatched.' AS comment_text
     UNION ALL
-    SELECT 'storyseeker' AS username, '9780307588371' AS isbn, 'One of the best mystery thrillers ever. Kept me guessing until the end!' AS comment
+    SELECT 'storyseeker' AS username, '9780307588371' AS isbn, 'One of the best mystery thrillers ever. Kept me guessing until the end!' AS comment_text
 ) AS V JOIN users U ON U.username = V.username JOIN books B ON B.isbn = V.isbn;
 
 

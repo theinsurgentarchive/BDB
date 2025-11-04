@@ -1,5 +1,5 @@
 DELIMITER //
-DROP TRIGGER IF EXISTS set_form_dupes//
+
 DROP TRIGGER IF EXISTS toggle_users_active//
 DROP TRIGGER IF EXISTS delete_comments//
 DROP TRIGGER IF EXISTS set_comment_depth//
@@ -8,33 +8,6 @@ DROP TRIGGER IF EXISTS prevent_direct_bookgenre_insert//
 DROP TRIGGER IF EXISTS prevent_direct_form_insert//
 DROP TRIGGER IF EXISTS prevent_direct_formgenre_insert//
 
---Answers Question:
---"How does a user differentiate between forms where they have the same user_id and isbn when searching?"
-CREATE TRIGGER set_form_dupes
-BEFORE INSERT ON forms FOR EACH ROW BEGIN
-    DECLARE next INT;
-    DECLARE lock VARCHAR(64);
-    DECLARE ok INT;
-    IF NEW.dupe_num IS NULL THEN
-        SET lock = CONCAT('forms:', SUBSTRING(
-            SHA2(CONCAT(NEW.user_id, ':', NEW.isbn), 256), 1, 48)
-        );
-
-        SELECT GET_LOCK(lock, 10) INTO ok;
-        IF ok <> 1 THEN
-            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'dupe_num lock timeout';
-        END IF;
-
-        SELECT COALESCE(MAX(F.dupe_num) + 1, 0) INTO next FROM forms F 
-        WHERE F.user_id = NEW.user_id AND F.isbn = NEW.isbn;
-        SET NEW.dupe_num = next;
-
-        SELECT RELEASE_LOCK(lock) INTO ok;
-    END IF;
-END//
-
---Answers Question:
---"How does a user know what comments are replies to others?"
 CREATE TRIGGER set_comment_depth
 BEFORE INSERT ON comments FOR EACH ROW BEGIN
     IF NEW.parent_id IS NULL THEN
@@ -54,8 +27,6 @@ BEFORE INSERT ON comments FOR EACH ROW BEGIN
     END IF;
 END//
 
---Answers Question:
---"When a users goes to de/re-activate their account, how should the row change?"
 CREATE TRIGGER toggle_users_active
 BEFORE UPDATE ON users FOR EACH ROW BEGIN
     IF OLD.is_active = 1 AND NEW.is_active = 0 THEN
@@ -65,8 +36,6 @@ BEFORE UPDATE ON users FOR EACH ROW BEGIN
     END IF;
 END//
 
---Answers Question:
---"When a user removes a comment, either with children or without, what happens to the child comments?"
 CREATE TRIGGER delete_comments
 BEFORE DELETE ON comments FOR EACH ROW BEGIN
     DECLARE has_child INT DEFAULT 0;

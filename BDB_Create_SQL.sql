@@ -28,9 +28,8 @@ CREATE TABLE IF NOT EXISTS forms (
     author VARCHAR(255) NOT NULL,
     summary TEXT NOT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    approve_date TIME NULL DEFAULT NULL,
-    dupe_num INT NULL DEFAULT NULL,
-    UNIQUE KEY dedupe (user_id, isbn, dupe_num),
+    approve_date TIMESTAMP NULL DEFAULT NULL,
+    UNIQUE KEY dedupe (user_id, isbn),
     CONSTRAINT constrain_form_isbn CHECK (isbn REGEXP '^[0-9]{13}$'),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (admin_id) REFERENCES admins(admin_id)
