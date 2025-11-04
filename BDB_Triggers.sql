@@ -41,7 +41,7 @@ BEFORE DELETE ON comments FOR EACH ROW BEGIN
     DECLARE has_child INT DEFAULT 0;
     IF @skip_trig IS NULL THEN
         SELECT EXISTS (
-            SELECT 1 FROM comments C1 WHERE C.parent_id = OLD.comment_id 
+            SELECT 1 FROM comments C WHERE C.parent_id = OLD.comment_id 
         ) INTO has_child;
 
         IF has_child THEN
