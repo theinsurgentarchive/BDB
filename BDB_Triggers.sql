@@ -10,10 +10,10 @@ DROP TRIGGER IF EXISTS prevent_direct_formgenre_insert//
 
 CREATE TRIGGER set_comment_depth
 BEFORE INSERT ON comments FOR EACH ROW BEGIN
+    DECLARE D INT;
     IF NEW.parent_id IS NULL THEN
         SET NEW.depth = 0;
     ELSE
-        DECLARE D INT;
         WITH RECURSIVE DS (pid, d) AS (
             SELECT NEW.parent_id, 1 UNION ALL SELECT C.parent_id, DS.d + 1 FROM
             comments C JOIN DS ON C.comment_id = DS.pid
@@ -56,7 +56,7 @@ BEFORE INSERT ON books FOR EACH ROW BEGIN
     IF @allow IS NULL THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
         'Cannot directly insert into books, use addBook() or formToBook()';
-    END IF//
+    END IF;
 END//
 
 CREATE TRIGGER prevent_direct_bookgenre_insert
@@ -64,7 +64,7 @@ BEFORE INSERT ON bookgenres FOR EACH ROW BEGIN
     IF @allow IS NULL THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
         'Cannot directly insert into booksgenres, use addBook() or formToBook()';
-    END IF//
+    END IF;
 END//
 
 CREATE TRIGGER prevent_direct_form_insert
@@ -72,15 +72,15 @@ BEFORE INSERT ON forms FOR EACH ROW BEGIN
     IF @allow IS NULL THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
         'Cannot directly insert into forms, use addForm()';
-    END IF//
+    END IF;
 END//
 
 CREATE TRIGGER prevent_direct_formgenre_insert
-BEFORE INSERT ON formgenress FOR EACH ROW BEGIN
+BEFORE INSERT ON formgenres FOR EACH ROW BEGIN
     IF @allow IS NULL THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
         'Cannot directly insert into formgenres, use addForm()';
-    END IF//
+    END IF;
 END//
 
 DELIMITER ;
