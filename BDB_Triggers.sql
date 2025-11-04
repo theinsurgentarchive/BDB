@@ -3,6 +3,10 @@ DROP TRIGGER IF EXISTS set_form_dupes//
 DROP TRIGGER IF EXISTS toggle_users_active//
 DROP TRIGGER IF EXISTS delete_comments//
 DROP TRIGGER IF EXISTS set_comment_depth//
+DROP TRIGGER IF EXISTS prevent_direct_book_insert//
+DROP TRIGGER IF EXISTS prevent_direct_bookgenre_insert//
+DROP TRIGGER IF EXISTS prevent_direct_form_insert//
+DROP TRIGGER IF EXISTS prevent_direct_formgenre_insert//
 
 --Answers Question:
 --"How does a user differentiate between forms where they have the same user_id and isbn when searching?"
@@ -73,9 +77,41 @@ BEFORE DELETE ON comments FOR EACH ROW BEGIN
 
         IF has_child THEN
             SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
-            'Cannot hard-delete a comment that has replies, use deleteComment(INT comment_id, INT user_id, ENUM reason)';
+            'Cannot hard-delete a comment that has replies, use deleteComment()';
         END IF;
     END IF;
+END//
+
+CREATE TRIGGER prevent_direct_book_insert
+BEFORE INSERT ON books FOR EACH ROW BEGIN
+    IF @allow IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
+        'Cannot directly insert into books, use addBook() or formToBook()';
+    END IF//
+END//
+
+CREATE TRIGGER prevent_direct_bookgenre_insert
+BEFORE INSERT ON bookgenres FOR EACH ROW BEGIN
+    IF @allow IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
+        'Cannot directly insert into booksgenres, use addBook() or formToBook()';
+    END IF//
+END//
+
+CREATE TRIGGER prevent_direct_form_insert
+BEFORE INSERT ON forms FOR EACH ROW BEGIN
+    IF @allow IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
+        'Cannot directly insert into forms, use addForm()';
+    END IF//
+END//
+
+CREATE TRIGGER prevent_direct_formgenre_insert
+BEFORE INSERT ON formgenress FOR EACH ROW BEGIN
+    IF @allow IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
+        'Cannot directly insert into formgenres, use addForm()';
+    END IF//
 END//
 
 DELIMITER ;

@@ -28,9 +28,10 @@ CREATE TABLE IF NOT EXISTS forms (
     author VARCHAR(255) NOT NULL,
     summary TEXT NOT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    approve_date TIME NULL DEFAULT NULL,
     dupe_num INT NULL DEFAULT NULL,
     UNIQUE KEY dedupe (user_id, isbn, dupe_num),
-    CONSTRAINT constrain_isbn CHECK (isbn REGEXP '^[0-9]{13}$'),
+    CONSTRAINT constrain_form_isbn CHECK (isbn REGEXP '^[0-9]{13}$'),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (admin_id) REFERENCES admins(admin_id)
 );
@@ -45,7 +46,7 @@ CREATE TABLE IF NOT EXISTS books (
     image_path VARCHAR(512) DEFAULT NULL,
     added_by INT NULL DEFAULT NULL,
     author VARCHAR(255) NOT NULL,
-    CONSTRAINT constrain_isbn CHECK (isbn REGEXP '^[0-9]{13}$'),
+    CONSTRAINT constrain_book_isbn CHECK (isbn REGEXP '^[0-9]{13}$'),
     FOREIGN KEY (added_by) REFERENCES forms(form_id) ON DELETE SET NULL
 );
 
