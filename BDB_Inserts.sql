@@ -477,7 +477,7 @@ INSERT INTO books(name, published, summary, author, isbn) VALUES
 'Marie Lu', '9781250221704');
 
 --BookGenres Insert
-INSERT INTO bookGenres (book_id, genre)
+INSERT INTO bookGenres(book_id, genre)
 SELECT B.book_id, V.genre
 FROM (
     SELECT '9781442472433' AS isbn, 'Sci-Fi' AS genre
@@ -1323,7 +1323,7 @@ FROM (
 ON DUPLICATE KEY UPDATE genre = VALUES(genre);
 
 --Forms Insert
-INSERT INTO forms (book_name, published, summary, author, isbn, user_id, dupe_num)
+INSERT INTO forms(book_name, published, summary, author, isbn, user_id, dupe_num)
 SELECT V.book_name, V.published, V.summary, V.author, V.isbn, U.user_id,
        COALESCE((SELECT MAX(F2.dupe_num) + 1 FROM forms F2 WHERE F2.user_id = U.user_id AND F2.isbn = V.isbn), 0) AS dupe_num
 FROM (
@@ -1348,7 +1348,7 @@ FROM (
 JOIN users U ON U.username = V.username;
 
 --FormGenres Insert
-INSERT INTO formGenres (form_id, genre)
+INSERT INTO formGenres(form_id, genre)
 SELECT F.form_id, V.genre
 FROM (
     SELECT 'ChuFam' AS username, '9781451648539' AS isbn, 'Non-Fiction' AS genre
@@ -1387,7 +1387,7 @@ FROM (
 ) AS V JOIN users U ON U.username = V.username
 JOIN forms F ON F.user_id = U.user_id AND F.isbn = V.isbn AND F.dupe_num = 0;
 
-INSERT INTO formGenres (form_id, genre)
+INSERT INTO formGenres(form_id, genre)
 SELECT F.form_id, V.genre
 FROM (
     SELECT 'ChuFam' AS username, '9781451648539' AS isbn, 'Non-Fiction' AS genre
@@ -1397,7 +1397,7 @@ FROM (
 JOIN forms F ON F.user_id = U.user_id AND F.isbn = V.isbn AND F.dupe_num = 1;
 
 --Comments Insert
-INSERT INTO comments (user_id, book_id, comment)
+INSERT INTO comments(user_id, book_id, comment)
 SELECT U.user_id, B.book_id, V.comment
 FROM (
     SELECT 'Chufam' AS username, '9780062652850' AS isbn, 'Great Book I loved the setting that this book was set in, 5/5 Stars for sure.' AS comment
@@ -1412,7 +1412,7 @@ FROM (
 ) AS V JOIN users U ON U.username = V.username JOIN books B ON B.isbn = V.isbn;
 
 --Child Comments Inserts
-INSERT INTO comments (user_id, book_id, parent_id, comment)
+INSERT INTO comments(user_id, book_id, parent_id, comment)
 SELECT U.user_id, B.book_id, V.parent_id, V.comment
 FROM (
     SELECT 'SillyPuddle' AS username, '9780062652850' AS isbn, 1 AS parent_id, 'Puddle also enjoyed the world these characters live in, makes Puddle want to see more.' AS comment
@@ -1455,7 +1455,7 @@ FROM (
 
 
 --Ratings Insert
-INSERT INTO ratings (user_id, book_id, rating)
+INSERT INTO ratings(user_id, book_id, rating)
 SELECT U.user_id, B.book_id, V.rating
 FROM (
     SELECT 'Chufam' AS username, '9780062652850' AS isbn, 5 AS rating

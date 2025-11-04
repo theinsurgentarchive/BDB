@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS forms (
     admin_id INT DEFAULT NULL,
     /*Cleanse ISBN input when preparing insert to exclude non-digits*/
     isbn VARCHAR(13) NOT NULL,
-    book_name VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
     image_path VARCHAR(512) NULL DEFAULT NULL,
     published DATE NULL DEFAULT NULL,
     author VARCHAR(255) NOT NULL,
@@ -38,15 +38,15 @@ CREATE TABLE IF NOT EXISTS forms (
 CREATE TABLE IF NOT EXISTS books (
     book_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     isbn VARCHAR(13) NOT NULL UNIQUE,
-    name VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
     added TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     published DATE NULL DEFAULT NULL,
     summary TEXT NOT NULL,
     image_path VARCHAR(512) DEFAULT NULL,
-    created_by INT NULL DEFAULT NULL,
+    added_by INT NULL DEFAULT NULL,
     author VARCHAR(255) NOT NULL,
     CONSTRAINT constrain_isbn CHECK (isbn REGEXP '^[0-9]{13}$'),
-    FOREIGN KEY (created_by) REFERENCES forms(form_id) ON DELETE SET NULL
+    FOREIGN KEY (added_by) REFERENCES forms(form_id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS ratings (
@@ -71,7 +71,6 @@ CREATE TABLE IF NOT EXISTS comments (
     comment_text TEXT NOT NULL,
     depth INT NOT NULL DEFAULT 0,
     deletion_date TIMESTAMP NULL DEFAULT NULL,
-    UNIQUE KEY dedupe (book_id, user_id, parent_id, comment_text),
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL,
     FOREIGN KEY (parent_id) REFERENCES comments(comment_id)
