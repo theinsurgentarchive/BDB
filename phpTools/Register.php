@@ -10,14 +10,18 @@
     $password = $_POST['password'] ?? '';
     $image = NULL;
 
-    if ($username === '' || preg_match('/[^A-Za-z0-9_-]{3,32}$/', $username)) {
+    if ($username === '' || !preg_match('/^[A-Za-z0-9_-]{6,32}/', $username)) {
         error_log("Invalid username supplied", 3, $logFile);
         fail(400, 'Invalid username');
     }
 
-    if ($password === '' || strlen($password) < 8) {
+    if ($password === '' || strlen($password) < 6) {
         error_log("$username: Weak or empty password", 3, $logFile);
-        fail(400, 'Password must be at least 8 characters');
+        fail(400, 'Password must be at least 6 characters');
+    }
+    if (strlen($password) > 20) {
+        error_log("$username: Password Too Long", 3, $logFile);
+        fail(400, 'Password must be under 20 characters long');
     }
     $passhash = password_hash($password, PASSWORD_DEFAULT);
     if ($passhash === false) {
@@ -70,12 +74,12 @@
     $stmt = $pdo->prepare(
         "CALL adduser(:username, :password, :image_path, @new_id)"
     );
-    $stmt->bindValue(':username', $username, PDO::PARAM_STR);
-    $stmt->bindValue(':password', $passhash, PDO::PARAM_STR);
+    $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+    $stmt->bindParam(':password', $passhash, PDO::PARAM_STR);
     if ($image === null) {
-        $stmt->bindValue(':image_path', null, PDO::PARAM_NULL);
+        $stmt->bindParam(':image_path', null, PDO::PARAM_NULL);
     } else {
-        $stmt->bindValue(':image_path', $image, PDO::PARAM_STR);
+        $stmt->bindParam(':image_path', $image, PDO::PARAM_STR);
     }
     $stmt->execute();
 
@@ -90,7 +94,7 @@
     http_response_code(201);
     header('Content-Type: application/json');
     echo json_encode(
-        ['ok' => true, 'user_id' => $newUserID], JSON_UNESCAPED_SLASHES
+        ['ok' => true, 'user_id' => $newUserID]
     );
     exit;
 ?>

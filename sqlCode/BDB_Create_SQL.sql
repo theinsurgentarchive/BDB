@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS users (
     image_path VARCHAR(512) NULL DEFAULT NULL,
     creation_date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     deletion_date TIMESTAMP NULL DEFAULT NULL,
-    username VARCHAR(64) UNIQUE NOT NULL,
+    username VARCHAR(20) UNIQUE NOT NULL,
     /*Use Password Hashing for Security*/
     password VARCHAR(255) NOT NULL,
     is_active BOOLEAN DEFAULT 1

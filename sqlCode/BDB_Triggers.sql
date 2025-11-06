@@ -14,16 +14,13 @@ BEFORE INSERT ON comments FOR EACH ROW BEGIN
     IF NEW.parent_id IS NULL THEN
         SET NEW.depth = 0;
     ELSE
-        WITH RECURSIVE DS (pid, d) AS (
-            SELECT NEW.parent_id, 1 UNION ALL SELECT C.parent_id, DS.d + 1 FROM
-            comments C JOIN DS ON C.comment_id = DS.pid
-        ) SELECT MAX(d) INTO D FROM DS;
-        
+        SELECT depth INTO D FROM comments WHERE comment_id = NEW.parent_id;
+
         IF D IS NULL THEN
             SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid parent chain';
+        ELSE
+            SET NEW.depth = D + 1;
         END IF;
-
-        SET NEW.depth = D;
     END IF;
 END//
 

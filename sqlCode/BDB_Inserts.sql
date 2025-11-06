@@ -1,3 +1,5 @@
+SET @allow = 1;
+
 --Users Insert
 INSERT INTO users(username, password) VALUES 
 ('ChuFam', '$2y$10$G4vkc6sjFB0QmAKWISRtZOh7RoF0k95NjpHu8vEhIsG92mZnaI/Wa'),
@@ -1396,22 +1398,35 @@ FROM (
     SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 'REBEL!!!, I greatly enjoyed this book but I am left wondering about somethings the characters seemed to leave out.' AS comment_text
 ) AS V JOIN users U ON U.username = V.username JOIN books B ON B.isbn = V.isbn;
 
---Child Comments Inserts
+--Child Comments Inserts, Layer 1
 INSERT INTO comments(user_id, book_id, parent_id, comment_text)
 SELECT U.user_id, B.book_id, V.parent_id, V.comment_text
 FROM (
     SELECT 'SillyPuddle' AS username, '9780062652850' AS isbn, 1 AS parent_id, 'Puddle also enjoyed the world these characters live in, makes Puddle want to see more.' AS comment_text
     UNION ALL
-    SELECT 'Jebediah_KSP' AS username, '9780062652850' AS isbn, 6 AS parent_id, 'Agreed, I\'d love to as well' AS comment_text
-    UNION ALL
     SELECT 'Jebediah_KSP' AS username, '9780399256783' AS isbn, 5 AS parent_id, 'I think that you probably just need to reread the book' AS comment_text
     UNION ALL
-    SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 8 AS parent_id, 'No way, They just don\'t have as much depth as I wanted, but it still made for a quite the book' AS comment_text
-    UNION ALL
-    SELECT 'Jebediah_KSP' AS username, '9780399256783' AS isbn, 9 AS parent_id, 'If that\'s how you feel then ok, just saying...' AS comment_text
-    UNION ALL
     SELECT 'Chufam' AS username, '9781101974490' AS isbn, 3 AS parent_id, 'I also loved that, especially since the technology is limited to what might have been possible in the 1960s' AS comment_text
-) AS V JOIN users U ON U.username = V.username JOIN books B ON B.isbn = V.isbn;
+) AS V JOIN users U ON U.username = V.username
+JOIN comments C ON C.comment_id = V.parent_id JOIN books B ON B.isbn = V.isbn;
+
+--Child Comments Inserts, Layer 2
+INSERT INTO comments(user_id, book_id, parent_id, comment_text)
+SELECT U.user_id, B.book_id, V.parent_id, V.comment_text
+FROM (
+    SELECT 'Jebediah_KSP' AS username, '9780062652850' AS isbn, 6 AS parent_id, 'Agreed, I\'d love to as well' AS comment_text
+    UNION ALL
+    SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 8 AS parent_id, 'No way, They just don\'t have as much depth as I wanted, but it still made for a quite the book' AS comment_text
+) AS V JOIN users U ON U.username = V.username
+JOIN comments C ON C.comment_id = V.parent_id JOIN books B ON B.isbn = V.isbn;
+
+--Child Comment Inserts, Layer 3
+INSERT INTO comments(user_id, book_id, parent_id, comment_text)
+SELECT U.user_id, B.book_id, V.parent_id, V.comment_text
+FROM (
+    SELECT 'Jebediah_KSP' AS username, '9780399256783' AS isbn, 9 AS parent_id, 'If that\'s how you feel then ok, just saying...' AS comment_text
+) AS V JOIN users U ON U.username = V.username
+JOIN comments C ON C.comment_id = V.parent_id JOIN books B ON B.isbn = V.isbn;
 
 --More Comment Inserts
 INSERT INTO comments (user_id, book_id, comment_text)
@@ -1455,3 +1470,5 @@ FROM (
     UNION ALL
     SELECT 'DangerMANN' AS username, '9780399256783' AS isbn, 5 AS rating
 ) AS V JOIN users U ON U.username = V.username JOIN books B ON B.isbn = V.isbn;
+
+SET @allow = NULL;
