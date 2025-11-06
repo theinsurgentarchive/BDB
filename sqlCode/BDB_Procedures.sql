@@ -94,12 +94,12 @@ END//
 CREATE PROCEDURE addBook(
     IN n_title VARCHAR(255), IN n_author VARCHAR(255), IN n_isbn VARCHAR(13),
     IN n_published DATE, IN n_summary TEXT, IN n_genres TEXT,
-    IN n_image VARCHAR(512), IN n_added INT
+    IN n_image VARCHAR(512), IN n_added INT, OUT bid INT
 ) BEGIN
     DECLARE missing TEXT;
     DECLARE total INT DEFAULT 0;
     DECLARE j_genres JSON;
-    DECLARE bid INT;
+    DECLARE new_id INT;
 
     IF n_genres IS NULL OR n_genres = '' THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Book must have a genre';
@@ -132,14 +132,15 @@ CREATE PROCEDURE addBook(
     ) VALUES (
         n_title, n_author, n_isbn, n_published, n_summary, n_image, n_added
     );
-    SET bid = LAST_INSERT_ID();
-    INSERT INTO bookgenres(book_id, genre) SELECT bid, genre FROM t_genres;
+    SET new_id = LAST_INSERT_ID();
+    INSERT INTO bookgenres(book_id, genre) SELECT new_id, genre FROM t_genres;
     SET @allow = NULL;
     DROP TEMPORARY TABLE IF EXISTS t_genres;
+    SET bid = new_id;
 END//
 
-CREATE PROCEDURE formToBook(IN fid INT, IN aid INT) BEGIN
-    DECLARE bid INT;
+CREATE PROCEDURE formToBook(IN fid INT, IN aid INT, OUT bid INT) BEGIN
+    DECLARE new_id INT;
     DECLARE f_title VARCHAR(255);
     DECLARE f_author VARCHAR(255);
     DECLARE f_isbn VARCHAR(13);
@@ -170,22 +171,23 @@ CREATE PROCEDURE formToBook(IN fid INT, IN aid INT) BEGIN
     ) VALUES (
         f_title, f_author, f_isbn, f_published, f_image, f_summary, fid
     );
-    SET bid = LAST_INSERT_ID();
-    INSERT INTO bookgenres(book_id, genre) SELECT bid, genre FROM formgenres F
-    WHERE F.form_id = fid;
+    SET new_id = LAST_INSERT_ID();
+    INSERT INTO bookgenres(book_id, genre)
+    SELECT new_id, genre FROM formgenres F WHERE F.form_id = fid;
     SET @allow = NULL;
     DROP TEMPORARY TABLE IF EXISTS t_genres;
+    SET bid = new_id;
 END//
 
 CREATE PROCEDURE addForm(
     IN n_title VARCHAR(255), IN n_author VARCHAR(255), IN n_isbn VARCHAR(13),
     IN n_published DATE, IN n_summary TEXT, IN n_genres TEXT,
-    IN n_image VARCHAR(512), IN uid INT
+    IN n_image VARCHAR(512), IN uid INT, OUT fid INT
 ) BEGIN
     DECLARE missing TEXT;
     DECLARE total INT DEFAULT 0;
     DECLARE j_genres JSON;
-    DECLARE fid INT;
+    DECLARE new_id INT;
     
     IF n_genres IS NULL OR n_genres = '' THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Form must select genre(s)';
@@ -218,10 +220,11 @@ CREATE PROCEDURE addForm(
     ) VALUES (
         n_title, n_author, n_isbn, n_published, n_summary, n_image, uid
     );
-    SET fid = LAST_INSERT_ID();
-    INSERT INTO formgenres(form_id, genre) SELECT fid, genre FROM t_genres;
+    SET new_id = LAST_INSERT_ID();
+    INSERT INTO formgenres(form_id, genre) SELECT new_id, genre FROM t_genres;
     SET @allow = NULL;
     DROP TEMPORARY TABLE IF EXISTS t_genres;
+    SET fid = new_id;
 END//
 
 DELIMITER ;
