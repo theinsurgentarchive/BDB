@@ -4,6 +4,35 @@ DROP PROCEDURE IF EXISTS restoreComment//
 DROP PROCEDURE IF EXISTS addBook//
 DROP PROCEDURE IF EXISTS formToBook//
 DROP PROCEDURE IF EXISTS addForm//
+DROP PROCEDURE IF EXISTS splitGenreCSV//
+
+CREATE PROCEDURE splitGenreCSV(IN csv TEXT) BEGIN
+    DECLARE list TEXT;
+    DECLARE gen VARCHAR(16);
+    DECLARE pos INT;
+
+    DROP TEMPORARY TABLE IF EXISTS t_genres;
+    CREATE TEMPORARY TABLE t_genres (
+        genre VARCHAR(16) PRIMARY KEY
+    );
+    SET list = TRIM(BOTH ',' FROM COALESCE(csv, ''));
+    
+    WHILE list IS NOT NULL AND list <> '' DO
+        SET pos = LOCATE(',', list);
+
+        IF pos = 0 THEN
+            SET gen = TRIM(list);
+            SET list = '';
+        ELSE
+            SET gen = TRIM(SUBSTRING(list, 1, pos - 1));
+            SET list = SUBSTRING(list, pos + 1);
+        END IF;
+
+        IF gen <> '' THEN
+            INSERT IGNORE INTO t_genres(genre) VALUES (gen);
+        END IF;
+    END WHILE;
+END//
 
 CREATE PROCEDURE deleteComment(
     IN cid INT, IN uid INT, IN reason ENUM('USER', 'ADMIN', 'NONE')
@@ -15,7 +44,7 @@ CREATE PROCEDURE deleteComment(
     DECLARE C_depth INT;
     DECLARE C_creation_date TIMESTAMP;
     DECLARE has_child INT DEFAULT 0;
-    DECLARE A INT;
+    DECLARE A CHAR(4);
 
     IF NOT EXISTS (
         SELECT 1 FROM comments WHERE comment_id = cid FOR UPDATE
@@ -27,10 +56,15 @@ CREATE PROCEDURE deleteComment(
     SELECT EXISTS (
         SELECT 1 FROM comments WHERE parent_id = cid 
     ) INTO has_child;
-    SET A = has_child;
+    
+    IF has_child THEN
+        SET A = 'SOFT';
+    ELSE
+        SET A = 'HARD';
+    END IF;
 
     IF NOT EXISTS (
-        SELECT 1 FROM comments WHERE comment_id = cid AND deleted_by IS NULL
+        SELECT 1 FROM comments WHERE comment_id = cid AND deletion_date IS NULL
     ) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Comment already deleted';
     END IF;
@@ -105,21 +139,13 @@ CREATE PROCEDURE addBook(
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Book must have a genre';
     END IF;
 
-    SET j_genres = CAST(
-        CONCAT('["', REPLACE(COALESCE(n_genres, ''), ',', '","'), '"]')
-    ) AS JSON;
-
-    CREATE TEMPORARY TABLE t_genres (
-        genre VARCHAR(16) PRIMARY KEY
-    );
-    INSERT INTO t_genres SELECT DISTINCT TRIM(J.genre) FROM JSON_TABLE(
-        j_genres, '$[*]' COLUMNS(genre VARCHAR(16) PATH '$')
-    ) AS J WHERE TRIM(J.genre) <> '';
+    CALL splitGenreCSV(n_genres);
     SELECT COUNT(*) INTO total FROM t_genres;
 
     SELECT GROUP_CONCAT(T.genre ORDER BY T.genre SEPARATOR ',') INTO missing
     FROM t_genres T LEFT JOIN genres G ON T.genre = G.genre
     WHERE G.genre IS NULL;
+
     IF missing IS NOT NULL THEN
         DROP TEMPORARY TABLE IF EXISTS t_genres;
         SET @msg = CONCAT('Unknown genre(s): ', missing);
@@ -135,6 +161,7 @@ CREATE PROCEDURE addBook(
     SET new_id = LAST_INSERT_ID();
     INSERT INTO bookgenres(book_id, genre) SELECT new_id, genre FROM t_genres;
     SET @allow = NULL;
+
     DROP TEMPORARY TABLE IF EXISTS t_genres;
     SET bid = new_id;
 END//
@@ -158,6 +185,7 @@ CREATE PROCEDURE formToBook(IN fid INT, IN aid INT, OUT bid INT) BEGIN
     SELECT title, author, isbn, published, image_path, summary INTO
     f_title, f_author, f_isbn, f_published, f_image, f_summary FROM forms
     WHERE form_id = fid;
+
     IF f_title IS NULL AND f_author IS NULL AND f_isbn IS NULL THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Form not found';
     END IF;
@@ -175,6 +203,7 @@ CREATE PROCEDURE formToBook(IN fid INT, IN aid INT, OUT bid INT) BEGIN
     INSERT INTO bookgenres(book_id, genre)
     SELECT new_id, genre FROM formgenres F WHERE F.form_id = fid;
     SET @allow = NULL;
+
     DROP TEMPORARY TABLE IF EXISTS t_genres;
     SET bid = new_id;
 END//
@@ -193,16 +222,7 @@ CREATE PROCEDURE addForm(
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Form must select genre(s)';
     END IF;
 
-    SET j_genres = CAST(
-        CONCAT('["', REPLACE(COALESCE(n_genres, ''), ',', '","'), '"]')
-    ) AS JSON;
-
-    CREATE TEMPORARY TABLE t_genres (
-        genre VARCHAR(16) PRIMARY KEY
-    );
-    INSERT INTO t_genres SELECT DISTINCT TRIM(J.genre) FROM JSON_TABLE(
-        j_genres, '$[*]' COLUMNS(genre VARCHAR(16) PATH '$')
-    ) AS J WHERE TRIM(J.genre) <> '';
+    CALL splitGenreCSV(n_genres);
     SELECT COUNT(*) INTO total FROM t_genres;
 
     SELECT GROUP_CONCAT(T.genre ORDER BY T.genre SEPARATOR ',') INTO missing
@@ -223,6 +243,7 @@ CREATE PROCEDURE addForm(
     SET new_id = LAST_INSERT_ID();
     INSERT INTO formgenres(form_id, genre) SELECT new_id, genre FROM t_genres;
     SET @allow = NULL;
+
     DROP TEMPORARY TABLE IF EXISTS t_genres;
     SET fid = new_id;
 END//
