@@ -5,6 +5,8 @@ DROP PROCEDURE IF EXISTS addBook//
 DROP PROCEDURE IF EXISTS formToBook//
 DROP PROCEDURE IF EXISTS addForm//
 DROP PROCEDURE IF EXISTS splitGenreCSV//
+DROP PROCEDURE IF EXISTS addUser//
+DROP PROCEDURE IF EXISTS userToAdmin//
 
 CREATE PROCEDURE splitGenreCSV(IN csv TEXT) BEGIN
     DECLARE list TEXT;
@@ -246,6 +248,39 @@ CREATE PROCEDURE addForm(
 
     DROP TEMPORARY TABLE IF EXISTS t_genres;
     SET fid = new_id;
+END//
+
+CREATE PROCEDURE addUser (
+    IN p_Username VARCHAR(50),
+    IN p_PasswordHash VARCHAR(255),
+    IN p_image VARCHAR(255),
+    OUT uid INT
+)
+BEGIN
+    -- Check for duplicates
+    IF EXISTS (SELECT 1 FROM users WHERE username = p_Username) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Username already exists.';
+    END IF;
+    INSERT INTO users (username, password, image_path)
+    VALUES (p_Username, p_PasswordHash, p_image);
+
+    SET uid = LAST_INSERT_ID();
+END;
+
+CREATE PROCEDURE userToAdmin (
+    IN uid INT,
+    OUT aid INT
+)
+BEGIN
+    -- Verify user exists
+    IF NOT EXISTS (SELECT 1 FROM users WHERE user_id = uid) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The specified user does not exist.';
+    ELSEIF EXISTS (SELECT 1 FROM admins WHERE user_id = uid) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'This user is already an admin.';
+    ELSE
+        INSERT INTO admins (user_id) VALUES (uid);
+        SET aid = LAST_INSERT_ID();
+    END IF;
 END//
 
 DELIMITER ;
