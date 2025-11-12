@@ -99,9 +99,6 @@ BEGIN
 END//
 */
 
---Start here
---Users create user:
-
 CREATE PROCEDURE addUser (
     IN p_Username VARCHAR(50),
     IN p_PasswordHash VARCHAR(255),
@@ -135,4 +132,4 @@ BEGIN
     END IF;
 END//
 
-DELIMTER ;
+DELIMITER ;
