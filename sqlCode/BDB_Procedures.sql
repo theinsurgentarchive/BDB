@@ -7,6 +7,7 @@ DROP PROCEDURE IF EXISTS addForm//
 DROP PROCEDURE IF EXISTS splitGenreCSV//
 DROP PROCEDURE IF EXISTS addUser//
 DROP PROCEDURE IF EXISTS userToAdmin//
+DROP PROCEDURE IF EXISTS topActiveUsers//
 
 CREATE PROCEDURE splitGenreCSV(IN csv TEXT) BEGIN
     DECLARE list TEXT;
@@ -282,5 +283,31 @@ BEGIN
         SET aid = LAST_INSERT_ID();
     END IF;
 END//
+
+
+create procedure topActiveUsers(
+    in days_interval int
+)
+begin
+
+    /* calculates which users have been most active withing the past x days. Activity is defined as the sum of comments and ratings a user has made */
+
+    select 
+        u.user_id,
+        u.username,
+        count(distinct c.comment_id) as total_comments,
+        count(distinct r.rating_id) as total_ratings,
+        (count(distinct c.comment_id) + count(distinct r.rating_id)) as total_activity
+    from users u 
+    left join comments c
+        on u.user_id = c.user_id 
+        and c.creation_date >= date_sub(now(), interval days_interval day)
+    left join ratings r 
+        on u.user_id = r.user_id 
+        and r.creation_date >= date_sub(now(), interval days_interval day)
+    group by u.user_id, u.username
+    order by total_activity desc
+    limit 10;
+end//
 
 DELIMITER ;
