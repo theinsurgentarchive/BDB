@@ -1,5 +1,6 @@
 <?php
     require __DIR__ . "/config.php";
+    $db = get_db();
     $logFile = __DIR__ . '/../logFiles/register.log';
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -71,7 +72,7 @@
         error_log("$username: image upload success", 3, $logFile);
     }
 
-    $stmt = $pdo->prepare(
+    $stmt = $db->prepare(
         "CALL adduser(:username, :password, :image_path, @new_id)"
     );
     $stmt->bindParam(':username', $username, PDO::PARAM_STR);
@@ -83,7 +84,7 @@
     }
     $stmt->execute();
 
-    $r1 = $pdo->query('SELECT @new_id AS 'user_id');'
+    $r1 = $db->query('SELECT @new_id AS 'user_id');'
     $r2 = $r1->fetch(PDO::FETCH_ASSOC);
     if (!$row || !$row['user_id']) {
         error_log("$username: Missing new user id", 3, $logFile);
