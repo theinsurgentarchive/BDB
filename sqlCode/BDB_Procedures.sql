@@ -38,7 +38,7 @@ CREATE PROCEDURE splitGenreCSV(IN csv TEXT) BEGIN
 END//
 
 CREATE PROCEDURE deleteComment(
-    IN cid INT, IN uid INT, IN reasON ENUM('USER', 'ADMIN', 'NONE')
+    IN cid INT, IN uid INT, IN reason ENUM('USER', 'ADMIN', 'NONE')
 ) BEGIN
     DECLARE C_uid INT;
     DECLARE C_pid INT;
@@ -73,7 +73,7 @@ CREATE PROCEDURE deleteComment(
     END IF;
 
     IF (A > 1 OR A < 0) OR A IS NULL THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid actiON state';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid action state';
     END IF;
     
     SELECT C.user_id, C.parent_id, C.book_id,
