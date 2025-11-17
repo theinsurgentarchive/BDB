@@ -285,29 +285,19 @@ BEGIN
 END//
 
 
-create procedure topActiveUsers(
-    in days_interval int
-)
-begin
-
-    /* calculates which users have been most active withing the past x days. Activity is defined as the sum of comments and ratings a user has made */
-
-    select 
-        u.user_id,
-        u.username,
-        count(distinct c.comment_id) as total_comments,
-        count(distinct r.rating_id) as total_ratings,
-        (count(distinct c.comment_id) + count(distinct r.rating_id)) as total_activity
-    from users u 
-    left join comments c
-        on u.user_id = c.user_id 
-        and c.creation_date >= date_sub(now(), interval days_interval day)
-    left join ratings r 
-        on u.user_id = r.user_id 
-        and r.creation_date >= date_sub(now(), interval days_interval day)
-    group by u.user_id, u.username
-    order by total_activity desc
-    limit 10;
-end//
+CREATE PROCEDURE topActiveUsers(IN n_days INT)
+BEGIN
+    SELECT U.user_id, U.username,
+    COUNT(DISTINCT C.comment_id) as total_comments,
+    COUNT(DISTINCT R.rating_id) as total_ratings,
+    (
+        COUNT(DISTINCT C.comment_id) + COUNT(DISTINCT R.rating_id)
+    ) as total_activity FROM users U LEFT JOIN comments C
+    ON U.user_id = C.user_id
+    AND C.creation_date >= DATE_SUB(NOW(), INTERVAL n_days DAY)
+    LEFT JOIN ratings R ON U.user_id = R.user_id 
+    AND R.creation_date >= DATE_SUB(NOW(), INTERVAL n_days DAY)
+    GROUP BY U.user_id, U.username ORDER BY total_activity DESC LIMIT 10;
+END//
 
 DELIMITER ;

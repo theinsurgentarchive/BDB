@@ -1,16 +1,16 @@
 <?php
 
-require '/home/stu/bdb/phpTools/config.php';
+require __DIR__ . '/../../phpTools/config.php';
 
-$action = $_GET['action'] ?? '';
+$action = $_GET['action'] ?? ''; 
 
 switch ($action) {
     case 'login':
-        require '/home/stu/bdb/phpTools/login.php';
+        require __DIR__ . '/../../phpTools/login.php';
         break;
 
     case 'register':
-        require '/home/stu/bdb/phpTools/register.php';
+        require __DIR__ . '/../../phpTools/register.php';
         break;
 
     default:
@@ -19,3 +19,4 @@ switch ($action) {
         echo json_encode(['ok' => false, 'error' => 'Invalid or missing action']);
         exit;
 }
+?>

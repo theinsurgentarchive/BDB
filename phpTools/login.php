@@ -1,6 +1,6 @@
 <?php
-
 require_once __DIR__ . "/config.php";
+$db = get_db();
 $logFile = __DIR__ . '/../logFiles/login.log';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -20,7 +20,7 @@ if ($password === '' || strlen($password) < 6) {
     fail(400, 'Invalid password');
 }
 
-$stmt = $pdo->prepare("
+$stmt = $db->prepare("
     SELECT 
         u.user_id, 
         u.password, 

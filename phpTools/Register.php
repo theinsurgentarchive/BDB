@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . "/config.php";
-$logFile = __DIR__ . '/../logFiles/register.log';
+    require __DIR__ . "/config.php";
+    $db = get_db();
+    $logFile = __DIR__ . '/../logFiles/register.log';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     fail(405, 'Method Not Allowed');
@@ -77,7 +78,7 @@ if (
     error_log("$username: image upload success", 3, $logFile);
 }
 
-$stmt = $pdo->prepare(
+$stmt = $db->prepare(
     "CALL adduser(:username, :password, :image_path, @new_id)"
 );
 $stmt->bindParam(':username', $username, PDO::PARAM_STR);
@@ -94,7 +95,7 @@ if ($imageParam === null) {
 $stmt->execute();
 
 // FIX: use the fetched row variable correctly
-$r1 = $pdo->query('SELECT @new_id AS user_id;');
+$r1 = $db->query('SELECT @new_id AS user_id;');
 $row = $r1->fetch(PDO::FETCH_ASSOC);
 if (!$row || !$row['user_id']) {
     error_log("$username: Missing new user id", 3, $logFile);
