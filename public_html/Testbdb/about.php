@@ -1,5 +1,5 @@
 <?php
-require '/home/stu/bdb/phpTools/config.php';
+require __DIR__ . '/../../phpTools/config.php';
 ?>
 <!doctype html>
 <html lang="en">
