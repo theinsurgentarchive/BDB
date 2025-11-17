@@ -52,6 +52,9 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
                             <img src="<?= htmlspecialchars($b['image_path'] ?? '') ?>" alt="">
                             <div class="title"><?= htmlspecialchars($b['title']) ?></div>
                             <div class="author"><?= htmlspecialchars($b['author']) ?></div>
+                            <a class="cardLink" href=<?=
+                                "/~bdb/Testbdd/dynBook.php/?bid=" . htmlspecialchars($b['book_id']) ?? ''
+                            ?>></a>
                         </div>
                     <?php endforeach; ?>
                 </div>
