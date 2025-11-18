@@ -1,7 +1,6 @@
 <?php
     require __DIR__ . '/../../phpTools/config.php';
     $db = get_db();
-    $logFile = __DIR__ . '/../logFiles/dynBook.log';
 
     //Insert image path when image found for placeholder:
     $altPath = '';
@@ -48,6 +47,7 @@
 </head>
 
 <body>
+    <?php //require __DIR__ . '/../../phpTools/navbar.php'?>
     <header>
         <div class="brand">
             <h1>Book</h1>
@@ -85,7 +85,7 @@
                     </span>
                     <div class="grid">
                         <?php foreach ($genres as $g):?>
-                            <a href="<?="/~/bdb/Testbdd/search.php/?genres=" . $g['genre']?>">
+                            <a href="<?="/~/bdb/Testbdd/advSearch.php/?genres=" . $g['genre']?>">
                                 <?=$g['genre']?>
                             </a>
                         <?php endforeach;?>
@@ -132,5 +132,6 @@
             span.textContent = formatted;
         });
   </script>
+  <script src="<?= __DIR__ . '/../../jsTools/simpleSearch.js'?>"></script>
 </body>
 </html>

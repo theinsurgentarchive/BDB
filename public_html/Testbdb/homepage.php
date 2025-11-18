@@ -17,6 +17,7 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
 </head>
 
 <body>
+    <?php //require __DIR__ . '/../../phpTools/navbar.php'?>
     <header>
         <div class="brand">
             <h1>Book</h1>
@@ -97,5 +98,6 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
             <?php endif;?>
         </section>
     </main>
+    <script src="<?= __DIR__ . '/../../jsTools/simpleSearch.js'?>"></script>
 </body>
 </html>
