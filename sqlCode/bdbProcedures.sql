@@ -8,6 +8,7 @@ DROP PROCEDURE IF EXISTS splitGenreCSV//
 DROP PROCEDURE IF EXISTS addUser//
 DROP PROCEDURE IF EXISTS userToAdmin//
 DROP PROCEDURE IF EXISTS topActiveUsers//
+DROP PROCEDURE IF EXISTS addComment//
 
 CREATE PROCEDURE splitGenreCSV(IN csv TEXT) BEGIN
     DECLARE list TEXT;
@@ -84,7 +85,7 @@ CREATE PROCEDURE deleteComment(
     INSERT INTO shadowcomments (
         book_id, comment_id, creation_date, user_id, parent_id,
         comment_text, depth, deleted_by, reason, action
-    ) VALUES(
+    ) VALUES (
       C_bid, cid, C_creation_date, C_uid, C_pid,
       C_text, C_depth, uid, reason, A
     );
@@ -120,7 +121,7 @@ CREATE PROCEDURE restoreComment(IN cid INT) BEGIN
         INTO bid, pid, uid, C_text, C_depth, C_creation_date FROM shadowcomments
         WHERE comment_id = cid;
 
-        INSERT INTO comments(
+        INSERT INTO comments (
             book_id, comment_id, user_id, parent_id, creation_date,
             comment_text, depth, deletion_date
         ) VALUES (bid, cid, uid, pid, C_creation_date, C_text, C_depth, NULL);
@@ -130,8 +131,8 @@ END//
 
 CREATE PROCEDURE addBook(
     IN n_title VARCHAR(255), IN n_author VARCHAR(255), IN n_isbn VARCHAR(13),
-    IN n_published DATE, IN n_summary TEXT, IN n_genres TEXT,
-    IN n_image VARCHAR(512), IN n_added INT, OUT bid INT
+    IN n_published DATE, IN n_summary TEXT, IN n_genres TEXT, IN n_added INT,
+    IN n_image VARCHAR(512) DEFAULT NULL, OUT bid INT DEFAULT NULL
 ) BEGIN
     DECLARE missing TEXT;
     DECLARE total INT DEFAULT 0;
@@ -156,20 +157,22 @@ CREATE PROCEDURE addBook(
     END IF;
     
     SET @allow = 1;
-    INSERT INTO books(
+    INSERT INTO books (
         title, author, isbn, published, summary, image_path, added_by
     ) VALUES (
         n_title, n_author, n_isbn, n_published, n_summary, n_image, n_added
     );
     SET new_id = LAST_INSERT_ID();
-    INSERT INTO bookgenres(book_id, genre) SELECT new_id, genre FROM t_genres;
+    INSERT INTO bookgenres (book_id, genre) SELECT new_id, genre FROM t_genres;
     SET @allow = NULL;
 
     DROP TEMPORARY TABLE IF EXISTS t_genres;
     SET bid = new_id;
 END//
 
-CREATE PROCEDURE formToBook(IN fid INT, IN aid INT, OUT bid INT) BEGIN
+CREATE PROCEDURE formToBook(
+        IN fid INT, IN aid INT, OUT bid INT DEFAULT NULL
+) BEGIN
     DECLARE new_id INT;
     DECLARE f_title VARCHAR(255);
     DECLARE f_author VARCHAR(255);
@@ -197,13 +200,13 @@ CREATE PROCEDURE formToBook(IN fid INT, IN aid INT, OUT bid INT) BEGIN
     WHERE form_id = fid;
 
     SET @allow = 1;
-    INSERT INTO books(
+    INSERT INTO books (
         title, author, isbn, published, image_path, summary, added_by
     ) VALUES (
         f_title, f_author, f_isbn, f_published, f_image, f_summary, fid
     );
     SET new_id = LAST_INSERT_ID();
-    INSERT INTO bookgenres(book_id, genre)
+    INSERT INTO bookgenres (book_id, genre)
     SELECT new_id, genre FROM formgenres F WHERE F.form_id = fid;
     SET @allow = NULL;
 
@@ -213,8 +216,8 @@ END//
 
 CREATE PROCEDURE addForm(
     IN n_title VARCHAR(255), IN n_author VARCHAR(255), IN n_isbn VARCHAR(13),
-    IN n_published DATE, IN n_summary TEXT, IN n_genres TEXT,
-    IN n_image VARCHAR(512), IN uid INT, OUT fid INT
+    IN n_published DATE, IN n_summary TEXT, IN n_genres TEXT, IN uid INT,
+    IN n_image VARCHAR(512) DEFAULT NULL, OUT fid INT DEFAULT NULL
 ) BEGIN
     DECLARE missing TEXT;
     DECLARE total INT DEFAULT 0;
@@ -238,29 +241,27 @@ CREATE PROCEDURE addForm(
     END IF;
     
     SET @allow = 1;
-    INSERT INTO forms(
+    INSERT INTO forms (
         title, author, isbn, published, summary, image_path, user_id
     ) VALUES (
         n_title, n_author, n_isbn, n_published, n_summary, n_image, uid
     );
     SET new_id = LAST_INSERT_ID();
-    INSERT INTO formgenres(form_id, genre) SELECT new_id, genre FROM t_genres;
+    INSERT INTO formgenres (form_id, genre) SELECT new_id, genre FROM t_genres;
     SET @allow = NULL;
 
     DROP TEMPORARY TABLE IF EXISTS t_genres;
     SET fid = new_id;
 END//
 
-CREATE PROCEDURE addUser (
-    IN p_Username VARCHAR(50),
-    IN p_PasswordHash VARCHAR(255),
-    IN p_image VARCHAR(255),
-    OUT uid INT
+CREATE PROCEDURE addUser(
+    IN p_Username VARCHAR(50), IN p_PasswordHash VARCHAR(255),
+    IN p_image VARCHAR(255) DEFAULT NULL, OUT uid INT DEFAULT NULL
 )
 BEGIN
     -- Check for duplicates
     IF EXISTS (SELECT 1 FROM users WHERE username = p_Username) THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Username already exists.';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Username already exists';
     END IF;
     INSERT INTO users (username, password, image_path)
     VALUES (p_Username, p_PasswordHash, p_image);
@@ -270,22 +271,23 @@ END;
 
 CREATE PROCEDURE userToAdmin (
     IN uid INT,
-    OUT aid INT
+    OUT aid INT DEFAULT NULL
 )
 BEGIN
     -- Verify user exists
     IF NOT EXISTS (SELECT 1 FROM users WHERE user_id = uid) THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The specified user does not exist.';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT =
+        'User not found';
     ELSEIF EXISTS (SELECT 1 FROM admins WHERE user_id = uid) THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'This user is already an admin.';
-    ELSE
-        INSERT INTO admins (user_id) VALUES (uid);
-        SET aid = LAST_INSERT_ID();
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT =
+        'User already admin';
     END IF;
+    INSERT INTO admins (user_id) VALUES (uid);
+    SET aid = LAST_INSERT_ID();
 END//
 
 
-CREATE PROCEDURE topActiveUsers(IN n_days INT)
+CREATE PROCEDURE topActiveUsers(IN n_days INT DEFAULT 30)
 BEGIN
     SELECT U.user_id, U.username,
     COUNT(DISTINCT C.comment_id) as total_comments,
@@ -298,6 +300,26 @@ BEGIN
     LEFT JOIN ratings R ON U.user_id = R.user_id 
     AND R.creation_date >= DATE_SUB(NOW(), INTERVAL n_days DAY)
     GROUP BY U.user_id, U.username ORDER BY total_activity DESC LIMIT 10;
+END//
+
+CREATE PROCEDURE addComment(
+    IN uid INT, IN bid INT, IN comment_text TEXT,
+    IN pid INT DEFAULT NULL, OUT cid INT DEFAULT NULL
+) BEGIN
+    IF NOT EXISTS (SELECT 1 FROM books WHERE book_id = bid) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Book not found';
+    ELSEIF NOT EXISTS (SELECT 1 FROM users WHERE user_id = uid) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found';
+    ELSEIF pid NOT NULL THEN
+        IF NOT EXISTS (SELECT 1 FROM comments WHERE comment_id = pid) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Parent not found';
+        END IF;
+    END IF;
+
+    INSERT INTO comments (user_id, book_id, comment_text, parent_id) VALUES (
+        uid, bid, comment_text, pid
+    );
+    SET cid = LAST_INSERT_ID();
 END//
 
 DELIMITER ;

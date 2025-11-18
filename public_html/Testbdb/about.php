@@ -12,6 +12,7 @@ require __DIR__ . '/../../phpTools/config.php';
 </head>
 
 <body>
+    <?php //require __DIR__ . '/../../phpTools/navbar.php'?>
     <header>
         <div class="brand">
             <h1>Book</h1>
@@ -62,6 +63,6 @@ require __DIR__ . '/../../phpTools/config.php';
             <p>Created by students at California State University, Bakersfield as part of a database and web development project.</p>
         </section>
     </main>
+    <script src="<?= __DIR__ . '/../../jsTools/simpleSearch.js'?>"></script>
 </body>
-
 </html>
