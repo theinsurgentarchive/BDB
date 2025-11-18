@@ -1,7 +1,10 @@
 <?php
-    require __DIR__ . '../../phpTools/config.php';
+    require __DIR__ . '/../../phpTools/config.php';
     $db = get_db();
     $logFile = __DIR__ . '/../logFiles/dynBook.log';
+
+    //Insert image path when image found for placeholder:
+    $altPath = '';
 
     if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
         fail(405, 'Method Not Allowed');
@@ -39,14 +42,31 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Book - Home</title>
+    <title>Book - <?=$book['title']?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="app.css">
 </head>
 
 <body>
     <header>
+        <div class="brand">
+            <h1>Book</h1>
+        </div>
+        <nav aria-label="Primary">
+            <a class="tab" href="/~bdb/Testbdd/search.php">Search</a>
 
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <span class="nav-welcome">
+                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
+                </span>
+                <a class="tab" href="/~bdb/Testbdd/logout.php">Logout</a>
+            <?php else: ?>
+                <a class="tab" href="/~bdb/Testbdd/signin.php">Login / Create</a>
+            <?php endif; ?>
+
+            <a class="tab" href="/~bdb/Testbdd/top20.php">Top 20 Books</a>
+            <a class="tab" href="/~bdb/Testbdd/about.php">About</a>
+        </nav>
     </header>
     
     <main>
@@ -72,6 +92,12 @@
                     </div>
                     <p class="bookSummary"><?=$book['summary']?></p>
                 </div>
+            </div>
+            <div class="commentContainer">
+                <!--Generate Comments After Form!-->
+                <form></form>
+                <?php foreach ($comments as $c):?>
+                <?php endforeach;?>
             </div>
         </section>
     </main>
