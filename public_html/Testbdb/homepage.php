@@ -6,9 +6,9 @@ $randomBooks   = $db->query("SELECT * FROM randbooks")->fetchAll();
 $topGenres     = $db->query("SELECT * FROM randbookgenres")->fetchAll();
 $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
 ?>
+
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <title>Book - Home</title>
@@ -36,18 +36,16 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
             <a class="tab" href="/~bdb/Testbdd/top20.php">Top 20 Books</a>
             <a class="tab" href="/~bdb/Testbdd/about.php">About</a>
         </nav>
-
     </header>
 
     <main>
-
         <section>
             <h2>Random books</h2>
-            <?php if (!$randomBooks): ?>
+            <?php if (!$randomBooks):?>
                 <p class="muted">No books to show yet.</p>
-            <?php else: ?>
+            <?php else:?>
                 <div class="grid">
-                    <?php foreach ($randomBooks as $b): ?>
+                    <?php foreach ($randomBooks as $b):?>
                         <div class="card">
                             <img src="<?= htmlspecialchars($b['image_path'] ?? '') ?>" alt="">
                             <div class="title"><?= htmlspecialchars($b['title']) ?></div>
@@ -56,34 +54,34 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
                                 "/~bdb/Testbdd/dynBook.php/?bid=" . htmlspecialchars($b['book_id']) ?? ''
                             ?>></a>
                         </div>
-                    <?php endforeach; ?>
+                    <?php endforeach;?>
                 </div>
-            <?php endif; ?>
+            <?php endif;?>
         </section>
 
         <section>
             <h2>Top genres (avg rating)</h2>
-            <?php if (!$topGenres): ?>
+            <?php if (!$topGenres):?>
                 <p class="muted">No genre ratings yet.</p>
-            <?php else: ?>
+            <?php else:?>
                 <div class="rows">
-                    <?php foreach ($topGenres as $g): ?>
+                    <?php foreach ($topGenres as $g):?>
                         <div class="row">
                             <div><?= htmlspecialchars($g['genre']) ?></div>
                             <div><?= number_format((float)$g['avg_rating'], 2) ?></div>
                         </div>
-                    <?php endforeach; ?>
+                    <?php endforeach;?>
                 </div>
-            <?php endif; ?>
+            <?php endif;?>
         </section>
 
         <section>
             <h2>Top three books</h2>
-            <?php if (!$topThreeBooks): ?>
+            <?php if (!$topThreeBooks):?>
                 <p class="muted">No book ratings yet.</p>
-            <?php else: ?>
+            <?php else:?>
                 <div class="rows">
-                    <?php foreach ($topThreeBooks as $t): ?>
+                    <?php foreach ($topThreeBooks as $t):?>
                         <div class="row">
                             <div>
                                 <div class="title"><?= htmlspecialchars($t['title']) ?></div>
@@ -94,12 +92,10 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
                                 <div class="muted">Ratings: <?= (int)$t['totalratings'] ?></div>
                             </div>
                         </div>
-                    <?php endforeach; ?>
+                    <?php endforeach;?>
                 </div>
-            <?php endif; ?>
+            <?php endif;?>
         </section>
-
     </main>
 </body>
-
 </html>
