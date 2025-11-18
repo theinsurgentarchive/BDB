@@ -1,5 +1,5 @@
 <?php
-require '/home/stu/bdb/phpTools/config.php';
+require __DIR__ . '/../../phpTools/config.php';
 $db = get_db();
 
 $randomBooks   = $db->query("SELECT * FROM randbooks")->fetchAll();
@@ -24,14 +24,14 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
         <nav aria-label="Primary">
             <a class="tab" href="/~bdb/Testbdd/search.php">Search</a>
 
-            <?php if (isset($_SESSION['user_id'])): ?>
+            <?php if (isset($_SESSION['user_id'])):?>
                 <span class="nav-welcome">
-                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
+                    Welcome, <?=htmlspecialchars($_SESSION['username'])?>
                 </span>
                 <a class="tab" href="/~bdb/Testbdd/logout.php">Logout</a>
-            <?php else: ?>
+            <?php else:?>
                 <a class="tab" href="/~bdb/Testbdd/signin.php">Login / Create</a>
-            <?php endif; ?>
+            <?php endif;?>
 
             <a class="tab" href="/~bdb/Testbdd/top20.php">Top 20 Books</a>
             <a class="tab" href="/~bdb/Testbdd/about.php">About</a>
@@ -47,9 +47,9 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
                 <div class="grid">
                     <?php foreach ($randomBooks as $b):?>
                         <div class="card">
-                            <img src="<?= htmlspecialchars($b['image_path'] ?? '') ?>" alt="">
-                            <div class="title"><?= htmlspecialchars($b['title']) ?></div>
-                            <div class="author"><?= htmlspecialchars($b['author']) ?></div>
+                            <img src="<?= htmlspecialchars($b['image_path'] ?? '')?>" alt="">
+                            <div class="title"><?= htmlspecialchars($b['title'])?></div>
+                            <div class="author"><?= htmlspecialchars($b['author'])?></div>
                             <a class="cardLink" href=<?=
                                 "/~bdb/Testbdd/dynBook.php/?bid=" . htmlspecialchars($b['book_id']) ?? ''
                             ?>></a>
@@ -67,8 +67,8 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
                 <div class="rows">
                     <?php foreach ($topGenres as $g):?>
                         <div class="row">
-                            <div><?= htmlspecialchars($g['genre']) ?></div>
-                            <div><?= number_format((float)$g['avg_rating'], 2) ?></div>
+                            <div><?=htmlspecialchars($g['genre'])?></div>
+                            <div><?=number_format((float)$g['avg_rating'], 2)?></div>
                         </div>
                     <?php endforeach;?>
                 </div>
@@ -84,12 +84,12 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
                     <?php foreach ($topThreeBooks as $t):?>
                         <div class="row">
                             <div>
-                                <div class="title"><?= htmlspecialchars($t['title']) ?></div>
-                                <div class="author"><?= htmlspecialchars($t['author']) ?></div>
+                                <div class="title"><?= htmlspecialchars($t['title'])?></div>
+                                <div class="author"><?= htmlspecialchars($t['author'])?></div>
                             </div>
                             <div>
-                                <div>Avg: <?= number_format((float)$t['avg_rating'], 2) ?></div>
-                                <div class="muted">Ratings: <?= (int)$t['totalratings'] ?></div>
+                                <div>Avg: <?=number_format((float)$t['avg_rating'], 2)?></div>
+                                <div class="muted">Ratings: <?=(int)$t['totalratings']?></div>
                             </div>
                         </div>
                     <?php endforeach;?>

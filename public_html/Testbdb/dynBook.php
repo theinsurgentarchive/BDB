@@ -55,14 +55,14 @@
         <nav aria-label="Primary">
             <a class="tab" href="/~bdb/Testbdd/search.php">Search</a>
 
-            <?php if (isset($_SESSION['user_id'])): ?>
+            <?php if (isset($_SESSION['user_id'])):?>
                 <span class="nav-welcome">
-                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
+                    Welcome, <?=htmlspecialchars($_SESSION['username'])?>
                 </span>
                 <a class="tab" href="/~bdb/Testbdd/logout.php">Logout</a>
-            <?php else: ?>
+            <?php else:?>
                 <a class="tab" href="/~bdb/Testbdd/signin.php">Login / Create</a>
-            <?php endif; ?>
+            <?php endif;?>
 
             <a class="tab" href="/~bdb/Testbdd/top20.php">Top 20 Books</a>
             <a class="tab" href="/~bdb/Testbdd/about.php">About</a>
@@ -93,11 +93,24 @@
                     <p class="bookSummary"><?=$book['summary']?></p>
                 </div>
             </div>
+        </section>
+
+        <section>
             <div class="commentContainer">
-                <!--Generate Comments After Form!-->
-                <form></form>
-                <?php foreach ($comments as $c):?>
-                <?php endforeach;?>
+                <?php if (isset($_SESSION['user_id'])):?>
+                    <form action="addComment.php" method="get">
+                        <textarea
+                            name="comment_text"
+                            placeholder="Write Comment Here"
+                        ></textarea>
+                        <input type="submit" value="commentSubmit">
+                    </form>
+                    <?php foreach ($comments as $c):?>
+                        <div class="commentCard">
+                            <img src=""
+                        </div>
+                    <?php endforeach;?>
+                <?php endif;?>
             </div>
         </section>
     </main>
