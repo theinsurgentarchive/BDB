@@ -14,18 +14,30 @@ $topTwentyBooks = $pdo->query("SELECT * FROM toptwentybooks")->fetchAll();
 </head>
 
 <body>
-    <?php //require __DIR__ . '/../../phpTools/navbar.php'?>
+    <?php //require __DIR__ . '/../../phpTools/navbar.php'
+    ?>
     <header>
         <div class="brand">
             <h1>Book</h1>
         </div>
         <nav aria-label="Primary">
-            <a class="tab" href="/~bdb/Testbdd/login.php">Login / Create</a>
-            <a class="tab" href="/~bdb/Testbdd/top20.php">Top 20 Books</a>
-            <a class="tab" href="/~bdb/Testbdd/about.php">About</a>
-        </nav>
+            <a class="tab" href="/~bdb/bookworm/search.php">Search</a>
 
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
+                <span class="nav-welcome">
+                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
+                </span>
+                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
+            <?php else: ?>
+                <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
+            <?php endif; ?>
+
+            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
+            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
+        </nav>
     </header>
+
 
     <main>
         <section>
@@ -51,7 +63,7 @@ $topTwentyBooks = $pdo->query("SELECT * FROM toptwentybooks")->fetchAll();
             <?php endif; ?>
         </section>
     </main>
-    <script src="<?= __DIR__ . '/../../jsTools/simpleSearch.js'?>"></script>
+    <script src="<?= __DIR__ . '/../../jsTools/simpleSearch.js' ?>"></script>
 </body>
 
 </html>
