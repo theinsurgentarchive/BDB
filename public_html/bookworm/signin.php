@@ -24,19 +24,19 @@ if (isset($_SESSION['user_id'])) {
             <h1>Book</h1>
         </div>
         <nav aria-label="Primary">
-            <a class="tab" href="/~bdb/Testbdd/search.php">Search</a>
+            <a class="tab" href="/~bdb/bookworm/search.php">Search</a>
 
             <?php if (isset($_SESSION['user_id'])): ?>
                 <span class="nav-welcome">
                     Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
                 </span>
-                <a class="tab" href="/~bdb/Testbdd/logout.php">Logout</a>
+                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
             <?php else: ?>
-                <a class="tab" href="/~bdb/Testbdd/signin.php">Login / Create</a>
+                <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
             <?php endif; ?>
 
-            <a class="tab" href="/~bdb/Testbdd/top20.php">Top 20 Books</a>
-            <a class="tab" href="/~bdb/Testbdd/about.php">About</a>
+            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
+            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
         </nav>
     </header>
 

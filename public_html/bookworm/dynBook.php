@@ -53,19 +53,19 @@
             <h1>Book</h1>
         </div>
         <nav aria-label="Primary">
-            <a class="tab" href="/~bdb/Testbdd/search.php">Search</a>
+            <a class="tab" href="/~bdb/bookworm/search.php">Search</a>
 
             <?php if (isset($_SESSION['user_id'])):?>
                 <span class="nav-welcome">
                     Welcome, <?=htmlspecialchars($_SESSION['username'])?>
                 </span>
-                <a class="tab" href="/~bdb/Testbdd/logout.php">Logout</a>
+                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
             <?php else:?>
-                <a class="tab" href="/~bdb/Testbdd/signin.php">Login / Create</a>
+                <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
             <?php endif;?>
 
-            <a class="tab" href="/~bdb/Testbdd/top20.php">Top 20 Books</a>
-            <a class="tab" href="/~bdb/Testbdd/about.php">About</a>
+            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
+            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
         </nav>
     </header>
     
@@ -75,7 +75,8 @@
                 <img src="<?=$book['image_path']?>" alt="<?=$altPath?>">
                 <h1><?=$book['title']?></h1>
                 <div class="bookInfo">    
-                    <p class="bookISBN"><?=$book['isbn']?></p>
+                    <!--Javier Rating Code Below!-->
+                    <p class="bookRating"><?=$rating['rating']?></p>
                     <p class="bookAuthor"><?=$book['author']?></p>
                     <span
                         class="bookPublish"
@@ -85,7 +86,7 @@
                     </span>
                     <div class="grid">
                         <?php foreach ($genres as $g):?>
-                            <a href="<?="/~/bdb/Testbdd/advSearch.php/?genres=" . $g['genre']?>">
+                            <a href="<?="/~/bdb/bookworm/advSearch.php/?genres=" . $g['genre']?>">
                                 <?=$g['genre']?>
                             </a>
                         <?php endforeach;?>
@@ -98,16 +99,20 @@
         <section>
             <div class="commentContainer">
                 <?php if (isset($_SESSION['user_id'])):?>
-                    <form action="addComment.php" method="get">
+                    <form action="<?= __DIR__ . '/../../phpTools/addComment.php'?>" method="post">
+                        <input type="hidden" value="<?=$_SESSION['user_id']?>">
                         <textarea
-                            name="comment_text"
+                            name="comment_text" rows="10" cols="60"
                             placeholder="Write Comment Here"
                         ></textarea>
-                        <input type="submit" value="commentSubmit">
+                        <input
+                            type="submit" name="commentSubmit"
+                            value="commentSubmit"
+                        >
                     </form>
                     <?php foreach ($comments as $c):?>
                         <div class="commentCard">
-                            <img src=""
+                            <img src="">
                         </div>
                     <?php endforeach;?>
                 <?php endif;?>

@@ -20,9 +20,9 @@ $topTwentyBooks = $pdo->query("SELECT * FROM toptwentybooks")->fetchAll();
             <h1>Book</h1>
         </div>
         <nav aria-label="Primary">
-            <a class="tab" href="/~bdb/Testbdd/login.php">Login / Create</a>
-            <a class="tab" href="/~bdb/Testbdd/top20.php">Top 20 Books</a>
-            <a class="tab" href="/~bdb/Testbdd/about.php">About</a>
+            <a class="tab" href="/~bdb/bookworm/login.php">Login / Create</a>
+            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
+            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
         </nav>
 
     </header>
