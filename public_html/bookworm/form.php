@@ -47,7 +47,9 @@ if ($isAdmin && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($row && $row['book_id']) {
                     $adminMsg = "Request #{$formId} approved (book ID " . (int)$row['book_id'] . ").";
                 } else {
-                    $adminMsg = "Request #{$formId} approved.";
+
+//Needs to be an error statement
+                
                 }
             }
         } catch (Exception $e) {
@@ -83,13 +85,13 @@ if ($isAdmin && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // ---------- HANDLE NEW REQUEST SUBMIT (users + admins) ----------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
-    $title_data   = trim($_POST['title_data']   ?? '');
-    $author_data  = trim($_POST['author_data']  ?? '');
-    $isbn_data    = trim($_POST['isbn_data']    ?? '');
-    $publish_data = $_POST['publish_data']      ?? '';
-    $summary_data = trim($_POST['summary_data'] ?? '');
+    $title_data   = htmlspecialchars(trim($_POST['title_data']   ?? ''));
+    $author_data  = htmlspecialchars(trim($_POST['author_data']  ?? ''));
+    $isbn_data    = htmlspecialchars(trim($_POST['isbn_data']    ?? ''));
+    $publish_data = htmlspecialchars($_POST['publish_data']      ?? '');
+    $summary_data = htmlspecialchars(trim($_POST['summary_data'] ?? ''));
     $genres       = $_POST['genre_data']        ?? [];
-    $imagePath    = null; // default: no image
+    $imagePath    = NULL; // default: no image
 
     if (
         $title_data === '' ||
@@ -100,6 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
     ) {
         $insertMsg = "Please fill in all fields and choose at least one genre.";
     } else {
+        
+/*
+    Be Sure to make the form image be Moved to the book
+    images folder after Approval, and Deleted when Denied.
+*/
+        
         if (
             isset($_FILES['image']) &&
             $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE
@@ -124,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
                     $bname = basename(random_bytes(16));
                     $fname = $bname . '.' . $ext;
 
-                    $dir  = '/home/stu/bdb/images/forms/';
+                    $dir  = __DIR__ . '/../../images/forms/';
                     $dest = $dir . DIRECTORY_SEPARATOR . $fname;
 
                     if (
@@ -174,9 +182,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
                 $idRow = $db->query("SELECT @new_id AS form_id")->fetch(PDO::FETCH_ASSOC);
 
                 if (!$idRow || !$idRow['form_id']) {
-                    $insertMsg = "Error: request created but ID missing.";
+                    $insertMsg = "Error: request not found.";
                 } else {
-                    $insertMsg = "Your request has been submitted!";
+                    $insertMsg = "Request submitted!";
                 }
             } catch (Exception $e) {
                 $insertMsg = "Error submitting request: " . $e->getMessage();
