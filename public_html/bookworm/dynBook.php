@@ -1,5 +1,5 @@
 <?php
-    require __DIR__ . '/../../phpTools/config.php';
+    require_once __DIR__ . '/../../phpTools/config.php';
     $db = get_db();
 
     //Insert image path when image found for placeholder:

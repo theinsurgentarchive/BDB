@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../../phpTools/config.php';
+require_once __DIR__ . '/../../phpTools/config.php';
 
 $_SESSION = [];
 
