@@ -1,5 +1,5 @@
 <?php
-session_start(); 
+session_start();
 
 require_once '/home/stu/bdb/phpTools/config.php';
 $db = get_db();
@@ -18,19 +18,16 @@ if ($viewUsername) {
     $stmt = $db->prepare("SELECT * FROM users WHERE username = :uname AND is_active = 1");
     $stmt->execute([':uname' => $viewUsername]);
     $user = $stmt->fetch();
-
 } else if ($viewUserId) {
     // Lookup by user_id
     $stmt = $db->prepare("SELECT * FROM users WHERE user_id = :uid AND is_active = 1");
     $stmt->execute([':uid' => $viewUserId]);
     $user = $stmt->fetch();
-
 } else if ($sessionUserId) {
     // Fallback to your own profile
     $stmt = $db->prepare("SELECT * FROM users WHERE user_id = :uid");
     $stmt->execute([':uid' => $sessionUserId]);
     $user = $stmt->fetch();
-
 } else {
     header("Location: signin.php");
     exit;
@@ -64,7 +61,7 @@ if ($canEdit && isset($_POST['ChangePassword'])) {
         $newHash = password_hash($newpw, PASSWORD_DEFAULT);
 
         $upd = $db->prepare("UPDATE users SET password = :p WHERE user_id = :uid");
-        $upd->execute([':p'=>$newHash, ':uid'=>$profileUserId]);
+        $upd->execute([':p' => $newHash, ':uid' => $profileUserId]);
 
         session_destroy();
         header("Location: signin.php");
@@ -95,27 +92,27 @@ if ($canEdit && isset($_FILES['newpic'])) {
 
     $file = $_FILES['newpic'];
 
-    if ($file['error'] === UPLOAD_ERR_OK && $file['size'] < 4*1024*1024) {
+    if ($file['error'] === UPLOAD_ERR_OK && $file['size'] < 4 * 1024 * 1024) {
 
         $info = new finfo(FILEINFO_MIME_TYPE);
         $mime = $info->file($file['tmp_name']);
-        $allowed = ['image/jpeg'=>'jpg', 'image/png'=>'png'];
+        $allowed = ['image/jpeg' => 'jpg', 'image/png' => 'png'];
 
         if (isset($allowed[$mime])) {
 
             $ext = $allowed[$mime];
             $fname = bin2hex(random_bytes(16)) . "." . $ext;
-			//directory change here
+            //directory change here
             $uploadDir = __DIR__ . "/home/stu/bdb/images/users";
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0775, true);
 
             $dest = $uploadDir . $fname;
             if (move_uploaded_file($file['tmp_name'], $dest)) {
-				//public url
+                //public url
                 $rel = "/~bdb/images/users/" . $fname;
 
                 $upd = $db->prepare("UPDATE users SET image_path = :p WHERE user_id = :u");
-                $upd->execute([':p'=>$rel, ':u'=>$profileUserId]);
+                $upd->execute([':p' => $rel, ':u' => $profileUserId]);
 
                 header("Location: profileTester.php");
                 exit;
@@ -151,89 +148,123 @@ $ratings = $ratings->fetchAll();
 ?>
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Profile – <?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?></title>
     <link rel="stylesheet" href="app.css">
 
     <style>
-        .tabs { display:flex; gap:20px; margin-bottom:20px; }
-        .tab-btn {
-            padding:10px 18px;
-            border-radius:8px;
-            background:#1d2338;
-            color:#cbd5e1;
-            cursor:pointer;
+        .tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
         }
-        .tab-btn.active { background:#3b479c; color:white; }
-        .tab-content { display:none; }
-        .tab-content.active { display:block; }
+
+        .tab-btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            background: #1d2338;
+            color: #cbd5e1;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: #3b479c;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
 
-<header>
-    <div class="brand">
-        <h1>
-            <a href="homepage.php" class="brand-link" style="color:inherit;text-decoration:none;">
-                Book
-            </a>
-        </h1>
-    </div>
+    <header>
+        <div class="brand">
+            <!-- add your icon file path here -->
+            <img class="brand-icon" src="/~bdb/bookworm/images/site-icon.png" alt="Site icon">
+            <h1>BookWorm</h1>
+        </div>
 
-    <nav aria-label="Primary">
-        <a class="tab" href="search.php">Search</a>
+        <nav aria-label="Primary">
 
-        <?php if ($sessionUserId): ?>
-            <a class="tab" href="profileTester.php" aria-current="page">Profile</a>
-            <span class="nav-welcome">
-                Welcome, <?= htmlspecialchars($sessionUsername, ENT_QUOTES, 'UTF-8') ?>
-            </span>
-            <a class="tab" href="logout.php">Logout</a>
-        <?php else: ?>
-            <a class="tab" href="signin.php">Login / Create</a>
-        <?php endif; ?>
+            <form class="nav-search" action="/~bdb/bookworm/search.php" method="GET">
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Search books..."
+                    aria-label="Search books">
+            </form>
 
-        <a class="tab" href="top20.php">Top 20 Books</a>
-        <a class="tab" href="about.php">About</a>
-    </nav>
-</header>
 
-<main class="profile-container">
+            <?php if (isset($_SESSION['user_id'])): ?>
 
-    <!-- Profile Header -->
-    <section class="profile-header" style="display:flex; gap:20px; align-items:center; margin-bottom:25px;">
-        <img 
-            src="<?= htmlspecialchars($user['image_path'] ?: '/~bdb/images/default_profile.png', ENT_QUOTES, 'UTF-8') ?>" 
-            style="width:120px; height:120px; object-fit:cover; border-radius:100px; border:2px solid #3a3f5c;">
-        
-        <div>
-            <h2><?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?></h2>
-            <p class="muted">Joined: <?= htmlspecialchars($user['creation_date']) ?></p>
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <a class="tab" href="/~bdb/bookworm/adminTool.php">Admin Tool</a>
+                <?php endif; ?>
 
-            <?php if (!empty($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                <span style="padding:4px 8px; background:#8b0000; color:white; border-radius:6px;">
-                    ADMIN
+                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
+
+                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
+
+                <span class="nav-welcome">
+                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
                 </span>
+
+            <?php else: ?>
+
+                <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
+
+            <?php endif; ?>
+
+            <a class="tab" href="#">Advance Search</a>
+
+            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
+            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
+        </nav>
+    </header>
+
+    <main class="profile-container">
+
+        <!-- Profile Header -->
+        <section class="profile-header" style="display:flex; gap:20px; align-items:center; margin-bottom:25px;">
+            <img
+                src="<?= htmlspecialchars($user['image_path'] ?: '/~bdb/images/default_profile.png', ENT_QUOTES, 'UTF-8') ?>"
+                style="width:120px; height:120px; object-fit:cover; border-radius:100px; border:2px solid #3a3f5c;">
+
+            <div>
+                <h2><?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?></h2>
+                <p class="muted">Joined: <?= htmlspecialchars($user['creation_date']) ?></p>
+
+                <?php if (!empty($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <span style="padding:4px 8px; background:#8b0000; color:white; border-radius:6px;">
+                        ADMIN
+                    </span>
+                <?php endif; ?>
+            </div>
+        </section>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab-btn active" data-tab="about">About</div>
+            <div class="tab-btn" data-tab="comments">Comments</div>
+            <div class="tab-btn" data-tab="ratings">Ratings</div>
+            <?php if ($canEdit): ?>
+                <div class="tab-btn" data-tab="edit">Edit Profile</div>
             <?php endif; ?>
         </div>
-    </section>
 
-    <!-- Tabs -->
-    <div class="tabs">
-        <div class="tab-btn active" data-tab="about">About</div>
-        <div class="tab-btn" data-tab="comments">Comments</div>
-        <div class="tab-btn" data-tab="ratings">Ratings</div>
-        <?php if ($canEdit): ?>
-            <div class="tab-btn" data-tab="edit">Edit Profile</div>
-        <?php endif; ?>
-    </div>
-
-    <!-- ABOUT -->
-    <section id="about" class="tab-content active">
-        <h3>About</h3>
-		<!-- We need to alter user table and add bio for this to work--!>
+        <!-- ABOUT -->
+        <section id="about" class="tab-content active">
+            <h3>About</h3>
+            <!-- We need to alter user table and add bio for this to work--!>
         <p>
             <?php if ($user['bio'] !== null && $user['bio'] !== ''): ?>
                 <?= nl2br(htmlspecialchars($user['bio'], ENT_QUOTES, 'UTF-8')) ?>
@@ -251,88 +282,89 @@ $ratings = $ratings->fetchAll();
     </section>
 
     <!-- COMMENTS -->
-    <section id="comments" class="tab-content">
-        <h3>User Comments</h3>
+            <section id="comments" class="tab-content">
+                <h3>User Comments</h3>
 
-        <?php if (!$comments): ?>
-            <p class="muted">No comments yet.</p>
-        <?php else: ?>
-            <div style="display:flex; flex-direction:column; gap:15px;">
-                <?php foreach ($comments as $c): ?>
-                    <div class="card" style="padding:15px;">
-                        <strong><?= htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8') ?></strong>
-                        <p><?= htmlspecialchars($c['comment_text'], ENT_QUOTES, 'UTF-8') ?></p>
-                        <span class="muted"><?= htmlspecialchars($c['creation_date'], ENT_QUOTES, 'UTF-8') ?></span>
+                <?php if (!$comments): ?>
+                    <p class="muted">No comments yet.</p>
+                <?php else: ?>
+                    <div style="display:flex; flex-direction:column; gap:15px;">
+                        <?php foreach ($comments as $c): ?>
+                            <div class="card" style="padding:15px;">
+                                <strong><?= htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8') ?></strong>
+                                <p><?= htmlspecialchars($c['comment_text'], ENT_QUOTES, 'UTF-8') ?></p>
+                                <span class="muted"><?= htmlspecialchars($c['creation_date'], ENT_QUOTES, 'UTF-8') ?></span>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-    </section>
+                <?php endif; ?>
+            </section>
 
-    <!-- RATINGS -->
-    <section id="ratings" class="tab-content">
-        <h3>User Ratings</h3>
+            <!-- RATINGS -->
+            <section id="ratings" class="tab-content">
+                <h3>User Ratings</h3>
 
-        <?php if (!$ratings): ?>
-            <p class="muted">No ratings yet.</p>
-        <?php else: ?>
-            <div style="display:flex; flex-direction:column; gap:15px;">
-                <?php foreach ($ratings as $r): ?>
-                    <div class="card" style="padding:15px;">
-                        <strong><?= htmlspecialchars($r['title'], ENT_QUOTES, 'UTF-8') ?></strong>
-                        <p>Rated: <?= htmlspecialchars($r['rating'], ENT_QUOTES, 'UTF-8') ?>/5</p>
-                        <span class="muted"><?= htmlspecialchars($r['creation_date'], ENT_QUOTES, 'UTF-8') ?></span>
+                <?php if (!$ratings): ?>
+                    <p class="muted">No ratings yet.</p>
+                <?php else: ?>
+                    <div style="display:flex; flex-direction:column; gap:15px;">
+                        <?php foreach ($ratings as $r): ?>
+                            <div class="card" style="padding:15px;">
+                                <strong><?= htmlspecialchars($r['title'], ENT_QUOTES, 'UTF-8') ?></strong>
+                                <p>Rated: <?= htmlspecialchars($r['rating'], ENT_QUOTES, 'UTF-8') ?>/5</p>
+                                <span class="muted"><?= htmlspecialchars($r['creation_date'], ENT_QUOTES, 'UTF-8') ?></span>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-    </section>
+                <?php endif; ?>
+            </section>
 
-    <!-- EDIT PROFILE -->
-    <?php if ($canEdit): ?>
-    <section id="edit" class="tab-content">
-        <h3>Edit Profile</h3>
+            <!-- EDIT PROFILE -->
+            <?php if ($canEdit): ?>
+                <section id="edit" class="tab-content">
+                    <h3>Edit Profile</h3>
 
-        <!-- Upload Profile Picture -->
-        <form method="POST" enctype="multipart/form-data" style="margin-bottom:20px;">
-            <label><strong>Change Profile Picture</strong></label><br>
-            <input type="file" name="newpic" accept="image/jpeg,image/png">
-            <button type="submit" class="tab">Upload</button>
-        </form>
+                    <!-- Upload Profile Picture -->
+                    <form method="POST" enctype="multipart/form-data" style="margin-bottom:20px;">
+                        <label><strong>Change Profile Picture</strong></label><br>
+                        <input type="file" name="newpic" accept="image/jpeg,image/png">
+                        <button type="submit" class="tab">Upload</button>
+                    </form>
 
-        <!-- Change Password -->
-        <?php if (!empty($pw_error)): ?>
-            <p style="color:red;"><?= htmlspecialchars($pw_error, ENT_QUOTES, 'UTF-8') ?></p>
-        <?php endif; ?>
+                    <!-- Change Password -->
+                    <?php if (!empty($pw_error)): ?>
+                        <p style="color:red;"><?= htmlspecialchars($pw_error, ENT_QUOTES, 'UTF-8') ?></p>
+                    <?php endif; ?>
 
-        <form method="POST" style="display:flex; flex-direction:column; gap:10px; max-width:300px;">
-            <label><strong>Change Password</strong></label>
-            <input type="password" name="oldpw" placeholder="Old password" required>
-            <input type="password" name="newpw" placeholder="New password" required minlength="6">
-            <button name="ChangePassword" value="1" type="submit" class="tab">Update Password</button>
-        </form>
-    </section>
-    <?php endif; ?>
+                    <form method="POST" style="display:flex; flex-direction:column; gap:10px; max-width:300px;">
+                        <label><strong>Change Password</strong></label>
+                        <input type="password" name="oldpw" placeholder="Old password" required>
+                        <input type="password" name="newpw" placeholder="New password" required minlength="6">
+                        <button name="ChangePassword" value="1" type="submit" class="tab">Update Password</button>
+                    </form>
+                </section>
+            <?php endif; ?>
 
-</main>
+    </main>
 
-<script>
-    // TAB SWITCHING
-    const tabs = document.querySelectorAll(".tab-btn");
-    const contents = document.querySelectorAll(".tab-content");
+    <script>
+        // TAB SWITCHING
+        const tabs = document.querySelectorAll(".tab-btn");
+        const contents = document.querySelectorAll(".tab-content");
 
-    tabs.forEach(t => {
-        t.addEventListener("click", () => {
-            tabs.forEach(b => b.classList.remove("active"));
-            t.classList.add("active");
+        tabs.forEach(t => {
+            t.addEventListener("click", () => {
+                tabs.forEach(b => b.classList.remove("active"));
+                t.classList.add("active");
 
-            contents.forEach(c => {
-                c.classList.remove("active");
-                if (c.id === t.dataset.tab) c.classList.add("active");
+                contents.forEach(c => {
+                    c.classList.remove("active");
+                    if (c.id === t.dataset.tab) c.classList.add("active");
+                });
             });
         });
-    });
-</script>
+    </script>
 
 </body>
+
 </html>
