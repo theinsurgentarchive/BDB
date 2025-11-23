@@ -1,6 +1,6 @@
 <header>
     <div class="brand">
-        <a href="/~bdb/public_html/bookworm/homepage.php">
+        <a href="/~bdb/bookworm/homepage.php">
             Bookworm
         </a>
     </div> 

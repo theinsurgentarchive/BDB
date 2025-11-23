@@ -223,10 +223,10 @@ if ($isAdmin) {
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <title>Book – Book Requests</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="app.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/~bdb/bookworm/app.css">
 </head>
 
 <body>

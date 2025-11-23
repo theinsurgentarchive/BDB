@@ -49,11 +49,21 @@
     
     $results = '';
     foreach ($rows as $row) {
-        $results .= "<div id='" . $row['book_id'] . "'>";
-        $results .= "<h3>". $row["title"] ."</h3>";
-        $results .= "<h4>". $row["author"] ."</h4>";
-        $results .= "<h5>". $row["genres"] ."</h5>";
-        $results .= "<p style='white-space: pre-wrap'>". $row["summary"] ."</p>";
+        $results .= "<div class='book-card' id='" . $row['book_id'] . "'>";
+        $results .= "<a href='/~bdb/bookworm/dynBook.php?bid=" . $row['book_id'] . "' class='book-link'>";
+        $results .= "<h3>" . htmlspecialchars($row["title"]) . "</h3>";
+        $results .= "<h4>" . htmlspecialchars($row["author"]) . "</h4>";
+        $results .= "<span class='bookPublish' data-date=\"" . htmlspecialchars($row['published']) . "\">" . htmlspecialchars($row['published']) . "</span>";
+        $results .= "<div class='resultGenres'>";
+        $res = explode(',', $row['genres']);
+        foreach ($res as $g) {
+            $g = trim($g);
+            $url = "/~bdb/bookworm/advSearch.php?genres[]=" . urlencode($g);
+            $results .= '<a href="' . $url . '">' . htmlspecialchars($g) . '</a>';
+        }
+        $results .= "</div>";
+        $results .= "</a>";
+        $results .= "<p style='white-space: pre-wrap'>". htmlspecialchars($row["summary"]) ."</p>";
         $results .= "</div>";
     }
 ?>
@@ -65,44 +75,77 @@
     <meta charset="utf-8" />
     <title>Bookworm - Advanced Search</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="/~bdb/bookworm/app.css">
 </head>
 
 <body>
     <?php require __DIR__ . '/../../phpTools/navbar.php'?>
-    <section>
-        <h2>Advanced Search</h2>
-        <form action="<?= $_SERVER['PHP_SELF']?>" method="GET">
-            <input type="text" name="query" placeholder="Search Here..." value="<?= htmlspecialchars($query) ?>"><br>
-            <label for="genres[]">Search by Genre (Inclusive):</label>
-            <div id="genreArea">
+    
+    <main>
+        <section>
+            <h2>Advanced Search</h2>
+            <form action="<?= $_SERVER['PHP_SELF']?>" method="GET">
+                <input type="text" name="query" placeholder="Search Here..." value="<?= htmlspecialchars($query) ?>"><br>
+                <label for="genres[]"><b>Search by Genre (Inclusive):</b></label>
+                <div id="genreArea">
+                    <?php
+                    foreach ($gs as $g) {
+                        $checked = in_array($g['genre'], (array)$genresRaw, true) ? 'checked' : '';
+                        echo "<label><input type='checkbox' name='genres[]' value='" . htmlspecialchars($g['genre']) . "' $checked> " . htmlspecialchars($g['genre']) . "</label>";
+                    }
+                    ?>
+                </div>
+                <label for="author">Search by Author:</label>
+                <input type="text" name="author" placeholder="Author Name Here..." value="<?= htmlspecialchars($author) ?>">
+                <br>
+                <input type="submit">
+            </form>
+        </section>
+
+        <section>
+            <h2>Search Results:</h2>
+            <div id="searchResults">
                 <?php
-                foreach ($gs as $g) {
-                    $checked = in_array($g['genre'], (array)$genresRaw, true) ? 'checked' : '';
-                    echo "<label><input type='checkbox' name='genres[]' value='" . htmlspecialchars($g['genre']) . "' $checked> " . htmlspecialchars($g['genre']) . "</label>";
-                }
+                    if ($results !== '') {
+                        echo $results;
+                    } elseif (!empty($query) || !empty($author) || !empty($genres)) {
+                        echo "<p>No results found.</p>";
+                    } else {
+                        echo "<p>Begin searching for books to see results.</p>";
+                    }
                 ?>
             </div>
-            <label for="author">Search by Author:</label>
-            <input type="text" name="author" placeholder="Author Name Here..." value="<?= htmlspecialchars($author) ?>">
-            <br>
-            <input type="submit">
-        </form>
-    </section>
+        </section>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+              // Listen for clicks on any .book-card
+              document.querySelectorAll('.book-card').forEach(card => {
+                card.addEventListener('click', e => {
+                  // If the click happened on a link (<a>), let it behave normally
+                  if (e.target.tagName.toLowerCase() === 'a') return;
+                  // Otherwise, go to dynBook.php with the book_id
+                  const bookId = card.dataset.bookid;
+                  window.location.href = '/~bdb/bookworm/dynBook.php?book_id=${encodeURIComponent(bookId)}';
+                });
+              });
+            });
+            window.addEventListener('load', () => {
+            // Find all date spans
+                document.querySelectorAll('.bookPublish').forEach(span => {
+                    const raw = span.dataset.date;
+                    const date = new Date(raw);
 
-    <section>
-        <h2>Search Results:</h2>
-        <div id="searchResults">
-            <?php
-                if ($results !== '') {
-                    echo $results;
-                } elseif (!empty($query) || !empty($author) || !empty($genres)) {
-                    echo "<p>No results found.</p>";
-                } else {
-                    echo "<p>Begin searching for books to see results.</p>";
-                }
-            ?>
-        </div>
-    </section>
+                    //Format to the user's locale
+                    const formatted = new Intl.DateTimeFormat(navigator.language, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    }).format(date);
+                
+                    span.textContent = formatted;
+                });
+            });
+        </script>
+    </main>
 </body>
 </html>
