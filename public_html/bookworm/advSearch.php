@@ -99,7 +99,7 @@
                 } elseif (!empty($query) || !empty($author) || !empty($genres)) {
                     echo "<p>No results found.</p>";
                 } else {
-                    echo "<p>Enter a query, select genres, or provide an author to search.</p>";
+                    echo "<p>Begin searching for books to see results.</p>";
                 }
             ?>
         </div>
