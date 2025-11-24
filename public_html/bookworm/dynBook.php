@@ -80,7 +80,7 @@
     <meta charset="utf-8">
     <title>Book - <?=$book['title']?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/~dchu/bookworm/app.css">
+    <link rel="stylesheet" href="/~bdb/bookworm/app.css">
 </head>
 
 <body>
@@ -102,7 +102,7 @@
                     </span>
                     <div class="grid">
                         <?php foreach ($genres as $g):?>
-                            <a href="<?="/~dchu/bookworm/advSearch.php?genres[]=" . urlencode($g['genre'])?>">
+                            <a href="<?="/~bdb/bookworm/advSearch.php?genres[]=" . urlencode($g['genre'])?>">
                                 <?=$g['genre']?>
                             </a>
                         <?php endforeach;?>
@@ -163,7 +163,7 @@
                 form.addEventListener('submit', function(event) {
                     event.preventDefault();
 
-                    fetch('/~dchu/bookworm/addComment.php', {
+                    fetch('/~bdb/bookworm/addComment.php', {
                         method: 'POST',
                         body: new FormData(form)
                     })
@@ -180,7 +180,7 @@
                 form.addEventListener('submit', function(event) {
                     event.preventDefault();
 
-                    fetch('/~dchu/bookworm/addComment.php', {
+                    fetch('/~bdb/bookworm/addComment.php', {
                         method: 'POST',
                         body: new FormData(form)
                     })
