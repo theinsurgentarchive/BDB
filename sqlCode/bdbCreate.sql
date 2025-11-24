@@ -71,6 +71,7 @@ CREATE TABLE IF NOT EXISTS comments (
     comment_text TEXT NOT NULL,
     depth INT NOT NULL DEFAULT 0,
     deletion_date TIMESTAMP NULL DEFAULT NULL,
+    modified_date TIMESTAMP NULL DEFAULT NULL,
     FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL,
     FOREIGN KEY (parent_id) REFERENCES comments(comment_id)

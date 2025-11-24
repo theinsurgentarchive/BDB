@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../../phpTools/config.php';
+require_once __DIR__ . '/../../phpTools/config.php';
 
 if (isset($_SESSION['user_id'])) {
     header('Location: homepage.php');
@@ -28,7 +28,7 @@ if (isset($_SESSION['user_id'])) {
 
         <nav aria-label="Primary">
 
-            <form class="nav-search" action="/~bdb/bookworm/search.php" method="GET">
+            <form class="nav-search" action="/~bdb/bookworm/advSearch.php" method="GET">
                 <input
                     type="text"
                     name="q"
@@ -63,7 +63,6 @@ if (isset($_SESSION['user_id'])) {
             <a class="tab" href="/~bdb/bookworm/about.php">About</a>
         </nav>
     </header>
-
 
     <main class="auth-main">
         <div class="auth-container">

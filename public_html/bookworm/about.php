@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../../phpTools/config.php';
+require_once __DIR__ . '/../../phpTools/config.php';
 ?>
 <!doctype html>
 <html lang="en">
@@ -23,7 +23,7 @@ require __DIR__ . '/../../phpTools/config.php';
 
         <nav aria-label="Primary">
 
-            <form class="nav-search" action="/~bdb/bookworm/search.php" method="GET">
+            <form class="nav-search" action="/~bdb/bookworm/advSearch.php" method="GET">
                 <input
                     type="text"
                     name="q"

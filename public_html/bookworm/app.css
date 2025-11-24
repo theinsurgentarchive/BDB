@@ -207,3 +207,39 @@ h2 {
   font-size: 14px;
   opacity: 0.9;
 }
+
+/* ---------- advSearch Page Styles ---------- */
+.book-card {
+  position: relative;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+.book-card:hover {
+  background: #f9f9f9;
+  color: black;
+  cursor: pointer;
+}
+.book-link {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+}
+
+/* ---------- dynBook Page Styles ---------- */
+.comment-card {
+  position: relative;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 12px;
+}
+/*.commentForm {}*/
+.hidden {
+  display: none;
+}
+
+.starRadio {
+  opacity: 0%;
+  position: absolute;
+}

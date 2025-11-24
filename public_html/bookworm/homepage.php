@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../../phpTools/config.php';
+require_once __DIR__ . '/../../phpTools/config.php';
 $db = get_db();
 
 $randomBooks   = $db->query("SELECT * FROM randbooks")->fetchAll();
@@ -9,7 +9,6 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
 
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <title>Book - Home</title>
@@ -18,8 +17,7 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
 </head>
 
 <body>
-    <?php //require __DIR__ . '/../../phpTools/navbar.php'
-    ?>
+    <?php //require __DIR__ . '/../../phpTools/navbar.php' ?>
     <header>
         <div class="brand">
             <!-- add your icon file path here -->
@@ -29,7 +27,7 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
 
         <nav aria-label="Primary">
 
-            <form class="nav-search" action="/~bdb/bookworm/search.php" method="GET">
+            <form class="nav-search" action="/~bdb/bookworm/advSearch.php" method="GET">
                 <input
                     type="text"
                     name="q"
@@ -74,12 +72,12 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
                 <div class="grid">
                     <?php foreach ($randomBooks as $b): ?>
                         <div class="card">
-                            <img src="<?= htmlspecialchars($b['image_path'] ?? '') ?>" alt="">
-                            <div class="title"><?= htmlspecialchars($b['title']) ?></div>
-                            <div class="author"><?= htmlspecialchars($b['author']) ?></div>
+                            <img src="<?= htmlspecialchars($b['image_path'] ?? '')?>" alt="">
+                            <div class="title"><?= htmlspecialchars($b['title'])?></div>
+                            <div class="author"><?= htmlspecialchars($b['author'])?></div>
                             <a class="cardLink" href=<?=
-                                                        "/~bdb/Testbdd/dynBook.php/?bid=" . htmlspecialchars($b['book_id']) ?? ''
-                                                        ?>></a>
+                                "/~bdb/bookworm/dynBook.php/?bid=" . htmlspecialchars($b['book_id']) ?? ''
+                            ?>></a>
                         </div>
                     <?php endforeach; ?>
                 </div>

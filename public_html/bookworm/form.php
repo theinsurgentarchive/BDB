@@ -1,5 +1,5 @@
 <?php
-require '/home/stu/bdb/phpTools/config.php';
+require_once __DIR__ . '/../../phpTools/config.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: signin.php');
@@ -30,6 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
     ) {
         $insertMsg = "Please fill in all fields and choose at least one genre.";
     } else {
+        
+/*
+    Be Sure to make the form image be Moved to the book
+    images folder after Approval, and Deleted when Denied.
+*/
+        
         if (
             isset($_FILES['image']) &&
             $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE
@@ -54,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
                     $bname = basename(random_bytes(16));
                     $fname = $bname . '.' . $ext;
 
-                    $dir  = '/home/stu/bdb/images/forms/';
+                    $dir  = __DIR__ . '/../../images/forms/';
                     $dest = $dir . DIRECTORY_SEPARATOR . $fname;
 
                     if (
@@ -104,9 +110,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
                 $idRow = $db->query("SELECT @new_id AS form_id")->fetch(PDO::FETCH_ASSOC);
 
                 if (!$idRow || !$idRow['form_id']) {
-                    $insertMsg = "Error: request created but ID missing.";
+                    $insertMsg = "Error: request not found.";
                 } else {
-                    $insertMsg = "Your request has been submitted!";
+                    $insertMsg = "Request submitted!";
                 }
             } catch (Exception $e) {
                 $insertMsg = "Error submitting request: " . $e->getMessage();
@@ -122,10 +128,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <title>Book – Book Requests</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="app.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/~bdb/bookworm/app.css">
 </head>
 
 <body>
@@ -138,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
 
         <nav aria-label="Primary">
 
-            <form class="nav-search" action="/~bdb/bookworm/search.php" method="GET">
+            <form class="nav-search" action="/~bdb/bookworm/advSearch.php" method="GET">
                 <input
                     type="text"
                     name="q"
@@ -173,8 +179,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
             <a class="tab" href="/~bdb/bookworm/about.php">About</a>
         </nav>
     </header>
-
-
 
     <main>
         <section>

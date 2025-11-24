@@ -9,6 +9,7 @@ DROP PROCEDURE IF EXISTS addUser//
 DROP PROCEDURE IF EXISTS userToAdmin//
 DROP PROCEDURE IF EXISTS topActiveUsers//
 DROP PROCEDURE IF EXISTS addComment//
+DROP PROCEDURE IF EXISTS advSearch//
 
 CREATE PROCEDURE splitGenreCSV(IN csv TEXT) BEGIN
     DECLARE list TEXT;
@@ -132,11 +133,9 @@ END//
 CREATE PROCEDURE addBook(
     IN n_title VARCHAR(255), IN n_author VARCHAR(255), IN n_isbn VARCHAR(13),
     IN n_published DATE, IN n_summary TEXT, IN n_genres TEXT, IN n_added INT,
-    IN n_image VARCHAR(512) DEFAULT NULL, OUT bid INT DEFAULT NULL
+    IN n_image VARCHAR(512), OUT bid INT 
 ) BEGIN
     DECLARE missing TEXT;
-    DECLARE total INT DEFAULT 0;
-    DECLARE j_genres JSON;
     DECLARE new_id INT;
 
     IF n_genres IS NULL OR n_genres = '' THEN
@@ -144,8 +143,6 @@ CREATE PROCEDURE addBook(
     END IF;
 
     CALL splitGenreCSV(n_genres);
-    SELECT COUNT(*) INTO total FROM t_genres;
-
     SELECT GROUP_CONCAT(T.genre ORDER BY T.genre SEPARATOR ',') INTO missing
     FROM t_genres T LEFT JOIN genres G ON T.genre = G.genre
     WHERE G.genre IS NULL;
@@ -171,7 +168,7 @@ CREATE PROCEDURE addBook(
 END//
 
 CREATE PROCEDURE formToBook(
-        IN fid INT, IN aid INT, OUT bid INT DEFAULT NULL
+        IN fid INT, IN aid INT, OUT bid INT 
 ) BEGIN
     DECLARE new_id INT;
     DECLARE f_title VARCHAR(255);
@@ -217,11 +214,9 @@ END//
 CREATE PROCEDURE addForm(
     IN n_title VARCHAR(255), IN n_author VARCHAR(255), IN n_isbn VARCHAR(13),
     IN n_published DATE, IN n_summary TEXT, IN n_genres TEXT, IN uid INT,
-    IN n_image VARCHAR(512) DEFAULT NULL, OUT fid INT DEFAULT NULL
+    IN n_image VARCHAR(512), OUT fid INT 
 ) BEGIN
     DECLARE missing TEXT;
-    DECLARE total INT DEFAULT 0;
-    DECLARE j_genres JSON;
     DECLARE new_id INT;
     
     IF n_genres IS NULL OR n_genres = '' THEN
@@ -229,11 +224,10 @@ CREATE PROCEDURE addForm(
     END IF;
 
     CALL splitGenreCSV(n_genres);
-    SELECT COUNT(*) INTO total FROM t_genres;
-
     SELECT GROUP_CONCAT(T.genre ORDER BY T.genre SEPARATOR ',') INTO missing
     FROM t_genres T LEFT JOIN genres G ON T.genre = G.genre
     WHERE G.genre IS NULL;
+
     IF missing IS NOT NULL THEN
         DROP TEMPORARY TABLE IF EXISTS t_genres;
         SET @msg = CONCAT('Unknown genre(s): ', missing);
@@ -256,7 +250,7 @@ END//
 
 CREATE PROCEDURE addUser(
     IN p_Username VARCHAR(50), IN p_PasswordHash VARCHAR(255),
-    IN p_image VARCHAR(255) DEFAULT NULL, OUT uid INT DEFAULT NULL
+    IN p_image VARCHAR(255), OUT uid INT 
 )
 BEGIN
     -- Check for duplicates
@@ -271,7 +265,7 @@ END;
 
 CREATE PROCEDURE userToAdmin (
     IN uid INT,
-    OUT aid INT DEFAULT NULL
+    OUT aid INT 
 )
 BEGIN
     -- Verify user exists
@@ -287,8 +281,11 @@ BEGIN
 END//
 
 
-CREATE PROCEDURE topActiveUsers(IN n_days INT DEFAULT 30)
+CREATE PROCEDURE topActiveUsers(IN n_days INT)
 BEGIN
+    DECLARE days INT;
+    SET days = IFNULL(n_days, 30);
+
     SELECT U.user_id, U.username,
     COUNT(DISTINCT C.comment_id) as total_comments,
     COUNT(DISTINCT R.rating_id) as total_ratings,
@@ -296,21 +293,21 @@ BEGIN
         COUNT(DISTINCT C.comment_id) + COUNT(DISTINCT R.rating_id)
     ) as total_activity FROM users U LEFT JOIN comments C
     ON U.user_id = C.user_id
-    AND C.creation_date >= DATE_SUB(NOW(), INTERVAL n_days DAY)
+    AND C.creation_date >= DATE_SUB(NOW(), INTERVAL days DAY)
     LEFT JOIN ratings R ON U.user_id = R.user_id 
-    AND R.creation_date >= DATE_SUB(NOW(), INTERVAL n_days DAY)
+    AND R.creation_date >= DATE_SUB(NOW(), INTERVAL days DAY)
     GROUP BY U.user_id, U.username ORDER BY total_activity DESC LIMIT 10;
 END//
 
 CREATE PROCEDURE addComment(
     IN uid INT, IN bid INT, IN comment_text TEXT,
-    IN pid INT DEFAULT NULL, OUT cid INT DEFAULT NULL
+    IN pid INT, OUT cid INT 
 ) BEGIN
     IF NOT EXISTS (SELECT 1 FROM books WHERE book_id = bid) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Book not found';
     ELSEIF NOT EXISTS (SELECT 1 FROM users WHERE user_id = uid) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found';
-    ELSEIF pid NOT NULL THEN
+    ELSEIF pid IS NOT NULL THEN
         IF NOT EXISTS (SELECT 1 FROM comments WHERE comment_id = pid) THEN
             SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Parent not found';
         END IF;
@@ -320,6 +317,90 @@ CREATE PROCEDURE addComment(
         uid, bid, comment_text, pid
     );
     SET cid = LAST_INSERT_ID();
+END//
+
+CREATE PROCEDURE advSearch(
+    IN n_query VARCHAR(255), IN n_genres TEXT,
+    IN n_author VARCHAR(255) 
+) BEGIN
+    DECLARE missing TEXT;
+    DECLARE genres TEXT;
+    DECLARE query VARCHAR(255);
+    DECLARE author VARCHAR(255);
+    DECLARE total INT DEFAULT 0;
+    DECLARE sqlQuery TEXT;
+    DECLARE argCount INT DEFAULT 0;
+
+    SET sqlQuery = CONCAT(
+        'SELECT DISTINCT B.*,
+        GROUP_CONCAT(DISTINCT G.genre ORDER BY G.genre SEPARATOR ",")
+        AS genres FROM books B LEFT JOIN bookgenres G ON
+        B.book_id = G.book_id WHERE 1=1'
+    );
+
+    IF n_genres IS NOT NULL THEN
+        CALL splitGenreCSV(n_genres);
+        SELECT COUNT(*) INTO total FROM t_genres;
+
+        SELECT GROUP_CONCAT(T.genre ORDER BY T.genre SEPARATOR ',') INTO missing
+        FROM t_genres T LEFT JOIN genres G ON T.genre = G.genre
+        WHERE G.genre IS NULL;
+        IF missing IS NOT NULL THEN
+            DROP TEMPORARY TABLE IF EXISTS t_genres;
+            SET @msg = CONCAT('Unknown genre(s): ', missing);
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
+        END IF;
+        
+        SELECT GROUP_CONCAT(
+            CONCAT("'", genre, "'") ORDER BY genre SEPARATOR ','
+        ) INTO genres FROM t_genres;
+        SET sqlQuery = CONCAT(
+            sqlQuery,
+            ' AND B.book_id IN (SELECT book_id FROM bookgenres WHERE genre IN (',
+            genres,') GROUP BY book_id HAVING COUNT(DISTINCT genre) = ',total,')'
+        );
+    
+        DROP TEMPORARY TABLE IF EXISTS t_genres;
+        SET argCount = argCount + 1;
+    END IF;
+
+    IF n_query IS NOT NULL THEN
+        IF (n_query REGEXP '^[0-9]{13}$') THEN
+            SET sqlQuery = CONCAT(sqlQuery,' AND B.isbn = ?');
+        ELSE
+            SET sqlQuery = CONCAT(
+                sqlQuery,' AND B.title LIKE CONCAT("%",?,"%")'
+            );
+        END IF;
+        SET query = n_query;
+        SET argCount = argCount + 1;
+    END IF;
+
+    IF n_author IS NOT NULL THEN
+        SET sqlQuery = CONCAT(sqlQuery,' AND B.author LIKE CONCAT("%",?,"%")');
+        SET author = n_author;
+        SET argCount = argCount + 1;
+    END IF;
+
+    IF NOT argCount THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No parameters entered';
+    END IF;
+
+    SET sqlQuery = CONCAT(
+        sqlQuery,' GROUP BY B.book_id ORDER BY B.title ASC'
+    );
+
+    PREPARE stmt FROM sqlQuery;
+    IF query IS NOT NULL AND author IS NOT NULL THEN
+        EXECUTE stmt USING query, author;
+    ELSEIF query IS NOT NULL THEN
+        EXECUTE stmt USING query;
+    ELSEIF author IS NOT NULL THEN
+        EXECUTE stmt USING author;
+    ELSE
+        EXECUTE stmt;
+    END IF;
+    DEALLOCATE PREPARE stmt;
 END//
 
 DELIMITER ;

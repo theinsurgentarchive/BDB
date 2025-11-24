@@ -1,15 +1,21 @@
 <header>
     <div class="brand">
-        <h1>Book</h1>
-    </div>
+        <a href="/~bdb/bookworm/homepage.php">
+            Bookworm
+        </a>
+    </div> 
     <nav aria-label="Primary">
-        <div class="searchArea">\
-            <input
-                class="tab"
-                id="searchBar"
-                type="text"
-                placeholder="Search..."
-            >
+        <div class="searchArea">
+            <form action="/~bdb/bookworm/advsearch.php" method="get">
+                <input
+                    class="tab"
+                    name="query"
+                    id="searchBar"
+                    type="text"
+                    placeholder="Search..."
+                >
+                <input type="submit" style="display: none">
+            </form>
             <div id="searchResults"></div>
         </div>
 
@@ -17,12 +23,26 @@
             <span class="nav-welcome">
                 Welcome, <?=htmlspecialchars($_SESSION['username'])?>
             </span>
-            <a class="tab" href="/~bdb/Testbdd/logout.php">Logout</a>
+            <a
+                class="tab"
+                href="/~bdb/bookworm/logout.php"
+            >
+                Logout
+            </a>
         <?php else:?>
-            <a class="tab" href="/~bdb/Testbdd/signin.php">Login / Create</a>
+            <a
+                class="tab"
+                href="/~bdb/bookworm/signin.php"
+            >
+                Login / Create
+            </a>
         <?php endif;?>
 
-        <a class="tab" href="/~bdb/Testbdd/top20.php">Top 20 Books</a>
-        <a class="tab" href="/~bdb/Testbdd/about.php">About</a>
+        <a class="tab" href="/~bdb/bookworm/top20.php">
+            Top 20 Books
+        </a>
+        <a class="tab" href="/~bdb/bookworm/about.php">
+            About
+        </a>
     </nav>
 </header>
