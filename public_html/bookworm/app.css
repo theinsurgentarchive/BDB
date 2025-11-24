@@ -226,3 +226,15 @@ h2 {
   text-decoration: none;
   display: block;
 }
+
+/* ---------- dynBook Page Styles ---------- */
+.comment-card {
+  position: relative;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 12px;
+}
+/*.commentForm {}*/
+.hidden {
+  display: none;
+}
