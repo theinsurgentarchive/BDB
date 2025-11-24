@@ -8,90 +8,18 @@ if (!isset($_SESSION['user_id'])) {
 
 $db       = get_db();
 $userId   = (int)$_SESSION['user_id'];
-$isAdmin  = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 
 $insertMsg = "";
-$adminMsg  = "";
-
-// ---------- ADMIN: APPROVE / DENY REQUEST ----------
-if ($isAdmin && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Approve: use formToBook(fid, aid, OUT bid)
-    if (isset($_POST['approve_form_id'])) {
-        $formId = (int)$_POST['approve_form_id'];
-
-        try {
-            // Find admin_id for this logged-in admin
-            $admStmt = $db->prepare(
-                "SELECT admin_id FROM admins WHERE user_id = :uid"
-            );
-            $admStmt->execute([':uid' => $userId]);
-            $adm = $admStmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$adm) {
-                $adminMsg = "You are not registered as an admin.";
-            } else {
-                $adminId = (int)$adm['admin_id'];
-
-                // Call stored procedure formToBook
-                $call = $db->prepare(
-                    "CALL formToBook(:fid, :aid, @new_book_id)"
-                );
-                $call->execute([
-                    ':fid' => $formId,
-                    ':aid' => $adminId,
-                ]);
-
-                $row = $db->query("SELECT @new_book_id AS book_id")
-                    ->fetch(PDO::FETCH_ASSOC);
-
-                if ($row && $row['book_id']) {
-                    $adminMsg = "Request #{$formId} approved (book ID " . (int)$row['book_id'] . ").";
-                } else {
-
-//Needs to be an error statement
-                
-                }
-            }
-        } catch (Exception $e) {
-            $adminMsg = "Error approving request: " . $e->getMessage();
-        }
-    }
-
-    // Deny: delete form + formgenres
-    if (isset($_POST['deny_form_id'])) {
-        $formId = (int)$_POST['deny_form_id'];
-
-        try {
-            $db->beginTransaction();
-
-            $delGenres = $db->prepare(
-                "DELETE FROM formgenres WHERE form_id = :form_id"
-            );
-            $delGenres->execute([':form_id' => $formId]);
-
-            $delForm = $db->prepare(
-                "DELETE FROM forms WHERE form_id = :form_id"
-            );
-            $delForm->execute([':form_id' => $formId]);
-
-            $db->commit();
-            $adminMsg = "Request #{$formId} has been denied and removed.";
-        } catch (Exception $e) {
-            $db->rollBack();
-            $adminMsg = "Error denying request: " . $e->getMessage();
-        }
-    }
-}
 
 // ---------- HANDLE NEW REQUEST SUBMIT (users + admins) ----------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
-    $title_data   = htmlspecialchars(trim($_POST['title_data']   ?? ''));
-    $author_data  = htmlspecialchars(trim($_POST['author_data']  ?? ''));
-    $isbn_data    = htmlspecialchars(trim($_POST['isbn_data']    ?? ''));
-    $publish_data = htmlspecialchars($_POST['publish_data']      ?? '');
-    $summary_data = htmlspecialchars(trim($_POST['summary_data'] ?? ''));
+    $title_data   = trim($_POST['title_data']   ?? '');
+    $author_data  = trim($_POST['author_data']  ?? '');
+    $isbn_data    = trim($_POST['isbn_data']    ?? '');
+    $publish_data = $_POST['publish_data']      ?? '';
+    $summary_data = trim($_POST['summary_data'] ?? '');
     $genres       = $_POST['genre_data']        ?? [];
-    $imagePath    = NULL; // default: no image
+    $imagePath    = null; // default: no image
 
     if (
         $title_data === '' ||
@@ -193,30 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
     }
 }
 
-// ---------- IF ADMIN: LOAD ALL REQUESTS ----------
-$allForms = [];
-if ($isAdmin) {
-    $query = $db->query(
-        "SELECT
-            f.form_id,
-            f.isbn,
-            f.title,
-            f.author,
-            f.published,
-            f.summary,
-            f.creation_date,
-            f.image_path,
-            u.username,
-            GROUP_CONCAT(fg.genre ORDER BY fg.genre SEPARATOR ', ') AS genres
-         FROM forms AS f
-         JOIN users AS u ON u.user_id = f.user_id
-         LEFT JOIN formgenres AS fg ON fg.form_id = f.form_id
-         WHERE f.approve_date IS NULL
-         GROUP BY f.form_id
-         ORDER BY f.creation_date DESC"
-    );
-    $allForms = $query->fetchAll();
-}
+
 
 ?>
 <!doctype html>
@@ -232,26 +137,48 @@ if ($isAdmin) {
 <body>
     <header>
         <div class="brand">
-            <h1>Book</h1>
+            <!-- add your icon file path here -->
+            <img class="brand-icon" src="/~bdb/bookworm/images/site-icon.png" alt="Site icon">
+            <h1>BookWorm</h1>
         </div>
+
         <nav aria-label="Primary">
-            <a class="tab" href="/~bdb/bookworm/search.php">Search</a>
-            <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
+
+            <form class="nav-search" action="/~bdb/bookworm/advSearch.php" method="GET">
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Search books..."
+                    aria-label="Search books">
+            </form>
+
 
             <?php if (isset($_SESSION['user_id'])): ?>
+
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <a class="tab" href="/~bdb/bookworm/adminTool.php">Admin Tool</a>
+                <?php endif; ?>
+
+                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
+
+                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
+
                 <span class="nav-welcome">
                     Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
                 </span>
-                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
+
             <?php else: ?>
+
                 <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
+
             <?php endif; ?>
+
+            <a class="tab" href="#">Advance Search</a>
 
             <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
             <a class="tab" href="/~bdb/bookworm/about.php">About</a>
         </nav>
     </header>
-
 
     <main>
         <section>
@@ -303,64 +230,6 @@ if ($isAdmin) {
                 <input type="submit" name="request_submit" value="Submit Request">
             </form>
         </section>
-
-        <?php if ($isAdmin): ?>
-            <section>
-                <h2>Pending book requests (admin view)</h2>
-
-                <?php if ($adminMsg !== ""): ?>
-                    <p class="muted"><?= htmlspecialchars($adminMsg) ?></p>
-                <?php endif; ?>
-
-                <?php if (!$allForms): ?>
-                    <p class="muted">No pending requests.</p>
-                <?php else: ?>
-                    <div class="rows">
-                        <?php foreach ($allForms as $f): ?>
-                            <div class="row">
-                                <div>
-                                    <div class="title">
-                                        <?= htmlspecialchars($f['title']) ?> (<?= htmlspecialchars($f['isbn']) ?>)
-                                    </div>
-                                    <div class="author">
-                                        by <?= htmlspecialchars($f['author']) ?>
-                                    </div>
-                                    <div class="muted">
-                                        Genres: <?= htmlspecialchars($f['genres'] ?? '') ?>
-                                    </div>
-                                    <?php if (!empty($f['image_path'])): ?>
-                                        <div class="muted">
-                                            Image: <?= htmlspecialchars($f['image_path']) ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <div>
-                                    <div class="muted">
-                                        Requested by: <?= htmlspecialchars($f['username']) ?>
-                                    </div>
-                                    <div class="muted">
-                                        Submitted: <?= htmlspecialchars($f['creation_date']) ?>
-                                    </div>
-
-                                    <!-- Approve -->
-                                    <form action="form.php" method="POST" style="margin-top:8px;">
-                                        <input type="hidden" name="approve_form_id" value="<?= (int)$f['form_id'] ?>">
-                                        <button type="submit">Approve</button>
-                                    </form>
-
-                                    <!-- Deny -->
-                                    <form action="form.php" method="POST" style="margin-top:4px;">
-                                        <input type="hidden" name="deny_form_id" value="<?= (int)$f['form_id'] ?>">
-                                        <button type="submit">Deny</button>
-                                    </form>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </section>
-        <?php endif; ?>
-
     </main>
 </body>
 

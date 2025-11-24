@@ -21,19 +21,43 @@ if (isset($_SESSION['user_id'])) {
 
     <header>
         <div class="brand">
-            <h1>Book</h1>
+            <!-- add your icon file path here -->
+            <img class="brand-icon" src="/~bdb/bookworm/images/site-icon.png" alt="Site icon">
+            <h1>BookWorm</h1>
         </div>
+
         <nav aria-label="Primary">
-            <a class="tab" href="/~bdb/bookworm/search.php">Search</a>
+
+            <form class="nav-search" action="/~bdb/bookworm/advSearch.php" method="GET">
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Search books..."
+                    aria-label="Search books">
+            </form>
+
 
             <?php if (isset($_SESSION['user_id'])): ?>
+
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <a class="tab" href="/~bdb/bookworm/adminTool.php">Admin Tool</a>
+                <?php endif; ?>
+
+                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
+
+                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
+
                 <span class="nav-welcome">
                     Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
                 </span>
-                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
+
             <?php else: ?>
+
                 <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
+
             <?php endif; ?>
+
+            <a class="tab" href="#">Advance Search</a>
 
             <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
             <a class="tab" href="/~bdb/bookworm/about.php">About</a>

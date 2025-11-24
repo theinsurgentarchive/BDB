@@ -17,22 +17,46 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
 </head>
 
 <body>
-    <?php //require __DIR__ . '/../../phpTools/navbar.php'?>
+    <?php //require __DIR__ . '/../../phpTools/navbar.php' ?>
     <header>
         <div class="brand">
-            <h1>Book</h1>
+            <!-- add your icon file path here -->
+            <img class="brand-icon" src="/~bdb/bookworm/images/site-icon.png" alt="Site icon">
+            <h1>BookWorm</h1>
         </div>
-        <nav aria-label="Primary">
-            <a class="tab" href="/~bdb/bookworm/search.php">Search</a>
 
-            <?php if (isset($_SESSION['user_id'])):?>
-                <span class="nav-welcome">
-                    Welcome, <?=htmlspecialchars($_SESSION['username'])?>
-                </span>
+        <nav aria-label="Primary">
+
+            <form class="nav-search" action="/~bdb/bookworm/advSearch.php" method="GET">
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Search books..."
+                    aria-label="Search books">
+            </form>
+
+
+            <?php if (isset($_SESSION['user_id'])): ?>
+
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <a class="tab" href="/~bdb/bookworm/adminTool.php">Admin Tool</a>
+                <?php endif; ?>
+
+                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
+
                 <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
-            <?php else:?>
+
+                <span class="nav-welcome">
+                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
+                </span>
+
+            <?php else: ?>
+
                 <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
-            <?php endif;?>
+
+            <?php endif; ?>
+
+            <a class="tab" href="#">Advance Search</a>
 
             <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
             <a class="tab" href="/~bdb/bookworm/about.php">About</a>
@@ -42,11 +66,11 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
     <main>
         <section>
             <h2>Random books</h2>
-            <?php if (!$randomBooks):?>
+            <?php if (!$randomBooks): ?>
                 <p class="muted">No books to show yet.</p>
-            <?php else:?>
+            <?php else: ?>
                 <div class="grid">
-                    <?php foreach ($randomBooks as $b):?>
+                    <?php foreach ($randomBooks as $b): ?>
                         <div class="card">
                             <img src="<?= htmlspecialchars($b['image_path'] ?? '')?>" alt="">
                             <div class="title"><?= htmlspecialchars($b['title'])?></div>
@@ -55,49 +79,50 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
                                 "/~bdb/bookworm/dynBook.php/?bid=" . htmlspecialchars($b['book_id']) ?? ''
                             ?>></a>
                         </div>
-                    <?php endforeach;?>
+                    <?php endforeach; ?>
                 </div>
-            <?php endif;?>
+            <?php endif; ?>
         </section>
 
         <section>
             <h2>Top genres (avg rating)</h2>
-            <?php if (!$topGenres):?>
+            <?php if (!$topGenres): ?>
                 <p class="muted">No genre ratings yet.</p>
-            <?php else:?>
+            <?php else: ?>
                 <div class="rows">
-                    <?php foreach ($topGenres as $g):?>
+                    <?php foreach ($topGenres as $g): ?>
                         <div class="row">
-                            <div><?=htmlspecialchars($g['genre'])?></div>
-                            <div><?=number_format((float)$g['avg_rating'], 2)?></div>
+                            <div><?= htmlspecialchars($g['genre']) ?></div>
+                            <div><?= number_format((float)$g['avg_rating'], 2) ?></div>
                         </div>
-                    <?php endforeach;?>
+                    <?php endforeach; ?>
                 </div>
-            <?php endif;?>
+            <?php endif; ?>
         </section>
 
         <section>
             <h2>Top three books</h2>
-            <?php if (!$topThreeBooks):?>
+            <?php if (!$topThreeBooks): ?>
                 <p class="muted">No book ratings yet.</p>
-            <?php else:?>
+            <?php else: ?>
                 <div class="rows">
-                    <?php foreach ($topThreeBooks as $t):?>
+                    <?php foreach ($topThreeBooks as $t): ?>
                         <div class="row">
                             <div>
-                                <div class="title"><?= htmlspecialchars($t['title'])?></div>
-                                <div class="author"><?= htmlspecialchars($t['author'])?></div>
+                                <div class="title"><?= htmlspecialchars($t['title']) ?></div>
+                                <div class="author"><?= htmlspecialchars($t['author']) ?></div>
                             </div>
                             <div>
-                                <div>Avg: <?=number_format((float)$t['avg_rating'], 2)?></div>
-                                <div class="muted">Ratings: <?=(int)$t['totalratings']?></div>
+                                <div>Avg: <?= number_format((float)$t['avg_rating'], 2) ?></div>
+                                <div class="muted">Ratings: <?= (int)$t['totalratings'] ?></div>
                             </div>
                         </div>
-                    <?php endforeach;?>
+                    <?php endforeach; ?>
                 </div>
-            <?php endif;?>
+            <?php endif; ?>
         </section>
     </main>
-    <script src="<?= __DIR__ . '/../../jsTools/simpleSearch.js'?>"></script>
+    <script src="<?= __DIR__ . '/../../jsTools/simpleSearch.js' ?>"></script>
 </body>
+
 </html>
