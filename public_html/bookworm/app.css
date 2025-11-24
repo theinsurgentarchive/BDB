@@ -238,3 +238,8 @@ h2 {
 .hidden {
   display: none;
 }
+
+.starRadio {
+  opacity: 0%;
+  position: absolute;
+}

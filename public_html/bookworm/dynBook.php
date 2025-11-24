@@ -240,6 +240,7 @@
                                     <?php for ($i = 5; $i >= 1; $i--): ?>
                                         <input
                                             type="radio"
+                                            class="starRadio"
                                             id="star<?= $i ?>"
                                             name="rating"
                                             value="<?= $i ?>"
