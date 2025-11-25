@@ -9,6 +9,7 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
 
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <title>Book - Home</title>
@@ -17,23 +18,33 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
 </head>
 
 <body>
-    <?php //require __DIR__ . '/../../phpTools/navbar.php' ?>
+    <?php //require __DIR__ . '/../../phpTools/navbar.php' 
+    ?>
     <header>
         <div class="brand">
             <!-- add your icon file path here -->
-            <img class="brand-icon" src="/~bdb/bookworm/images/site-icon.png" alt="Site icon">
+            <!-- <img class="brand-icon" src="/~bdb/bookworm/images/site-icon.png" alt="Site icon">-->
             <h1>BookWorm</h1>
         </div>
 
         <nav aria-label="Primary">
 
-            <form class="nav-search" action="/~bdb/bookworm/advSearch.php" method="GET">
+            <form class="nav-search live-search-container"
+                action="/~bdb/bookworm/advSearch.php"
+                method="GET">
+
                 <input
                     type="text"
-                    name="q"
-                    placeholder="Search books..."
+                    id="liveSearch"
+                    name="query"
+                    placeholder="Search for books…"
+                    autocomplete="off"
+                    onkeyup="searchpartial(event)"
                     aria-label="Search books">
+
+                <div id="results"></div>
             </form>
+
 
 
             <?php if (isset($_SESSION['user_id'])): ?>
@@ -56,7 +67,7 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
 
             <?php endif; ?>
 
-            <a class="tab" href="#">Advance Search</a>
+            <a class="tab" href="/~bdb/bookworm/profile.php">Profile</a>
 
             <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
             <a class="tab" href="/~bdb/bookworm/about.php">About</a>
@@ -71,14 +82,14 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
             <?php else: ?>
                 <div class="grid">
                     <?php foreach ($randomBooks as $b): ?>
-                        <div class="card">
-                            <img src="<?= htmlspecialchars($b['image_path'] ?? '')?>" alt="">
-                            <div class="title"><?= htmlspecialchars($b['title'])?></div>
-                            <div class="author"><?= htmlspecialchars($b['author'])?></div>
-                            <a class="cardLink" href=<?=
-                                "/~bdb/bookworm/dynBook.php/?bid=" . htmlspecialchars($b['book_id']) ?? ''
-                            ?>></a>
-                        </div>
+                        <a class="cardLink" href=<?="/~bdb/bookworm/dynBook.php/?bid=" . htmlspecialchars($b['book_id']) ?? ''?>>
+                            <div class="card">
+                                <img src="<?= htmlspecialchars($b['image_path'] ?? '') ?>" alt="">
+                                <div class="title"><?= htmlspecialchars($b['title']) ?></div>
+                                <div class="author"><?= htmlspecialchars($b['author']) ?></div>
+                                
+                            </div>
+                        </a>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
@@ -122,7 +133,7 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
             <?php endif; ?>
         </section>
     </main>
-    <script src="<?= __DIR__ . '/../../jsTools/simpleSearch.js' ?>"></script>
+    <script src="/~bdb/bookworm/search.js"></script>
 </body>
 
 </html>
