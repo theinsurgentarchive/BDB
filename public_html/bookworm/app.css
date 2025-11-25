@@ -27,10 +27,86 @@ header {
   letter-spacing: .3px;
 }
 
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-link:hover {
+  opacity: 0.95;
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+
 nav {
   display: flex;
   gap: 10px;
 }
+
+/* --- Navbar search dropdown --- */
+.nav-search {
+  position: relative;
+}
+
+.nav-search input {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #22274a;
+  background: #111532;
+  color: #f3f4f6;
+  min-width: 220px;
+}
+
+.nav-search input::placeholder {
+  color: #9ca3af;
+}
+
+.live-results {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background: #151938;
+  border: 1px solid #22274a;
+  border-radius: 12px;
+  margin-top: 4px;
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.live-results p {
+  margin: 8px 12px;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.result-item {
+  display: block;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #f3f4f6;
+  font-size: 13px;
+}
+
+.result-item span {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.result-item:hover {
+  background: #1f2340;
+}
+
 
 .tab {
   display: inline-block;
@@ -78,6 +154,12 @@ h2 {
   object-fit: cover;
   border-radius: 10px;
   background: #0c0f22;
+}
+
+.cardLink {
+  text-decoration: none;   /* removes underline */
+  color: inherit;           /* uses the text color of its parent or the div */
+  display: block;           /* makes sure the link behaves like a block element */
 }
 
 .title {
@@ -227,6 +309,48 @@ h2 {
   display: block;
 }
 
+.searchForm {
+  display: flex;
+  gap: 20px;
+  background: #151938;          /* same as cards */
+  border: 1px solid #22274a;    /* same borders */
+  border-radius: 16px;
+  padding: 16px;
+  align-items: flex-start;
+}
+
+.genreArea .grid {
+  margin-top: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;  
+  display: block;
+
+}
+
+.resultGenres .grid {
+  margin-top: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+  display: block;
+
+}
+.resultGenres .grid a {
+  display: inline-block;
+  padding: 6px 10px;
+  border: 1px solid #22274a;
+  border-radius: 10px;
+  background: #111532;
+  color: #f3f4f6;
+  text-decoration: none;
+  font-size: 13px;
+  text-align: center;
+}
+
+
 /* ---------- dynBook Page Styles ---------- */
 .comment-card {
   position: relative;
@@ -243,3 +367,125 @@ h2 {
   opacity: 0%;
   position: absolute;
 }
+
+.bookContainer {
+  display: flex;
+  gap: 20px;
+  background: #151938;          /* same as cards */
+  border: 1px solid #22274a;    /* same borders */
+  border-radius: 16px;
+  padding: 16px;
+  align-items: flex-start;
+}
+
+.bookContainer img {
+  width: 220px;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #0c0f22;          /* same image bg */
+  border: 1px solid #22274a;
+}
+
+.bookInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bookInfo h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+
+.bookISBN, .bookAuthor, .bookPublish {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* make genres look like your nav tabs */
+.bookInfo .grid {
+  margin-top: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.bookInfo .grid a {
+  display: inline-block;
+  padding: 6px 10px;
+  border: 1px solid #22274a;
+  border-radius: 10px;
+  background: #111532;
+  color: #f3f4f6;
+  text-decoration: none;
+  font-size: 13px;
+  text-align: center;
+}
+
+.bookInfo .grid a:hover {
+  background: #151938;
+  border-color: #2a2f55;
+}
+
+.bookSummary {
+  margin-top: 10px;
+  line-height: 1.6;
+  font-size: 15px;
+  color: #e5e7eb;
+}
+
+/* rating block fits into theme like other panels */
+.ratingBlock {
+  margin-top: 12px;
+  padding: 12px;
+  background: #111532;
+  border: 1px solid #22274a;
+  border-radius: 12px;
+}
+
+.starRating label {
+  font-size: 24px;
+  cursor: pointer;
+  color: #6b7280;   /* softer gray than #444 */
+  transition: color .15s ease;
+}
+
+.starRating input:checked ~ label,
+.starRating label:hover,
+.starRating label:hover ~ label {
+  color: gold;
+}
+
+.starRatingForm button {
+  margin-top: 8px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.starRatingForm button:hover {
+  background: #6366f1;
+}
+
+.starRatingForm button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* comments panel matches card style */
+.commentContainer {
+  margin-top: 20px;
+  padding: 16px;
+  background: #151938;
+  border: 1px solid #22274a;
+  border-radius: 16px;
+}
+
+
