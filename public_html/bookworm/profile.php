@@ -70,22 +70,6 @@ if ($canEdit && isset($_POST['ChangePassword'])) {
 }
 
 
-// BIO UPDATE
-
-if ($canEdit && isset($_POST['update_bio'])) {
-
-    $bio = trim($_POST['bio'] ?? "");
-    $bio = htmlspecialchars($bio, ENT_QUOTES, 'UTF-8');
-
-    $upd = $db->prepare("UPDATE users SET bio = :b WHERE user_id = :uid");
-    $upd->execute([':b' => $bio, ':uid' => $profileUserId]);
-
-    header("Location: profileTester.php");
-    exit;
-}
-
-
-
 // PROFILE PIC UPLOAD
 
 if ($canEdit && isset($_FILES['newpic'])) {
@@ -103,18 +87,20 @@ if ($canEdit && isset($_FILES['newpic'])) {
             $ext = $allowed[$mime];
             $fname = bin2hex(random_bytes(16)) . "." . $ext;
             //directory change here
-            $uploadDir = __DIR__ . "/home/stu/bdb/images/users";
+            $uploadDir = __DIR__ . "/../images/users";
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0775, true);
 
-            $dest = $uploadDir . $fname;
+            $dest = $uploadDir . DIRECTORY_SEPARATOR . $fname;
+
             if (move_uploaded_file($file['tmp_name'], $dest)) {
                 //public url
                 $rel = "/~bdb/images/users/" . $fname;
 
+
                 $upd = $db->prepare("UPDATE users SET image_path = :p WHERE user_id = :u");
                 $upd->execute([':p' => $rel, ':u' => $profileUserId]);
 
-                header("Location: profileTester.php");
+                header("Location: profile.php");
                 exit;
             }
         }
@@ -189,19 +175,28 @@ $ratings = $ratings->fetchAll();
     <header>
         <div class="brand">
             <!-- add your icon file path here -->
-            <img class="brand-icon" src="/~bdb/bookworm/images/site-icon.png" alt="Site icon">
+            <!-- <img class="brand-icon" src="/~bdb/bookworm/images/site-icon.png" alt="Site icon">-->
             <h1>BookWorm</h1>
         </div>
 
         <nav aria-label="Primary">
 
-            <form class="nav-search" action="/~bdb/bookworm/search.php" method="GET">
+            <form class="nav-search live-search-container"
+                action="/~bdb/bookworm/advSearch.php"
+                method="GET">
+
                 <input
                     type="text"
-                    name="q"
-                    placeholder="Search books..."
+                    id="liveSearch"
+                    name="query"
+                    placeholder="Search for books…"
+                    autocomplete="off"
+                    onkeyup="searchpartial(event)"
                     aria-label="Search books">
+
+                <div id="results"></div>
             </form>
+
 
 
             <?php if (isset($_SESSION['user_id'])): ?>
@@ -224,7 +219,7 @@ $ratings = $ratings->fetchAll();
 
             <?php endif; ?>
 
-            <a class="tab" href="#">Advance Search</a>
+            <a class="tab" href="/~bdb/bookworm/profile.php">Profile</a>
 
             <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
             <a class="tab" href="/~bdb/bookworm/about.php">About</a>
@@ -251,9 +246,8 @@ $ratings = $ratings->fetchAll();
             </div>
         </section>
 
-        <!-- Tabs -->
+        <!-- Tabs   -->
         <div class="tabs">
-            <div class="tab-btn active" data-tab="about">About</div>
             <div class="tab-btn" data-tab="comments">Comments</div>
             <div class="tab-btn" data-tab="ratings">Ratings</div>
             <?php if ($canEdit): ?>
@@ -261,89 +255,69 @@ $ratings = $ratings->fetchAll();
             <?php endif; ?>
         </div>
 
-        <!-- ABOUT -->
-        <section id="about" class="tab-content active">
-            <h3>About</h3>
-            <!-- We need to alter user table and add bio for this to work--!>
-        <p>
-            <?php if ($user['bio'] !== null && $user['bio'] !== ''): ?>
-                <?= nl2br(htmlspecialchars($user['bio'], ENT_QUOTES, 'UTF-8')) ?>
+        <!-- COMMENTS -->
+        <section id="comments" class="tab-content">
+            <h3>User Comments</h3>
+
+            <?php if (!$comments): ?>
+                <p class="muted">No comments yet.</p>
             <?php else: ?>
-                <span class="muted">No bio yet.</span>
+                <div style="display:flex; flex-direction:column; gap:15px;">
+                    <?php foreach ($comments as $c): ?>
+                        <div class="card" style="padding:15px;">
+                            <strong><?= htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8') ?></strong>
+                            <p><?= htmlspecialchars($c['comment_text'], ENT_QUOTES, 'UTF-8') ?></p>
+                            <span class="muted"><?= htmlspecialchars($c['creation_date'], ENT_QUOTES, 'UTF-8') ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             <?php endif; ?>
-        </p>
+        </section>
 
+        <!-- RATINGS -->
+        <section id="ratings" class="tab-content">
+            <h3>User Ratings</h3>
+
+            <?php if (!$ratings): ?>
+                <p class="muted">No ratings yet.</p>
+            <?php else: ?>
+                <div style="display:flex; flex-direction:column; gap:15px;">
+                    <?php foreach ($ratings as $r): ?>
+                        <div class="card" style="padding:15px;">
+                            <strong><?= htmlspecialchars($r['title'], ENT_QUOTES, 'UTF-8') ?></strong>
+                            <p>Rated: <?= htmlspecialchars($r['rating'], ENT_QUOTES, 'UTF-8') ?>/5</p>
+                            <span class="muted"><?= htmlspecialchars($r['creation_date'], ENT_QUOTES, 'UTF-8') ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </section>
+
+        <!-- EDIT PROFILE -->
         <?php if ($canEdit): ?>
-            <form method="POST">
-                <textarea name="bio" rows="4" maxlength="500" style="width:100%;"><?= htmlspecialchars($user['bio'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
-                <button class="tab" type="submit" name="update_bio">Update Bio</button>
-            </form>
+            <section id="edit" class="tab-content">
+                <h3>Edit Profile</h3>
+
+                <!-- Upload Profile Picture -->
+                <form method="POST" enctype="multipart/form-data" style="margin-bottom:20px;">
+                    <label><strong>Change Profile Picture</strong></label><br>
+                    <input type="file" name="newpic" accept="image/jpeg,image/png">
+                    <button type="submit" class="tab">Upload</button>
+                </form>
+
+                <!-- Change Password -->
+                <?php if (!empty($pw_error)): ?>
+                    <p style="color:red;"><?= htmlspecialchars($pw_error, ENT_QUOTES, 'UTF-8') ?></p>
+                <?php endif; ?>
+
+                <form method="POST" style="display:flex; flex-direction:column; gap:10px; max-width:300px;">
+                    <label><strong>Change Password</strong></label>
+                    <input type="password" name="oldpw" placeholder="Old password" required>
+                    <input type="password" name="newpw" placeholder="New password" required minlength="6">
+                    <button name="ChangePassword" value="1" type="submit" class="tab">Update Password</button>
+                </form>
+            </section>
         <?php endif; ?>
-    </section>
-
-    <!-- COMMENTS -->
-            <section id="comments" class="tab-content">
-                <h3>User Comments</h3>
-
-                <?php if (!$comments): ?>
-                    <p class="muted">No comments yet.</p>
-                <?php else: ?>
-                    <div style="display:flex; flex-direction:column; gap:15px;">
-                        <?php foreach ($comments as $c): ?>
-                            <div class="card" style="padding:15px;">
-                                <strong><?= htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8') ?></strong>
-                                <p><?= htmlspecialchars($c['comment_text'], ENT_QUOTES, 'UTF-8') ?></p>
-                                <span class="muted"><?= htmlspecialchars($c['creation_date'], ENT_QUOTES, 'UTF-8') ?></span>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </section>
-
-            <!-- RATINGS -->
-            <section id="ratings" class="tab-content">
-                <h3>User Ratings</h3>
-
-                <?php if (!$ratings): ?>
-                    <p class="muted">No ratings yet.</p>
-                <?php else: ?>
-                    <div style="display:flex; flex-direction:column; gap:15px;">
-                        <?php foreach ($ratings as $r): ?>
-                            <div class="card" style="padding:15px;">
-                                <strong><?= htmlspecialchars($r['title'], ENT_QUOTES, 'UTF-8') ?></strong>
-                                <p>Rated: <?= htmlspecialchars($r['rating'], ENT_QUOTES, 'UTF-8') ?>/5</p>
-                                <span class="muted"><?= htmlspecialchars($r['creation_date'], ENT_QUOTES, 'UTF-8') ?></span>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </section>
-
-            <!-- EDIT PROFILE -->
-            <?php if ($canEdit): ?>
-                <section id="edit" class="tab-content">
-                    <h3>Edit Profile</h3>
-
-                    <!-- Upload Profile Picture -->
-                    <form method="POST" enctype="multipart/form-data" style="margin-bottom:20px;">
-                        <label><strong>Change Profile Picture</strong></label><br>
-                        <input type="file" name="newpic" accept="image/jpeg,image/png">
-                        <button type="submit" class="tab">Upload</button>
-                    </form>
-
-                    <!-- Change Password -->
-                    <?php if (!empty($pw_error)): ?>
-                        <p style="color:red;"><?= htmlspecialchars($pw_error, ENT_QUOTES, 'UTF-8') ?></p>
-                    <?php endif; ?>
-
-                    <form method="POST" style="display:flex; flex-direction:column; gap:10px; max-width:300px;">
-                        <label><strong>Change Password</strong></label>
-                        <input type="password" name="oldpw" placeholder="Old password" required>
-                        <input type="password" name="newpw" placeholder="New password" required minlength="6">
-                        <button name="ChangePassword" value="1" type="submit" class="tab">Update Password</button>
-                    </form>
-                </section>
-            <?php endif; ?>
 
     </main>
 
