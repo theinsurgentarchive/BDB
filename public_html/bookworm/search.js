@@ -29,7 +29,7 @@ function displayResults(json) {
     return;
   }
 
-  json.forEach((row) => {
+  json.slice(0, 5).forEach((row) => {
     let div = document.createElement("div");
     div.innerHTML = `
 				<a class="result-item" href="/~bdb/bookworm/dynBook.php?bid=${row.book_id}">
