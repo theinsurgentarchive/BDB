@@ -46,13 +46,13 @@ header {
   object-fit: cover;
 }
 
+/* --- Navbar --- */
 
 nav {
   display: flex;
   gap: 10px;
 }
 
-/* --- Navbar search dropdown --- */
 .nav-search {
   position: relative;
 }
@@ -80,7 +80,7 @@ nav {
   border-radius: 12px;
   margin-top: 4px;
   max-height: 260px;
-  overflow-y: auto;
+  overflow-y: scroll;
   z-index: 1000;
 }
 
@@ -122,6 +122,8 @@ nav {
   background: #151938;
   border-color: #2a2f55;
 }
+
+
 
 /* Main content */
 main {
@@ -256,27 +258,48 @@ h2 {
 }
 
 
+/* tab row under the header */
 .toggle-buttons {
   display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: 1.5rem;
+  border-bottom: 1px solid #23263a;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.35rem;
 }
 
+/* each "tab" is just a word */
 .toggle-buttons button {
-  background: #23263a;
-  border: 1px solid #444;
-  color: #fff;
-  padding: 8px 16px;
-  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 0.95rem;
+  padding: 0;
   cursor: pointer;
-  transition: 0.2s;
+  position: relative;
+  transition: color 120ms ease;
 }
 
-.toggle-buttons button.active {
-  background: #4f46e5;
-  border-color: #4f46e5;
+.toggle-buttons button:hover {
+  color: #e5e7eb;
 }
+
+/* active tab: brighter text + small underline in site accent color */
+.toggle-buttons button.active {
+  color: #e5e7eb;
+  font-weight: 600;
+}
+
+.toggle-buttons button.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.3rem;
+  width: 100%;
+  height: 2px;
+  border-radius: 999px;
+  background: #4f46e5; /* matches the rest of your site */
+}
+
 
 .auth-form.hidden {
   display: none;
@@ -328,6 +351,224 @@ h2 {
   display: block;
 
 }
+/* ===================== advSearch.php – advanced search ===================== */
+
+.advSearch-page {
+  max-width: 1000px;
+  margin: 3rem auto 4rem;
+  padding: 0 1.5rem;
+}
+
+.advSearch__inner {
+  background: #15172a;
+  border-radius: 18px;
+  padding: 2rem 1.6rem;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+  border: 1px solid #23263a;
+}
+
+.advSearch__inner h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.6rem;
+  letter-spacing: 0.03em;
+}
+
+.advSearch-hint {
+  margin-bottom: 1.1rem;
+  font-size: 0.9rem;
+}
+
+.advSearch-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* fields */
+
+.advSearch-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.advSearch-label {
+  font-size: 0.9rem;
+  color: #d1d5db;
+}
+
+.advSearch-field input[type="text"] {
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid #32375c;
+  background: #0b0d18;
+  color: #e5e7eb;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.advSearch-field input[type="text"]::placeholder {
+  color: #6b7280;
+}
+
+/* genres box – reuse form.php style but scoped */
+
+.advSearch-labelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.advSearch-labelHint {
+  font-size: 0.8rem;
+}
+
+.form-genres-box.advSearch-genres-box {
+  border-radius: 12px;
+  border: 1px solid #32375c;
+  background: #0b0d18;
+  padding: 0.75rem 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.3rem 0.75rem;
+}
+
+.form-genre-option {
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.form-genre-option input[type="checkbox"] {
+  accent-color: #4f46e5;
+}
+
+/* submit */
+
+.advSearch-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.advSearch-submit {
+  padding: 0.55rem 1.35rem;
+  border-radius: 999px;
+  border: none;
+  background: #4f46e5;
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.advSearch-submit:hover {
+  background: #6366f1;
+  transform: translateY(-1px);
+}
+
+.advSearch-submit:active {
+  transform: translateY(0);
+}
+
+/* ===== advSearch.php – results list ===== */
+
+.advSearch-results {
+  max-width: 1000px;
+  margin: 0 auto 4rem;
+  padding: 0 1.5rem;
+}
+
+.advSearch-results__inner {
+  margin-top: 1.2rem;
+  background: #111827;
+  border-radius: 18px;
+  padding: 1.6rem 1.5rem;
+  border: 1px solid #23263a;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.advSearch-results__inner h2 {
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
+  letter-spacing: 0.03em;
+}
+
+.advSearch-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* individual result card */
+
+.searchResult-cardLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.searchResult-card {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid #23263a;
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.searchResult-card:last-child {
+  border-bottom: none;
+}
+
+.searchResult-cardLink:hover .searchResult-card,
+.searchResult-cardLink:focus-visible .searchResult-card {
+  background: #151a30;
+  transform: translateY(-1px);
+}
+
+/* cover image */
+
+.searchResult-img {
+  width: 52px;
+  height: 76px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #0b0d18;
+}
+
+/* text/meta */
+
+.searchResult-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.searchResult-title {
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.searchResult-author {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.searchResult-extra {
+  font-size: 0.8rem;
+  color: #d1d5db;
+  margin-top: 0.2rem;
+}
+
+.searchResult-rating {
+  font-size: 0.8rem;
+  color: #fbbf24;
+}
 
 .resultGenres .grid {
   margin-top: 6px;
@@ -350,6 +591,42 @@ h2 {
   text-align: center;
 }
 
+.book-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.6rem 0.4rem;
+  border-bottom: 1px solid #23263a;
+}
+
+.book-link {
+  text-decoration: none;
+  color: inherit;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+
+.book-card-img {
+  width: 52px;
+  height: 76px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #0b0d18;
+  flex-shrink: 0;
+}
+
+.book-card h3 {
+  margin: 0 0 0.1rem;
+  font-size: 0.98rem;
+}
+
+.book-card h4 {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
 
 /* ---------- dynBook Page Styles ---------- */
 .comment-card {
@@ -377,6 +654,20 @@ h2 {
   padding: 16px;
   align-items: flex-start;
 }
+
+.bookContainer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bookContainer-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 
 .bookContainer img {
   width: 220px;
@@ -431,11 +722,18 @@ h2 {
 }
 
 .bookSummary {
-  margin-top: 10px;
+  margin-top: 12px;
+  padding: 12px;
+  background: #151938;
+  border: 1px solid #22274a;
+  border-radius: 12px;
   line-height: 1.6;
   font-size: 15px;
   color: #e5e7eb;
+  max-height: 260px;      /* scrollable box */
+  overflow-y: auto;
 }
+
 
 /* rating block fits into theme like other panels */
 .ratingBlock {
@@ -479,13 +777,1067 @@ h2 {
   cursor: default;
 }
 
-/* comments panel matches card style */
+/* ===================== dynBook.php – comments ===================== */
+
+.dynBook-comments {
+  margin-top: 2rem;
+  padding: 0 1.5rem 3rem;
+}
+
 .commentContainer {
-  margin-top: 20px;
-  padding: 16px;
+  max-width: 900px;
+  margin: 0 auto;
   background: #151938;
-  border: 1px solid #22274a;
   border-radius: 16px;
+  border: 1px solid #22274a;
+  padding: 1.5rem 1.4rem;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+/* Avatar inside comments – keep it small and round */
+.commentSection img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.commentAvatar {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 999px;
+  display: inline-block;
 }
 
 
+.commentHeader {
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
+  letter-spacing: 0.03em;
+}
+
+.commentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.commentForm h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.commentTextarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 110px;
+  max-height: 260px;
+  padding: 0.6rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid #32375c;
+  background: #0b0d18;
+  color: #e5e7eb;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.commentTextarea::placeholder {
+  color: #6b7280;
+}
+
+.commentSubmit {
+  align-self: flex-end;
+  margin-top: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: none;
+  background: #4f46e5;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.commentSubmit:hover {
+  background: #6366f1;
+  transform: translateY(-1px);
+}
+
+.commentSubmit:active {
+  transform: translateY(0);
+}
+
+/* Where all comments render (from $comm) */
+
+.commentSection {
+  margin-top: 0.5rem;
+  padding-right: 0.3rem; /* room for scrollbar */
+}
+
+/* Generic child styling inside $comm output */
+
+.commentSection .comment,
+.commentSection .reply {
+  background: #0f1228;
+  border-radius: 10px;
+  border: 1px solid #23263f;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.commentSection .commentHeaderLine,
+.commentSection .commentMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.commentSection .commentBody {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* If replies are nested, indent them */
+
+.commentSection .reply {
+  margin-left: 1.25rem;
+}
+
+/* Existing classes from your JS */
+
+.replyButton,
+.replyCancel {
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid #374151;
+  background: #111827;
+  color: #e5e7eb;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.replyButton:hover,
+.replyCancel:hover {
+  background: #1f2937;
+}
+
+/* Make sure .hidden (used in JS) actually hides things */
+.hidden {
+  display: none !important;
+}
+
+/* comment dates that your JS formats */
+.commentDate {
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+.replyShowMore {
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid #374151;
+  background: #111827;
+  color: #e5e7eb;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.replyShowMore:hover {
+  background: #1f2937;
+}
+
+/* ===================== homepage.php ===================== */
+/* Big outer box so everything lines up together */
+.homepage-box {
+  max-width: 1200px;
+  margin: 3rem auto 4rem;
+  padding: 2rem 1.8rem;
+  border-radius: 22px;
+  background: #0b0d18;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.55);
+}
+
+
+
+/* ===== main layout: left (random) + right (sidebar) ===== */
+
+.homepage-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.homepage-layout__left {
+  min-width: 0;
+}
+
+.homepage-layout__right {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Stack everything on mobile */
+@media (max-width: 900px) {
+  .homepage-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .homepage-layout__right {
+    margin-top: 1.5rem;
+  }
+}
+
+/* ===================== random books section ===================== */
+
+.homepage-random-books {
+  margin-block:0;           
+  padding-inline:0;
+}
+
+.homepage-random-books__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  border-radius: 18px;
+  background: radial-gradient(circle at top left, #1c2140 0, #0f1221 55%);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+}
+
+/* Section title */
+.homepage-random-books h2 {
+  margin: 0 0 1.5rem;
+  font-size: 1.6rem;
+  letter-spacing: 0.03em;
+}
+
+/* Dynamic responsive grid – adapts to screen size */
+.homepage-random-books__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1.4rem;
+}
+
+/* Card tweaks scoped to this section */
+.homepage-random-books .card {
+  border-radius: 14px;
+  overflow: hidden;
+  background: #15172a;
+  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.homepage-random-books .card img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  display: block;
+}
+
+.homepage-random-books .title {
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin: 0.75rem 0.85rem 0.2rem;
+}
+
+.homepage-random-books .author {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin: 0 0.85rem 0.8rem;
+}
+
+/* Hover effects = nicer UX */
+.homepage-random-books .cardLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.homepage-random-books .cardLink:hover .card,
+.homepage-random-books .cardLink:focus-visible .card {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6);
+  background: #191c33;
+}
+
+/* ===================== top genres sidebar ===================== */
+
+.homepage-top-genres {
+  padding: 1.4rem 1.2rem;
+  border-radius: 16px;
+  background: #15172a;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.homepage-top-genres h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+}
+
+/* reuse .rows/.row but scoped to this section */
+.homepage-top-genres .rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.homepage-top-genres .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0.15rem;
+  border-bottom: 1px solid #23263a;
+}
+
+.homepage-top-genres .row:last-child {
+  border-bottom: none;
+}
+
+.homepage-top-genres .row > div:first-child {
+  font-size: 0.9rem;
+}
+
+.homepage-top-genres .row > div:last-child {
+  font-size: 0.85rem;
+  color: #fbbf24;
+}
+
+/* ===================== top three books sidebar ===================== */
+
+.homepage-top-books {
+  padding: 1.4rem 1.2rem;
+  border-radius: 16px;
+  background: #15172a;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.homepage-top-books h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+}
+
+.homepage-top-books .rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.homepage-top-books .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.45rem 0.15rem;
+  border-bottom: 1px solid #23263a;
+}
+
+.homepage-top-books .row:last-child {
+  border-bottom: none;
+}
+
+.homepage-top-books .title {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.homepage-top-books .author {
+  font-size: 0.82rem;
+  color: #9ca3af;
+}
+
+.homepage-top-books .muted {
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+.homepage-top-books__link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.homepage-top-books__link:hover .row,
+.homepage-top-books__link:focus-visible .row {
+  background: #191b31;
+}
+
+.homepage-top-books__left {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+
+.homepage-top-books__img {
+  width: 46px;
+  height: 68px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.homepage-top-books__stats {
+  text-align: right;
+  font-size: 0.8rem;
+}
+/* ===================== about.php ===================== */
+
+.about-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.about-page__inner {
+  max-width: 900px;
+  width: 100%;
+  background: radial-gradient(circle at top left, #1b2140 0, #0f1221 55%);
+  border-radius: 20px;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  border: 1px solid #23263a;
+}
+
+/* generic section block inside about page */
+
+.about-page__section + .about-page__section {
+  margin-top: 2rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid #23263a;
+}
+
+.about-page h2 {
+  margin-top: 0;
+  margin-bottom: 0.9rem;
+  font-size: 1.6rem;
+  letter-spacing: 0.03em;
+}
+
+.about-page h3 {
+  margin-top: 1.2rem;
+  margin-bottom: 0.6rem;
+  font-size: 1.2rem;
+}
+
+.about-page p {
+  line-height: 1.7;
+  margin-bottom: 0.9rem;
+}
+
+.about-page ul,
+.about-page ol {
+  padding-left: 1.4rem;
+  margin: 0.3rem 0 0.9rem;
+}
+
+.about-page li {
+  margin-bottom: 0.4rem;
+}
+
+.about-page strong {
+  font-weight: 600;
+}
+
+.about-page code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9em;
+  background: #111827;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* subtle style tweaks per section */
+
+.about-page__intro p:first-of-type {
+  font-size: 1rem;
+}
+
+.about-page__rules ol {
+  counter-reset: about-rules;
+}
+
+.about-page__rules ol > li {
+  position: relative;
+  padding-left: 0.25rem;
+}
+
+.about-page__credits {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #d1d5db;
+}
+/* ===================== top20.php ===================== */
+
+.top20-page {
+  max-width: 1000px;
+  margin: 3rem auto 4rem;
+  padding: 0 1.5rem;
+}
+
+.top20-page__inner {
+  background: #15172a;
+  border-radius: 18px;
+  padding: 2rem 1.6rem;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+  border: 1px solid #23263a;
+}
+
+.top20-page h2 {
+  margin: 0 0 1.4rem;
+  font-size: 1.6rem;
+  letter-spacing: 0.03em;
+}
+
+/* list container */
+
+.top20-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* each row is clickable */
+
+.top20-item {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.top20-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.4rem;
+  border-bottom: 1px solid #23263a;
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.top20-row:last-child {
+  border-bottom: none;
+}
+
+.top20-item:hover .top20-row,
+.top20-item:focus-visible .top20-row {
+  background: #191b31;
+  transform: translateY(-1px);
+}
+
+/* left side: rank + cover + text */
+
+.top20-left {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.top20-rank {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: #f59e0b;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.top20-img {
+  width: 48px;
+  height: 70px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #0b0d18;
+}
+
+.top20-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.top20-meta .title {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.top20-meta .author {
+  font-size: 0.82rem;
+  color: #9ca3af;
+}
+
+/* right side: stats */
+
+.top20-right {
+  text-align: right;
+  font-size: 0.82rem;
+  flex-shrink: 0;
+}
+
+.top20-right .muted {
+  font-size: 0.78rem;
+}
+
+.top20-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.top20-rating-star {
+  color: #fbbf24;
+  font-size: 0.9rem;
+}
+
+/* ===================== form.php – request a book ===================== */
+
+.request-form-page {
+  max-width: 1000px;
+  margin: 3rem auto 4rem;
+  padding: 0 1.5rem;
+}
+
+.request-form__inner {
+  background: #15172a;
+  border-radius: 18px;
+  padding: 2rem 1.6rem;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+  border: 1px solid #23263a;
+}
+
+.request-form__inner h2 {
+  margin: 0 0 1.4rem;
+  font-size: 1.6rem;
+  letter-spacing: 0.03em;
+}
+
+.requestForm {
+  margin-top: 0.5rem;
+}
+
+/* two-column layout for fields + genres */
+
+.requestForm-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 1.6rem;
+}
+
+.requestForm-left,
+.requestForm-right {
+  min-width: 0;
+}
+
+/* stack on small screens */
+
+@media (max-width: 900px) {
+  .requestForm-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* form fields */
+
+.requestForm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.9rem;
+}
+
+.requestForm-label {
+  font-size: 0.9rem;
+  color: #d1d5db;
+}
+
+.requestForm-field input[type="text"],
+.requestForm-field input[type="date"],
+.requestForm-field input[type="file"],
+.requestForm-field textarea {
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid #32375c;
+  background: #0b0d18;
+  color: #e5e7eb;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.requestForm-field textarea {
+  resize: vertical;
+}
+
+/* genres "select all that apply" box */
+
+.form-genres {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-genres-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.form-genres-hint {
+  font-size: 0.8rem;
+}
+
+.form-genres-box {
+  border-radius: 12px;
+  border: 1px solid #32375c;
+  background: #0b0d18;
+  padding: 0.75rem 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.3rem 0.75rem;
+}
+
+.form-genre-option {
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.form-genre-option input[type="checkbox"] {
+  accent-color: #4f46e5; /* modern browsers */
+}
+
+/* submit actions */
+
+.requestForm-actions {
+  margin-top: 1.4rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.requestForm-submit {
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  border: none;
+  background: #4f46e5;
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.requestForm-submit:hover {
+  background: #6366f1;
+  transform: translateY(-1px);
+}
+
+.requestForm-submit:active {
+  transform: translateY(0);
+}
+/* ===================== signin.php – auth ===================== */
+
+.auth-main {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem 4rem;
+}
+
+/* now a 2-column grid: left = summary/tabs, right = form */
+.auth-container {
+  width: 100%;
+  max-width: 920px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+/* stack on smaller screens */
+@media (max-width: 900px) {
+  .auth-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* left + right boxes */
+
+.auth-info,
+.auth-card {
+  background: #111827;
+  border-radius: 20px;
+  padding: 1.8rem 1.6rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  border: 1px solid #1f2937;
+}
+
+/* left box inner content */
+
+.auth-info-inner h1 {
+  margin: 0 0 0.4rem;
+  font-size: 1.7rem;
+  letter-spacing: 0.04em;
+}
+
+.auth-info-inner p {
+  margin: 0 0 1.1rem;
+  font-size: 0.9rem;
+}
+
+/* tab row under summary text (left box) */
+
+.toggle-buttons {
+  display: flex;
+  gap: 1.5rem;
+  border-bottom: 1px solid #23263a;
+  margin-bottom: 1rem;
+  padding-bottom: 0.35rem;
+}
+
+/* each "tab" is just a word */
+
+.toggle-buttons button {
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 0.95rem;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  transition: color 120ms ease;
+}
+
+.toggle-buttons button:hover {
+  color: #e5e7eb;
+}
+
+/* active tab: brighter text + small underline in site accent color */
+
+.toggle-buttons button.active {
+  color: #e5e7eb;
+  font-weight: 600;
+}
+
+.toggle-buttons button.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.3rem;
+  width: 100%;
+  height: 2px;
+  border-radius: 999px;
+  background: #4f46e5; /* matches the rest of your site */
+}
+
+/* right box – forms */
+
+.auth-panels {
+  position: relative;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.auth-form h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.3rem;
+}
+
+.auth-form input[type="text"],
+.auth-form input[type="password"],
+.auth-form input[type="file"] {
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid #374151;
+  background: #020617;
+  color: #e5e7eb;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.auth-form input::placeholder {
+  color: #6b7280;
+}
+
+.auth-form button[type="submit"] {
+  margin-top: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  background: #4f46e5;        /* primary accent */
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 140ms ease, transform 100ms ease;
+}
+
+.auth-form button[type="submit"]:hover {
+  background: #6366f1;
+  transform: translateY(-1px);
+}
+
+.auth-form button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* messages under forms */
+
+.auth-form .msg {
+  min-height: 1rem;
+  font-size: 0.85rem;
+  margin-top: 0.1rem;
+}
+
+/* shared hidden class already exists elsewhere */
+.hidden {
+  display: none !important;
+}
+
+/* ===================== adminTool.php – admin panels ===================== */
+
+.adminTool-section {
+  max-width: 1100px;
+  margin: 2.5rem auto 0;
+  padding: 0 1.5rem;
+}
+
+.adminTool-card {
+  background: #111827;
+  border-radius: 18px;
+  padding: 1.7rem 1.6rem;
+  border: 1px solid #23263a;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+}
+
+.adminTool-card h2 {
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
+  letter-spacing: 0.03em;
+}
+
+/* pending book requests – scrollable list */
+
+.adminTool-requests-list {
+  margin-top: 0.6rem;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 0.3rem;
+}
+
+.adminRequest-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #23263a;
+}
+
+.adminRequest-row:last-child {
+  border-bottom: none;
+}
+
+.adminRequest-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.adminRequest-meta {
+  flex: 0 0 220px;
+  font-size: 0.85rem;
+}
+
+.adminRequest-form {
+  margin-top: 0.35rem;
+}
+
+/* admin buttons – match site style */
+
+.adminAction {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 140ms ease, transform 80ms ease, box-shadow 80ms ease;
+}
+
+.adminAction-approve {
+  background: #4f46e5;
+  color: #e5e7eb;
+}
+
+.adminAction-approve:hover {
+  background: #6366f1;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+
+.adminAction-deny {
+  background: #b91c1c;
+  color: #fef2f2;
+}
+
+.adminAction-deny:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+
+/* top active users – scrollable list + ranks */
+
+.adminTool-users {
+  margin-top: 2rem;
+}
+
+.adminTool-users-list {
+  margin-top: 0.6rem;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 0.3rem;
+}
+
+.adminUser-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid #23263a;
+}
+
+.adminUser-row:last-child {
+  border-bottom: none;
+}
+
+.adminUser-rank {
+  width: 2.2rem;
+  text-align: center;
+  font-weight: 600;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.adminUser-main {
+  flex: 1;
+}

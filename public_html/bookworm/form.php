@@ -129,110 +129,120 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
 </head>
 
 <body>
-    <header>
-        <div class="brand">
-            <a href="/~bdb/bookworm/homepage.php" class="brand-link">
-                <img class="brand-icon" src="/~bdb/images/asset/site-icon.png" alt="Site icon">
-                <h1>BookWorm</h1>
-            </a>
-
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <span class="nav-welcome">
-                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
-                </span>
-            <?php endif; ?>
-        </div>
-
-
-        <nav aria-label="Primary">
-
-            <form class="nav-search live-search-container"
-                action="/~bdb/bookworm/advSearch.php"
-                method="GET">
-
-                <input
-                    type="text"
-                    id="liveSearch"
-                    name="query"
-                    placeholder="Search books..."
-                    autocomplete="off"
-                    onkeyup="searchpartial(event)"
-                    aria-label="Search books">
-
-                <div id="results" class="live-results"></div>
-            </form>
-
-            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-
-                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                    <a class="tab" href="/~bdb/bookworm/adminTool.php">Admin Tool</a>
-                <?php endif; ?>
-
-                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
-                <a class="tab" href="/~bdb/bookworm/profile.php">Profile</a>
-                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
-
-            <?php else: ?>
-
-                <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
-
-            <?php endif; ?>
-            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
-        </nav>
-    </header>
-
+    <?php require_once __DIR__ . '/../../phpTools/navbar.php' ?>
 
     <main>
-        <section>
-            <h2>Request a book</h2>
-            <?php if ($insertMsg !== ""): ?>
-                <p class="muted"><?= htmlspecialchars($insertMsg) ?></p>
-            <?php endif; ?>
+        <section class="request-form-page">
+            <div class="request-form__inner">
+                <h2>Request a book</h2>
 
-            <form action="form.php" method="POST" enctype="multipart/form-data">
-                <label>Title:
-                    <input type="text" name="title_data">
-                </label><br>
+                <?php if ($insertMsg !== ""): ?>
+                    <p class="muted"><?= htmlspecialchars($insertMsg) ?></p>
+                <?php endif; ?>
 
-                <label>Author:
-                    <input type="text" name="author_data">
-                </label><br>
+                <form
+                    action="form.php"
+                    method="POST"
+                    enctype="multipart/form-data"
+                    class="requestForm">
+                    <div class="requestForm-grid">
+                        <!-- LEFT: main book fields -->
+                        <div class="requestForm-left">
+                            <label class="requestForm-field">
+                                <span class="requestForm-label">Title</span>
+                                <input type="text" name="title_data">
+                            </label>
 
-                <label>ISBN:
-                    <input type="text" name="isbn_data">
-                </label><br>
+                            <label class="requestForm-field">
+                                <span class="requestForm-label">Author</span>
+                                <input type="text" name="author_data">
+                            </label>
 
-                <label>Published Date:
-                    <input type="date" name="publish_data">
-                </label><br>
+                            <label class="requestForm-field">
+                                <span class="requestForm-label">ISBN</span>
+                                <input type="text" name="isbn_data">
+                            </label>
 
-                <label>Summary:<br>
-                    <textarea rows="10" cols="60" name="summary_data"></textarea>
-                </label><br>
+                            <label class="requestForm-field">
+                                <span class="requestForm-label">Published Date</span>
+                                <input type="date" name="publish_data">
+                            </label>
 
-                <label>Cover image (optional):
-                    <input type="file" name="image" accept="image/png,image/jpeg">
-                </label><br>
+                            <label class="requestForm-field">
+                                <span class="requestForm-label">Summary</span>
+                                <textarea rows="10" cols="60" name="summary_data"></textarea>
+                            </label>
 
-                <label>Genres:</label><br>
-                <input type="checkbox" name="genre_data[]" value="Action"> Action<br>
-                <input type="checkbox" name="genre_data[]" value="Adventure"> Adventure<br>
-                <input type="checkbox" name="genre_data[]" value="Crime"> Crime<br>
-                <input type="checkbox" name="genre_data[]" value="Classic"> Classic<br>
-                <input type="checkbox" name="genre_data[]" value="Dystopian"> Dystopian<br>
-                <input type="checkbox" name="genre_data[]" value="Fantasy"> Fantasy<br>
-                <input type="checkbox" name="genre_data[]" value="Historical"> Historical<br>
-                <input type="checkbox" name="genre_data[]" value="Horror"> Horror<br>
-                <input type="checkbox" name="genre_data[]" value="Non-Fiction"> Non-Fiction<br>
-                <input type="checkbox" name="genre_data[]" value="Mystery"> Mystery<br>
-                <input type="checkbox" name="genre_data[]" value="Romance"> Romance<br>
-                <input type="checkbox" name="genre_data[]" value="Sci-Fi"> Sci-Fi<br>
-                <input type="checkbox" name="genre_data[]" value="Thriller"> Thriller<br>
+                            <label class="requestForm-field">
+                                <span class="requestForm-label">Cover image (optional)</span>
+                                <input type="file" name="image" accept="image/png,image/jpeg">
+                            </label>
+                        </div>
 
-                <input type="submit" name="request_submit" value="Submit Request">
-            </form>
+                        <!-- RIGHT: genres box -->
+                        <div class="requestForm-right">
+                            <div class="form-genres">
+                                <div class="form-genres-header">
+                                    <span class="requestForm-label">Genres</span>
+                                    <span class="form-genres-hint muted">Select all that apply</span>
+                                </div>
+
+                                <div class="form-genres-box">
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Action"> Action
+                                    </label>
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Adventure"> Adventure
+                                    </label>
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Crime"> Crime
+                                    </label>
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Classic"> Classic
+                                    </label>
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Dystopian"> Dystopian
+                                    </label>
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Fantasy"> Fantasy
+                                    </label>
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Historical"> Historical
+                                    </label>
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Horror"> Horror
+                                    </label>
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Non-Fiction"> Non-Fiction
+                                    </label>
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Mystery"> Mystery
+                                    </label>
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Romance"> Romance
+                                    </label>
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Sci-Fi"> Sci-Fi
+                                    </label>
+                                    <label class="form-genre-option">
+                                        <input type="checkbox" name="genre_data[]" value="Thriller"> Thriller
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="requestForm-actions">
+                        <input
+                            type="submit"
+                            name="request_submit"
+                            value="Submit Request"
+                            class="requestForm-submit">
+                    </div>
+                </form>
+            </div>
         </section>
+
     </main>
     <script src="/~bdb/bookworm/search.js"></script>
 

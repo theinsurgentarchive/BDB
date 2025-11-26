@@ -18,83 +18,79 @@ if (isset($_SESSION['user_id'])) {
 </head>
 
 <body>
-    <header>
-        <div class="brand">
-            <a href="/~bdb/bookworm/homepage.php" class="brand-link">
-                <img class="brand-icon" src="/~bdb/images/asset/site-icon.png" alt="Site icon">
-                <h1>BookWorm</h1>
-            </a>
-
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <span class="nav-welcome">
-                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
-                </span>
-            <?php endif; ?>
-        </div>
-
-
-        <nav aria-label="Primary">
-
-            <form class="nav-search live-search-container"
-                action="/~bdb/bookworm/advSearch.php"
-                method="GET">
-
-                <input
-                    type="text"
-                    id="liveSearch"
-                    name="query"
-                    placeholder="Search books..."
-                    autocomplete="off"
-                    onkeyup="searchpartial(event)"
-                    aria-label="Search books">
-
-                <div id="results" class="live-results"></div>
-            </form>
-
-            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-
-                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                    <a class="tab" href="/~bdb/bookworm/adminTool.php">Admin Tool</a>
-                <?php endif; ?>
-
-                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
-                <a class="tab" href="/~bdb/bookworm/profile.php">Profile</a>
-                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
-
-            <?php else: ?>
-
-                <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
-
-            <?php endif; ?>
-            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
-        </nav>
-    </header>
+    <?php require_once __DIR__ . '/../../phpTools/navbar.php' ?>
 
     <main class="auth-main">
         <div class="auth-container">
+            <!-- LEFT: summary + tabs -->
+            <section class="auth-info">
+                <div class="auth-info-inner">
+                    <h1>BookWorm</h1>
+                    <p class="muted">
+                        Sign in or create an account to rate books, leave comments,
+                        and keep track of what you’ve read.
+                    </p>
 
-            <form id="loginForm" class="auth-form">
-                <h2>Sign In</h2>
-                <input type="text" name="username" placeholder="Username" required minlength="6" maxlength="32" />
-                <input type="password" name="password" placeholder="Password" required minlength="6" maxlength="20" />
-                <button type="submit">Login</button>
-                <div class="msg" id="loginMsg"></div>
-            </form>
+                    <div class="toggle-buttons">
+                        <button type="button" id="showLogin" class="active">Sign In</button>
+                        <button type="button" id="showRegister">Create Account</button>
+                    </div>
 
-            <form id="registerForm" enctype="multipart/form-data" class="auth-form hidden">
-                <h2>Create Account</h2>
-                <input type="text" name="username" placeholder="Username (6-32 chars)" required minlength="6" maxlength="32" />
-                <input type="password" name="password" placeholder="Password (6-20 chars)" required minlength="6" maxlength="20" />
-                <input type="file" name="image" accept="image/png,image/jpeg" />
-                <button type="submit">Register</button>
-                <div class="msg" id="registerMsg"></div>
-            </form>
+                </div>
+            </section>
 
-            <div class="toggle-buttons">
-                <button type="button" id="showLogin" class="active">Sign In</button>
-                <button type="button" id="showRegister">Create Account</button>
-            </div>
+            <!-- RIGHT: forms box -->
+            <section class="auth-card">
+                <div class="auth-panels">
+                    <form id="loginForm" class="auth-form">
+                        <h2>Sign In</h2>
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="Username"
+                            required
+                            minlength="6"
+                            maxlength="32" />
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            required
+                            minlength="6"
+                            maxlength="20" />
+                        <button type="submit">Login</button>
+                        <div class="msg" id="loginMsg"></div>
+                    </form>
+
+                    <form
+                        id="registerForm"
+                        enctype="multipart/form-data"
+                        class="auth-form hidden">
+                        <h2>Create Account</h2>
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="Username (6–32 chars)"
+                            required
+                            minlength="6"
+                            maxlength="32" />
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password (6–20 chars)"
+                            required
+                            minlength="6"
+                            maxlength="20" />
+                        <input
+                            type="file"
+                            name="image"
+                            accept="image/png,image/jpeg" />
+                        <button type="submit">Register</button>
+                        <div class="msg" id="registerMsg"></div>
+                    </form>
+                </div>
+            </section>
+        </div>
 
         </div>
 

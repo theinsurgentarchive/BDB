@@ -52,6 +52,9 @@ $results = '';
 foreach ($rows as $row) {
     $results .= "<div class='book-card' id='" . $row['book_id'] . "'>";
     $results .= "<a href='/~bdb/bookworm/dynBook.php?bid=" . $row['book_id'] . "' class='book-link'>";
+    $results .= "<img class='book-card-img' src='"
+        . htmlspecialchars($row['image_path'] ?? '')
+        . "' alt='" . htmlspecialchars($row['title']) . "'>";
     $results .= "<h3>" . htmlspecialchars($row["title"]) . "</h3>";
     $results .= "<h4>" . htmlspecialchars($row["author"]) . "</h4>";
     $results .= "<span class='bookPublish' data-date=\"" . htmlspecialchars($row['published']) . "\">" . htmlspecialchars($row['published']) . "</span>";
@@ -80,98 +83,91 @@ foreach ($rows as $row) {
 </head>
 
 <body>
-    <?php //require __DIR__ . '/../../phpTools/navbar.php' 
-    ?>
-    <header>
-        <div class="brand">
-            <a href="/~bdb/bookworm/homepage.php" class="brand-link">
-                <img class="brand-icon" src="/~bdb/images/asset/site-icon.png" alt="Site icon">
-                <h1>BookWorm</h1>
-            </a>
-
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <span class="nav-welcome">
-                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
-                </span>
-            <?php endif; ?>
-        </div>
-
-
-        <nav aria-label="Primary">
-
-            <form class="nav-search live-search-container"
-                action="/~bdb/bookworm/advSearch.php"
-                method="GET">
-
-                <input
-                    type="text"
-                    id="liveSearch"
-                    name="query"
-                    placeholder="Search books..."
-                    autocomplete="off"
-                    onkeyup="searchpartial(event)"
-                    aria-label="Search books">
-
-                <div id="results" class="live-results"></div>
-            </form>
-
-            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-
-                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                    <a class="tab" href="/~bdb/bookworm/adminTool.php">Admin Tool</a>
-                <?php endif; ?>
-
-                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
-                <a class="tab" href="/~bdb/bookworm/profile.php">Profile</a>
-                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
-
-            <?php else: ?>
-
-                <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
-
-            <?php endif; ?>
-            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
-        </nav>
-    </header>
+    <?php require_once __DIR__ . '/../../phpTools/navbar.php' ?>
 
     <main>
-        <section>
-            <div class="searchForm">
+        <section class="advSearch-page">
+            <div class="advSearch__inner">
                 <h2>Advanced Search</h2>
-                <form action="<?= $_SERVER['PHP_SELF'] ?>" method="GET">
-                    <input type="text" name="query" placeholder="Search Here..." value="<?= htmlspecialchars($query) ?>"><br>
-                    <label for="genres[]"><b>Search by Genre (Inclusive):</b></label>
-                    <div class="grid">
-                        <?php
-                        foreach ($gs as $g) {
-                            $checked = in_array($g['genre'], (array)$genresRaw, true) ? 'checked' : '';
-                            echo "<label><input type='checkbox' name='genres[]' value='" . htmlspecialchars($g['genre']) . "' $checked> " . htmlspecialchars($g['genre']) . "</label>";
-                        }
-                        ?>
+
+                <div class="advSearch-hint muted">
+                    Search by title, author, and one or more genres.
+                </div>
+
+                <form
+                    action="<?= $_SERVER['PHP_SELF'] ?>"
+                    method="GET"
+                    class="advSearch-form">
+                    <!-- Book / title keywords -->
+                    <label class="advSearch-field">
+                        <span class="advSearch-label">Book title / keywords</span>
+                        <input
+                            type="text"
+                            name="query"
+                            placeholder="Search by title or keywords..."
+                            value="<?= htmlspecialchars($query) ?>">
+                    </label>
+
+                    <!-- Author -->
+                    <label class="advSearch-field">
+                        <span class="advSearch-label">Author</span>
+                        <input
+                            type="text"
+                            name="author"
+                            placeholder="Author name..."
+                            value="<?= htmlspecialchars($author) ?>">
+                    </label>
+
+                    <!-- Genres -->
+                    <div class="advSearch-field">
+                        <div class="advSearch-labelRow">
+                            <span class="advSearch-label">Genres</span>
+                            <span class="advSearch-labelHint muted">Select all that apply</span>
+                        </div>
+
+                        <div class="form-genres-box advSearch-genres-box">
+                            <?php foreach ($gs as $g): ?>
+                                <?php
+                                $checked = in_array($g['genre'], (array)$genresRaw, true) ? 'checked' : '';
+                                ?>
+                                <label class="form-genre-option">
+                                    <input
+                                        type="checkbox"
+                                        name="genres[]"
+                                        value="<?= htmlspecialchars($g['genre']) ?>"
+                                        <?= $checked ?>>
+                                    <?= htmlspecialchars($g['genre']) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
-                    <label for="author">Search by Author:</label>
-                    <input type="text" name="author" placeholder="Author Name Here..." value="<?= htmlspecialchars($author) ?>">
-                    <br>
-                    <input type="submit">
+
+                    <div class="advSearch-actions">
+                        <input type="submit" value="Search" class="advSearch-submit">
+                    </div>
                 </form>
             </div>
         </section>
 
-        <section>
-            <h2>Search Results:</h2>
-            <div id="searchResults">
-                <?php
-                if ($results !== '') {
-                    echo $results;
-                } elseif (!empty($query) || !empty($author) || !empty($genres)) {
-                    echo "<p>No results found.</p>";
-                } else {
-                    echo "<p>Begin searching for books to see results.</p>";
-                }
-                ?>
+
+        <section class="advSearch-results">
+            <div class="advSearch-results__inner">
+                <h2>Search Results</h2>
+
+                <div id="searchResults" class="advSearch-results-list">
+                    <?php
+                    if ($results !== '') {
+                        echo $results;
+                    } elseif (!empty($query) || !empty($author) || !empty($genres)) {
+                        echo "<p class='muted'>No results found.</p>";
+                    } else {
+                        echo "<p class='muted'>Begin searching for books to see results.</p>";
+                    }
+                    ?>
+                </div>
             </div>
         </section>
+
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 // Listen for clicks on any .book-card
@@ -203,8 +199,6 @@ foreach ($rows as $row) {
             });
         </script>
     </main>
-    <script src="/~bdb/bookworm/search.js"></script>
-
 </body>
 
 </html>

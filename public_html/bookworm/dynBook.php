@@ -13,8 +13,20 @@ function renderComments(
     if (!isset($commentsByParent[$parentId])) return '';
 
     $html = '';
+
+    // replies (non-top-level) are wrapped in a replyGroup
+    if ($parentId !== null) {
+        $html .= "<div class='replyGroup'>";
+    }
+
     foreach ($commentsByParent[$parentId] as $c) {
-        $html .= "<div class='comment-card' id='{$c['comment_id']}' style='margin-left:" . (20 * $depth) . "px'>";
+        // base class is comment-card; replies also get class="reply"
+        $classes = 'comment-card';
+        if ($depth > 0) {
+            $classes .= ' reply';
+        }
+
+        $html .= "<div class='{$classes}' id='{$c['comment_id']}' style='margin-left:" . (20 * $depth) . "px'>";
         $html .= "<img class='commentPic' src='" . htmlspecialchars($c['image_path']) . "' alt='" . htmlspecialchars($altPath) . "'>";
         $html .= "<h4 class='commentUser'>" . htmlspecialchars($c['username']) . "</h4>";
         $html .= "<label><b>Creation Date: </b></label>";
@@ -40,6 +52,7 @@ function renderComments(
             $html .= "</form>";
         }
 
+        // recurse for this comment's children
         $html .= renderComments(
             $c['comment_id'],
             $commentsByParent,
@@ -49,11 +62,16 @@ function renderComments(
             $depth + 1
         );
 
-        $html .= "</div>";
+        $html .= "</div>"; // end .comment-card
+    }
+
+    if ($parentId !== null) {
+        $html .= "</div>"; // end .replyGroup
     }
 
     return $html;
 }
+
 
 $user_id = $_SESSION['user_id'] ?? '';
 
@@ -170,37 +188,6 @@ $comm = renderComments(
     $book_id,
     $altPath
 );
-/*foreach ($comments as $c) {
-        $temp = "<div class='comment-card' id='" . $c['comment_id'] . "'>";
-        $temp .= "<img class='commentPic' src='" . $c['image_path'] . "' alt='" . $altPath . "'>";  
-        $temp .= "<h4 class='commentUser'>" . $c['username'] . "</h4>";
-        $temp .= "<label><b>Creation Date: </b></label>";
-        $temp .= "<span class='commentDate' data-date='" . htmlspecialchars($c['creation_date']) . "'>" . $c['creation_date'] . "</span>";
-        if ($c["user_id"] === $user_id) {
-            $temp .= "<script>console.log('Comment " . $c['comment_id'] . " Belongs to Session User.');</script>";
-            $temp .= "<p style='white-space: pre-wrap'>" . $c['comment_text'] . "</p>";
-        } else {
-            $temp .= "<p style='white-space: pre-wrap'>" . $c['comment_text'] . "</p>";
-        }
-        if (!empty($c["modified_date"])) {
-            $temp .= "<label><b>Edited On: </b></label>";
-            $temp .= "<span class='commentDate' data-date='" . htmlspecialchars($c['modified_date']) . "'>" . $c['modified_date'] . "</span>";
-        }
-        if ($c["depth"] < 6 && !empty($user_id)) {
-            $temp .= "<button class='replyButton' data-id='" . $c['comment_id'] . "'>Reply</button>";
-            $temp .= "<form class='replyForm hidden' data-id='" . $c['comment_id'] . "'>";
-            $temp .= "<input type='hidden' name='bid' value='$book_id'>";
-            $temp .= "<input type='hidden' name='uid' value='$user_id'>";
-            $temp .= "<input type='hidden' name='pid' value='" . $c["comment_id"] . "'>";
-            $temp .= "<textarea rows='5' cols='50' name='commentText' placeholder='Write a reply...'></textarea><br>";
-            $temp .= "<input type='submit'>";
-            $temp .= "<button class='replyCancel' data-id='" . $c['comment_id'] . "'>Cancel</button>";
-            $temp .= "</form>";
-        }
-        $temp .= "</div>";
-        $comm .= $temp;
-    }*/
-
 ?>
 
 <!doctype html>
@@ -214,81 +201,40 @@ $comm = renderComments(
 </head>
 
 <body>
-    <?php //require __DIR__ . '/../../phpTools/navbar.php'
-    ?>
-    <header>
-        <div class="brand">
-            <a href="/~bdb/bookworm/homepage.php" class="brand-link">
-                <img class="brand-icon" src="/~bdb/images/asset/site-icon.png" alt="Site icon">
-                <h1>BookWorm</h1>
-            </a>
-
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <span class="nav-welcome">
-                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
-                </span>
-            <?php endif; ?>
-        </div>
-
-
-        <nav aria-label="Primary">
-
-            <form class="nav-search live-search-container"
-                action="/~bdb/bookworm/advSearch.php"
-                method="GET">
-
-                <input
-                    type="text"
-                    id="liveSearch"
-                    name="query"
-                    placeholder="Search books..."
-                    autocomplete="off"
-                    onkeyup="searchpartial(event)"
-                    aria-label="Search books">
-
-                <div id="results" class="live-results"></div>
-            </form>
-
-            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-
-                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                    <a class="tab" href="/~bdb/bookworm/adminTool.php">Admin Tool</a>
-                <?php endif; ?>
-
-                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
-                <a class="tab" href="/~bdb/bookworm/profile.php">Profile</a>
-                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
-
-            <?php else: ?>
-
-                <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
-
-            <?php endif; ?>
-            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
-        </nav>
-    </header>
+    <?php require_once __DIR__ . '/../../phpTools/navbar.php' ?>
 
     <main>
-        <section>
+        <section class="dynBook-main">
             <div class="bookContainer">
-                <img src="<?= $book['image_path'] ?>" alt="<?= $altPath ?>">
-                <h1><?= $book['title'] ?></h1>
-                <div class="bookInfo">
-                    <p class="bookISBN"><?= $book['isbn'] ?></p>
-                    <p class="bookAuthor"><?= $book['author'] ?></p>
-                    <span
-                        class="bookPublish"
-                        data-date="<?= htmlspecialchars($book['published']) ?>">
-                        <?= htmlspecialchars($book['published']) ?>
-                    </span>
-                    <div class="grid">
-                        <?php foreach ($genres as $g): ?>
-                            <a href="<?= "/~bdb/bookworm/advSearch.php?genres[]=" . urlencode($g['genre']) ?>">
-                                <?= $g['genre'] ?>
-                            </a>
-                        <?php endforeach; ?>
+
+                <!-- LEFT SIDE: image + title + basic info + genres -->
+                <div class="bookContainer-left">
+                    <img src="<?= $book['image_path'] ?>" alt="<?= $altPath ?>">
+
+                    <h1><?= $book['title'] ?></h1>
+
+                    <div class="bookInfo">
+                        <p class="bookISBN"><?= $book['isbn'] ?></p>
+                        <p class="bookAuthor"><?= $book['author'] ?></p>
+
+                        <span
+                            class="bookPublish"
+                            data-date="<?= htmlspecialchars($book['published']) ?>">
+                            <?= htmlspecialchars($book['published']) ?>
+                        </span>
+
+                        <div class="grid">
+                            <?php foreach ($genres as $g): ?>
+                                <a href="<?= "/~bdb/bookworm/advSearch.php?genres[]=" . urlencode($g['genre']) ?>">
+                                    <?= $g['genre'] ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
+                </div>
+
+                <!-- RIGHT SIDE: rating + scrollable summary -->
+                <div class="bookContainer-right">
 
                     <!-- ---------- Rating Display + Form ---------- -->
                     <div class="ratingBlock">
@@ -305,7 +251,6 @@ $comm = renderComments(
                                 Rating submitted!
                             </div>
                         <?php endif; ?>
-
 
                         <?php if (isset($_SESSION['user_id'])): ?>
                             <form method="POST" class="starRatingForm">
@@ -335,34 +280,48 @@ $comm = renderComments(
                     </div>
 
                     <div class="bookSummary">
-                        <p style='white-space: pre-wrap'><?= $book['summary'] ?></p>
+                        <p style="white-space: pre-wrap">
+                            <?= $book['summary'] ?>
+                        </p>
                     </div>
+
                 </div>
             </div>
         </section>
 
-        <section>
+        <section class="dynBook-comments">
             <div class="commentContainer">
+                <h2 class="commentHeader">Comments</h2>
+
                 <!--Generate Comments After Form!-->
                 <?php if (!empty($user_id)): ?>
                     <form class="commentForm" method="POST">
                         <label for="commentText">
                             <h4>Enter Comment Here:</h4>
-                        </label><br>
-                        <textarea rows="5" cols="50" name="commentText" placeholder="Comment Here..."></textarea>
+                        </label>
+                        <textarea
+                            id="commentText"
+                            rows="5"
+                            cols="50"
+                            name="commentText"
+                            class="commentTextarea"
+                            placeholder="Comment Here..."></textarea>
+
                         <input type="hidden" name="bid" value="<?= $book_id ?>">
-                        <input type="hidden" name="uid" value="<?= $_SESSION['user_id'] ?>"><br>
-                        <input type="submit">
+                        <input type="hidden" name="uid" value="<?= $_SESSION['user_id'] ?>">
+
+                        <button type="submit" class="commentSubmit">Post Comment</button>
                     </form>
                 <?php else: ?>
                     <h4>Sign-in/Register to Comment:</h4>
                 <?php endif; ?>
-                <br>
-                <div id="commentSection">
+
+                <div id="commentSection" class="commentSection">
                     <?php echo $comm; ?>
                 </div>
             </div>
         </section>
+
     </main>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -387,6 +346,27 @@ $comm = renderComments(
                         rb.classList.remove('hidden');
                         form.reset();
                     }
+                }
+            });
+
+            document.querySelectorAll('.replyGroup').forEach(group => {
+                const replies = Array.from(group.querySelectorAll('.reply'));
+
+                if (replies.length > 3) {
+                    // Hide all after the first three
+                    replies.slice(3).forEach(r => r.classList.add('hidden'));
+
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.textContent = `Show ${replies.length - 3} more repl${replies.length - 3 === 1 ? 'y' : 'ies'}`;
+                    btn.className = 'replyShowMore';
+
+                    btn.addEventListener('click', () => {
+                        replies.slice(3).forEach(r => r.classList.remove('hidden'));
+                        btn.remove();
+                    });
+
+                    group.appendChild(btn);
                 }
             });
         });
@@ -472,6 +452,5 @@ $comm = renderComments(
         }
     </script>
 </body>
-<script src="/~bdb/bookworm/search.js"></script>
 
 </html>
