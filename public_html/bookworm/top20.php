@@ -14,84 +14,54 @@ $topTwentyBooks = $pdo->query("SELECT * FROM toptwentybooks")->fetchAll();
 </head>
 
 <body>
-    <header>
-        <div class="brand">
-            <a href="/~bdb/bookworm/homepage.php" class="brand-link">
-                <img class="brand-icon" src="/~bdb/images/asset/site-icon.png" alt="Site icon">
-                <h1>BookWorm</h1>
-            </a>
-
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <span class="nav-welcome">
-                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
-                </span>
-            <?php endif; ?>
-        </div>
-
-
-        <nav aria-label="Primary">
-
-            <form class="nav-search live-search-container"
-                action="/~bdb/bookworm/advSearch.php"
-                method="GET">
-
-                <input
-                    type="text"
-                    id="liveSearch"
-                    name="query"
-                    placeholder="Search books..."
-                    autocomplete="off"
-                    onkeyup="searchpartial(event)"
-                    aria-label="Search books">
-
-                <div id="results" class="live-results"></div>
-            </form>
-
-            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-
-                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                    <a class="tab" href="/~bdb/bookworm/adminTool.php">Admin Tool</a>
-                <?php endif; ?>
-
-                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
-                <a class="tab" href="/~bdb/bookworm/profile.php">Profile</a>
-                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
-
-            <?php else: ?>
-
-                <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
-
-            <?php endif; ?>
-            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
-        </nav>
-    </header>
-
-
+    <?php require_once __DIR__ . '/../../phpTools/navbar.php' ?>
 
     <main>
-        <section>
-            <h2>Top Twenty Books</h2>
-            <?php if (!$topTwentyBooks): ?>
-                <p class="muted">No book ratings yet.</p>
-            <?php else: ?>
-                <div class="rows">
-                    <?php foreach ($topTwentyBooks as $i => $t): ?>
-                        <div class="row">
-                            <div>
-                                <div class="muted">#<?= $i + 1 ?></div>
-                                <div class="title"><?= htmlspecialchars($t['title']) ?></div>
-                                <div class="author"><?= htmlspecialchars($t['author']) ?></div>
-                            </div>
-                            <div>
-                                <div>Avg: <?= number_format((float)$t['avg_rating'], 2) ?></div>
-                                <div class="muted">Ratings: <?= (int)$t['totalratings'] ?></div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+        <section class="top20-page">
+            <div class="top20-page__inner">
+                <h2>Top Twenty Books</h2>
+
+                <?php if (!$topTwentyBooks): ?>
+                    <p class="muted">No book ratings yet.</p>
+                <?php else: ?>
+                    <div class="rows top20-list">
+                        <?php foreach ($topTwentyBooks as $i => $t): ?>
+                            <a class="cardLink top20-item"
+                                href="<?= "/~bdb/bookworm/dynBook.php/?bid=" . htmlspecialchars($t['book_id'] ?? '') ?>">
+                                <div class="row top20-row">
+                                    <div class="top20-left">
+                                        <div class="top20-rank">
+                                            <?= $i + 1 ?>
+                                        </div>
+
+                                        <img
+                                            src="<?= htmlspecialchars($t['image_path'] ?? '') ?>"
+                                            alt=""
+                                            class="top20-img">
+
+                                        <div class="top20-meta">
+                                            <div class="title"><?= htmlspecialchars($t['title']) ?></div>
+                                            <div class="author"><?= htmlspecialchars($t['author']) ?></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="top20-right">
+                                        <div class="top20-rating">
+                                            <span class="top20-rating-star">★</span>
+                                            <span>Avg: <?= number_format((float)$t['avg_rating'], 2) ?></span>
+                                        </div>
+                                        <div class="muted">
+                                            Ratings: <?= (int)$t['totalratings'] ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
         </section>
+
     </main>
     <script src="/~bdb/bookworm/search.js"></script>
 

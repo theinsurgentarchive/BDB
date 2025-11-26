@@ -130,138 +130,106 @@ try {
 </head>
 
 <body>
-    <header>
-        <div class="brand">
-            <a href="/~bdb/bookworm/homepage.php" class="brand-link">
-                <img class="brand-icon" src="/~bdb/images/asset/site-icon.png" alt="Site icon">
-                <h1>BookWorm</h1>
-            </a>
+    <?php require_once __DIR__ . '/../../phpTools/navbar.php' ?>
 
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <span class="nav-welcome">
-                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
-                </span>
-            <?php endif; ?>
-        </div>
-
-
-        <nav aria-label="Primary">
-
-            <form class="nav-search live-search-container"
-                action="/~bdb/bookworm/advSearch.php"
-                method="GET">
-
-                <input
-                    type="text"
-                    id="liveSearch"
-                    name="query"
-                    placeholder="Search books..."
-                    autocomplete="off"
-                    onkeyup="searchpartial(event)"
-                    aria-label="Search books">
-
-                <div id="results" class="live-results"></div>
-            </form>
-
-            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-
-                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                    <a class="tab" href="/~bdb/bookworm/adminTool.php">Admin Tool</a>
-                <?php endif; ?>
-
-                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
-                <a class="tab" href="/~bdb/bookworm/profile.php">Profile</a>
-                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
-
-            <?php else: ?>
-
-                <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
-
-            <?php endif; ?>
-            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
-        </nav>
-    </header>
     <main>
 
-        <section>
-            <h2>Pending book requests</h2>
+        <section class="adminTool-section adminTool-requests">
+            <div class="adminTool-card">
+                <h2>Pending book requests</h2>
 
-            <?php if ($adminMsg !== ""): ?>
-                <p class="muted"><?= htmlspecialchars($adminMsg) ?></p>
-            <?php endif; ?>
+                <?php if ($adminMsg !== ""): ?>
+                    <p class="muted"><?= htmlspecialchars($adminMsg) ?></p>
+                <?php endif; ?>
 
-            <?php if (!$allForms): ?>
-                <p class="muted">No pending requests.</p>
-            <?php else: ?>
-                <div class="rows">
-                    <?php foreach ($allForms as $f): ?>
-                        <div class="row">
-                            <div>
-                                <div class="title">
-                                    <?= htmlspecialchars($f['title']) ?> (<?= htmlspecialchars($f['isbn']) ?>)
-                                </div>
-                                <div class="author">
-                                    by <?= htmlspecialchars($f['author']) ?>
-                                </div>
-                                <div class="muted">
-                                    Genres: <?= htmlspecialchars($f['genres'] ?? '') ?>
-                                </div>
-                                <?php if (!empty($f['image_path'])): ?>
-                                    <div class="muted">
-                                        Image: <?= htmlspecialchars($f['image_path']) ?>
+                <?php if (!$allForms): ?>
+                    <p class="muted">No pending requests.</p>
+                <?php else: ?>
+                    <div class="adminTool-requests-list">
+                        <div class="rows">
+                            <?php foreach ($allForms as $f): ?>
+                                <div class="row adminRequest-row">
+                                    <div class="adminRequest-main">
+                                        <div class="title">
+                                            <?= htmlspecialchars($f['title']) ?> (<?= htmlspecialchars($f['isbn']) ?>)
+                                        </div>
+                                        <div class="author">
+                                            by <?= htmlspecialchars($f['author']) ?>
+                                        </div>
+                                        <div class="muted">
+                                            Genres: <?= htmlspecialchars($f['genres'] ?? '') ?>
+                                        </div>
+                                        <?php if (!empty($f['image_path'])): ?>
+                                            <div class="muted">
+                                                Image: <?= htmlspecialchars($f['image_path']) ?>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
-                                <?php endif; ?>
-                            </div>
 
-                            <div>
-                                <div class="muted">
-                                    Requested by: <?= htmlspecialchars($f['username']) ?>
+                                    <div class="adminRequest-meta">
+                                        <div class="muted">
+                                            Requested by: <?= htmlspecialchars($f['username']) ?>
+                                        </div>
+                                        <div class="muted">
+                                            Submitted: <?= htmlspecialchars($f['creation_date']) ?>
+                                        </div>
+
+                                        <!-- Approve -->
+                                        <form action="adminTool.php" method="POST" class="adminRequest-form">
+                                            <input type="hidden" name="approve_form_id" value="<?= (int)$f['form_id'] ?>">
+                                            <button type="submit" class="adminAction adminAction-approve">
+                                                Approve
+                                            </button>
+                                        </form>
+
+                                        <!-- Deny -->
+                                        <form action="adminTool.php" method="POST" class="adminRequest-form">
+                                            <input type="hidden" name="deny_form_id" value="<?= (int)$f['form_id'] ?>">
+                                            <button type="submit" class="adminAction adminAction-deny">
+                                                Deny
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div class="muted">
-                                    Submitted: <?= htmlspecialchars($f['creation_date']) ?>
-                                </div>
-
-                                <!-- Approve -->
-                                <form action="adminTool.php" method="POST" style="margin-top:8px;">
-                                    <input type="hidden" name="approve_form_id" value="<?= (int)$f['form_id'] ?>">
-                                    <button type="submit">Approve</button>
-                                </form>
-
-                                <!-- Deny -->
-                                <form action="adminTool.php" method="POST" style="margin-top:4px;">
-                                    <input type="hidden" name="deny_form_id" value="<?= (int)$f['form_id'] ?>">
-                                    <button type="submit">Deny</button>
-                                </form>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
         </section>
 
 
-        <section style="margin-top:30px;">
-            <h2>Top active users (last 30 days)</h2>
 
-            <?php if (!$activeUsers): ?>
-                <p class="muted">No activity yet.</p>
-            <?php else: ?>
-                <div class="rows">
-                    <?php foreach ($activeUsers as $u): ?>
-                        <div class="row">
-                            <div class="title"><?= htmlspecialchars($u['username']) ?></div>
-                            <div class="muted">
-                                Comments: <?= (int)$u['total_comments'] ?>
-                                &nbsp;|&nbsp;
-                                Ratings: <?= (int)$u['total_ratings'] ?>
-                                &nbsp;|&nbsp;
-                                Total: <?= (int)$u['total_activity'] ?>
-                            </div>
+        <section class="adminTool-section adminTool-users">
+            <div class="adminTool-card">
+                <h2>Top active users (last 30 days)</h2>
+
+                <?php if (!$activeUsers): ?>
+                    <p class="muted">No activity yet.</p>
+                <?php else: ?>
+                    <div class="adminTool-users-list">
+                        <div class="rows">
+                            <?php foreach ($activeUsers as $i => $u): ?>
+                                <div class="row adminUser-row">
+                                    <div class="adminUser-rank">
+                                        #<?= $i + 1 ?>
+                                    </div>
+                                    <div class="adminUser-main">
+                                        <div class="title"><?= htmlspecialchars($u['username']) ?></div>
+                                        <div class="muted">
+                                            Comments: <?= (int)$u['total_comments'] ?>
+                                            &nbsp;|&nbsp;
+                                            Ratings: <?= (int)$u['total_ratings'] ?>
+                                            &nbsp;|&nbsp;
+                                            Total: <?= (int)$u['total_activity'] ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
         </section>
 
     </main>
