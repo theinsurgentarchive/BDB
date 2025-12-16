@@ -187,8 +187,6 @@ try {
                                     <div class="muted">
                                         Image: <?= htmlspecialchars($f['image_path']) ?>
                                     </div>
-                                <?php endif; ?>
-                            </div>
 
                             <div class="adminRequest-meta">
                                 <div class="muted">
@@ -259,6 +257,8 @@ try {
 </section>
 
     </main>
+    <script src="/~bdb/bookworm/search.js"></script>
+
 </body>
 
 </html>

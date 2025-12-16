@@ -162,6 +162,8 @@ if (isset($_SESSION['user_id'])) {
             });
         </script>
     </main>
+    <script src="/~bdb/bookworm/search.js"></script>
+
 </body>
 
 </html>
