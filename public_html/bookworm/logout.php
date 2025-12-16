@@ -1,5 +1,13 @@
 <?php
-require_once __DIR__ . '/../../phpTools/config.php';
+require __DIR__ . '/../../phpTools/config.php';
+
+$back = $_SERVER['HTTP_REFERER'] ?? '/~bdb/bookworm/homepage.php';
+if (preg_match('/\~bdb\/bookworm\/adminTool\.php/', $back)) {
+    $back = '/~bdb/bookworm/homepage.php';
+}
+if (preg_match('/\~bdb\/bookworm\/form\.php/', $back)) {
+    $back = '/~bdb/bookworm/homepage.php';
+}
 
 $_SESSION = [];
 
@@ -17,6 +25,5 @@ if (ini_get('session.use_cookies')) {
 }
 
 session_destroy();
-
-header('Location: /~bdb/bookworm/homepage.php');
+header("Location: " . $back);
 exit;

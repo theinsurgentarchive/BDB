@@ -7,7 +7,6 @@ DROP TRIGGER IF EXISTS prevent_direct_book_insert//
 DROP TRIGGER IF EXISTS prevent_direct_bookgenre_insert//
 DROP TRIGGER IF EXISTS prevent_direct_form_insert//
 DROP TRIGGER IF EXISTS prevent_direct_formgenre_insert//
-DROP TRIGGER IF EXISTS prevent_direct_comment_insert//
 
 CREATE TRIGGER set_comment_depth
 BEFORE INSERT ON comments FOR EACH ROW BEGIN
@@ -15,16 +14,16 @@ BEFORE INSERT ON comments FOR EACH ROW BEGIN
     IF NEW.parent_id IS NULL THEN
         SET NEW.depth = 0;
     ELSE
-        SET D = (SELECT depth FROM comments WHERE comment_id = NEW.parent_id);
+        WITH RECURSIVE DS (pid, d) AS (
+            SELECT NEW.parent_id, 1 UNION ALL SELECT C.parent_id, DS.d + 1 FROM
+            comments C JOIN DS ON C.comment_id = DS.pid
+        ) SELECT MAX(d) INTO D FROM DS;
+        
         IF D IS NULL THEN
-            SIGNAL SQLSTATE '45000' 
-            SET MESSAGE_TEXT = 'Invalid parent comment ID.';
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid parent chain';
         END IF;
-        IF D >= 5 THEN
-            SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Maximum reply depth reached (max depth = 5).';
-        END IF;
-        SET NEW.depth = D + 1;        
+
+        SET NEW.depth = D;
     END IF;
 END//
 
@@ -81,14 +80,6 @@ BEFORE INSERT ON formgenres FOR EACH ROW BEGIN
     IF @allow IS NULL THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
         'Cannot directly insert into formgenres, use addForm()';
-    END IF;
-END//
-
-CREATE TRIGGER prevent_direct_comment_insert
-BEFORE INSERT ON formgenres FOR EACH ROW BEGIN
-    IF @allow IS NULL THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 
-        'Cannot directly insert into comments, use addComment()';
     END IF;
 END//
 

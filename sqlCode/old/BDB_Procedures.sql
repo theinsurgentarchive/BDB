@@ -92,10 +92,7 @@ CREATE PROCEDURE deleteComment(
     );
 
     IF has_child THEN
-        UPDATE comments SET 
-            user_id = NULL,
-            comment_text = '[DELETED COMMENT]',
-            deletion_date = NOW()
+        UPDATE comments SET user_id = NULL, comment_text = '[DELETED COMMENT]'
         WHERE comment_id = cid;
     ELSE
         SET @skip_trig = 1;
@@ -118,8 +115,7 @@ CREATE PROCEDURE restoreComment(IN cid INT) BEGIN
         SELECT user_id, comment_text INTO uid, C_text
         FROM shadowcomments WHERE comment_id = cid;
 
-        UPDATE comments SET 
-            user_id = uid, comment_text = C_text, deletion_date = NULL
+        UPDATE comments SET user_id = uid, comment_text = C_text
         WHERE comment_id = cid;
     ELSE
         SELECT book_id, parent_id, user_id, comment_text, depth, creation_date
@@ -130,8 +126,8 @@ CREATE PROCEDURE restoreComment(IN cid INT) BEGIN
             book_id, comment_id, user_id, parent_id, creation_date,
             comment_text, depth, deletion_date
         ) VALUES (bid, cid, uid, pid, C_creation_date, C_text, C_depth, NULL);
+        DELETE FROM shadowcomments WHERE comment_id = cid;
     END IF;
-    DELETE FROM shadowcomments WHERE comment_id = cid;
 END//
 
 CREATE PROCEDURE addBook(
@@ -317,11 +313,9 @@ CREATE PROCEDURE addComment(
         END IF;
     END IF;
 
-    SET @allow = 1;
     INSERT INTO comments (user_id, book_id, comment_text, parent_id) VALUES (
         uid, bid, comment_text, pid
     );
-    SET @allow = NULL;
     SET cid = LAST_INSERT_ID();
 END//
 

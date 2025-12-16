@@ -50,25 +50,25 @@ if (!empty($query) || !empty($author) || !empty($genres)) {
 
 $results = '';
 foreach ($rows as $row) {
-    $results .= "<div class='book-card' id='" . $row['book_id'] . "'>";
-    $results .= "<a href='/~bdb/bookworm/dynBook.php?bid=" . $row['book_id'] . "' class='book-link'>";
-    $results .= "<img class='book-card-img' src='"
-        . htmlspecialchars($row['image_path'] ?? '')
-        . "' alt='" . htmlspecialchars($row['title']) . "'>";
+    $results .= "<div class='book-card' id='" . $row['book_id'] . "' data-bookid='" . $row['book_id'] . "'>";
+    $results .= "<div class='book-link'>";
+    $results .= "<img class='book-card-img' src='" . htmlspecialchars($row['image_path'] ?? '') . "' alt='" . htmlspecialchars($row['title']) . "'>";
+    $results .= "<div class=book-info>";
     $results .= "<h3>" . htmlspecialchars($row["title"]) . "</h3>";
     $results .= "<h4>" . htmlspecialchars($row["author"]) . "</h4>";
     $results .= "<span class='bookPublish' data-date=\"" . htmlspecialchars($row['published']) . "\">" . htmlspecialchars($row['published']) . "</span>";
-    $results .= "<div class='resultGenres grid'>";
+    $results .= "</div></div>";
+    $results .= "<div class='genreZone'><div class='resultGenres'><div class='rgGrid'>";
     $res = explode(',', $row['genres']);
     foreach ($res as $g) {
         $g = trim($g);
         $url = "/~bdb/bookworm/advSearch.php?genres[]=" . urlencode($g);
-        $results .= '<a class="searchGenre" href="' . $url . '">' . htmlspecialchars($g) . '</a>';
+        $results .= "<a class='genreSearch' href='$url'>" . htmlspecialchars($g) . "</a>";
     }
-    $results .= "</div>";
-    $results .= "</a>";
+    $results .= "</div></div></div>";
+    $results .= "<div class='book-summary'>";
     $results .= "<p style='white-space: pre-wrap'>" . htmlspecialchars($row["summary"]) . "</p>";
-    $results .= "</div>";
+    $results .= "</div></div>";
 }
 ?>
 
@@ -86,98 +86,105 @@ foreach ($rows as $row) {
     <?php require_once __DIR__ . '/../../phpTools/navbar.php' ?>
 
     <main>
-        <section class="advSearch-page">
-            <div class="advSearch__inner">
-                <h2>Advanced Search</h2>
+<section class="advSearch-page">
+    <div class="advSearch__inner">
+        <h2>Advanced Search</h2>
 
-                <div class="advSearch-hint muted">
-                    Search by title, author, and one or more genres.
+        <div class="advSearch-hint muted">
+            Search by title, author, and one or more genres.
+        </div>
+
+        <form
+            action="<?= $_SERVER['PHP_SELF'] ?>"
+            method="GET"
+            class="advSearch-form"
+        >
+            <!-- Book / title keywords -->
+            <label class="advSearch-field">
+                <span class="advSearch-label">Book title / keywords</span>
+                <input
+                    type="text"
+                    name="query"
+                    placeholder="Search by title or keywords..."
+                    value="<?= htmlspecialchars($query) ?>">
+            </label>
+
+            <!-- Author -->
+            <label class="advSearch-field">
+                <span class="advSearch-label">Author</span>
+                <input
+                    type="text"
+                    name="author"
+                    placeholder="Author name..."
+                    value="<?= htmlspecialchars($author) ?>">
+            </label>
+
+            <!-- Genres -->
+            <div class="advSearch-field">
+                <div class="advSearch-labelRow">
+                    <span class="advSearch-label">Genres</span>
+                    <span class="advSearch-labelHint muted">Select all that apply</span>
                 </div>
 
-                <form
-                    action="<?= $_SERVER['PHP_SELF'] ?>"
-                    method="GET"
-                    class="advSearch-form">
-                    <!-- Book / title keywords -->
-                    <label class="advSearch-field">
-                        <span class="advSearch-label">Book title / keywords</span>
-                        <input
-                            type="text"
-                            name="query"
-                            placeholder="Search by title or keywords..."
-                            value="<?= htmlspecialchars($query) ?>">
-                    </label>
-
-                    <!-- Author -->
-                    <label class="advSearch-field">
-                        <span class="advSearch-label">Author</span>
-                        <input
-                            type="text"
-                            name="author"
-                            placeholder="Author name..."
-                            value="<?= htmlspecialchars($author) ?>">
-                    </label>
-
-                    <!-- Genres -->
-                    <div class="advSearch-field">
-                        <div class="advSearch-labelRow">
-                            <span class="advSearch-label">Genres</span>
-                            <span class="advSearch-labelHint muted">Select all that apply</span>
-                        </div>
-
-                        <div class="form-genres-box advSearch-genres-box">
-                            <?php foreach ($gs as $g): ?>
-                                <?php
-                                $checked = in_array($g['genre'], (array)$genresRaw, true) ? 'checked' : '';
-                                ?>
-                                <label class="form-genre-option">
-                                    <input
-                                        type="checkbox"
-                                        name="genres[]"
-                                        value="<?= htmlspecialchars($g['genre']) ?>"
-                                        <?= $checked ?>>
-                                    <?= htmlspecialchars($g['genre']) ?>
-                                </label>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-
-                    <div class="advSearch-actions">
-                        <input type="submit" value="Search" class="advSearch-submit">
-                    </div>
-                </form>
-            </div>
-        </section>
-
-
-        <section class="advSearch-results">
-            <div class="advSearch-results__inner">
-                <h2>Search Results</h2>
-
-                <div id="searchResults" class="advSearch-results-list">
-                    <?php
-                    if ($results !== '') {
-                        echo $results;
-                    } elseif (!empty($query) || !empty($author) || !empty($genres)) {
-                        echo "<p class='muted'>No results found.</p>";
-                    } else {
-                        echo "<p class='muted'>Begin searching for books to see results.</p>";
-                    }
-                    ?>
+                <div class="form-genres-box advSearch-genres-box">
+                    <?php foreach ($gs as $g): ?>
+                        <?php
+                            $checked = in_array($g['genre'], (array)$genresRaw, true) ? 'checked' : '';
+                        ?>
+                        <label class="form-genre-option">
+                            <input
+                                type="checkbox"
+                                name="genres[]"
+                                value="<?= htmlspecialchars($g['genre']) ?>"
+                                <?= $checked ?>
+                            >
+                            <?= htmlspecialchars($g['genre']) ?>
+                        </label>
+                    <?php endforeach; ?>
                 </div>
             </div>
-        </section>
+
+            <div class="advSearch-actions">
+                <input type="submit" value="Search" class="advSearch-submit">
+            </div>
+        </form>
+    </div>
+</section>
+
+
+<section class="advSearch-results">
+    <div class="advSearch-results__inner">
+        <h2>Search Results</h2>
+
+        <div id="searchResults" class="advSearch-results-list">
+            <?php
+            if ($results !== '') {
+                echo $results;
+            } elseif (!empty($query) || !empty($author) || !empty($genres)) {
+                echo "<p class='muted'>No results found.</p>";
+            } else {
+                echo "<p class='muted'>Begin searching for books to see results.</p>";
+            }
+            ?>
+        </div>
+    </div>
+</section>
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll(".book-summary").forEach(summary => {
+                    const content = summary.querySelector("p");
+
+                    if (content.scrollHeight > summary.clientHeight) {
+                        summary.classList.add("fade");
+                    }
+                });
                 // Listen for clicks on any .book-card
                 document.querySelectorAll('.book-card').forEach(card => {
                     card.addEventListener('click', e => {
-                        // If the click happened on a link (<a>), let it behave normally
-                        if (e.target.tagName.toLowerCase() === 'a') return;
-                        // Otherwise, go to dynBook.php with the book_id
+                        if (e.target.closest('.genreSearch')) return;
                         const bookId = card.dataset.bookid;
-                        window.location.href = '/~bdb/bookworm/dynBook.php?book_id=${encodeURIComponent(bookId)}';
+                        window.location.href = `/~bdb/bookworm/dynBook.php?bid=${encodeURIComponent(bookId)}`;
                     });
                 });
             });

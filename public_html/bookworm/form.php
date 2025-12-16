@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
     $title_data   = trim($_POST['title_data']   ?? '');
     $author_data  = trim($_POST['author_data']  ?? '');
     $isbn_data    = trim($_POST['isbn_data']    ?? '');
+    $isbn_data = preg_replace('/\s+/', '', $isbn_data);
+    $isbn_data = preg_replace('/^([0-9]{3})\-([0-9]{10})$/', '$1$2', $isbn_data);
     $publish_data = $_POST['publish_data']      ?? '';
     $summary_data = trim($_POST['summary_data'] ?? '');
     $genres       = $_POST['genre_data']        ?? [];
@@ -51,11 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
                     $insertMsg = "Unsupported image type (use JPG or PNG).";
                 } else {
                     $ext   = $allowed[$mime];
-                    $bname = basename(random_bytes(16));
+                    $bname = bin2hex(random_bytes(16));
                     $fname = $bname . '.' . $ext;
 
-                    $dir  = '/home/stu/bdb/images/forms/';
-                    $dest = $dir . DIRECTORY_SEPARATOR . $fname;
+                    $dir  = '/home/stu/bdb/public_html/images/forms';
+                    $dest = $dir . '/' . $fname;
 
                     if (
                         !is_uploaded_file($file['tmp_name']) ||
@@ -64,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
                         $insertMsg = "Failed to store image.";
                     } else {
                         // relative path for use on the site
-                        $imagePath = 'forms/' . $fname;
+                        $imagePath = '/~bdb/images/forms/' . $fname;
                     }
                 }
             }
@@ -82,8 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
                 :published,
                 :summary,
                 :genres,
-                :image_path,
                 :uid,
+                :image_path,
                 @new_id
             )"
                 );
@@ -97,8 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
                     ':published'  => $published,
                     ':summary'    => $summary_data,
                     ':genres'     => $genreString,
-                    ':image_path' => $imagePath,
                     ':uid'        => $userId,
+                    ':image_path' => $imagePath,
                 ]);
 
                 $idRow = $db->query("SELECT @new_id AS form_id")->fetch(PDO::FETCH_ASSOC);
@@ -121,131 +123,130 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_submit'])) {
 <!doctype html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8" />
-    <title>Book – Book Requests</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="app.css" />
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <title>Book – Book Requests</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="app.css" />
+    </head>
+    
+    <body>
+        <?php require_once __DIR__ . '/../../phpTools/navbar.php' ?>
+    
+        <main>
+<section class="request-form-page">
+    <div class="request-form__inner">
+        <h2>Request a book</h2>
 
-<body>
-    <?php require_once __DIR__ . '/../../phpTools/navbar.php' ?>
+        <?php if ($insertMsg !== ""): ?>
+            <p class="muted"><?= htmlspecialchars($insertMsg) ?></p>
+        <?php endif; ?>
+        
+        <form
+            action="form.php"
+            method="POST"
+            enctype="multipart/form-data"
+            class="requestForm"
+        >
+            <div class="requestForm-grid">
+                <!-- LEFT: main book fields -->
+                <div class="requestForm-left">
+                    <label class="requestForm-field">
+                        <span class="requestForm-label">Title</span>
+                        <input type="text" name="title_data">
+                    </label>
 
-    <main>
-        <section class="request-form-page">
-            <div class="request-form__inner">
-                <h2>Request a book</h2>
+                    <label class="requestForm-field">
+                        <span class="requestForm-label">Author</span>
+                        <input type="text" name="author_data">
+                    </label>
 
-                <?php if ($insertMsg !== ""): ?>
-                    <p class="muted"><?= htmlspecialchars($insertMsg) ?></p>
-                <?php endif; ?>
+                    <label class="requestForm-field">
+                        <span class="requestForm-label">ISBN</span>
+                        <input type="text" name="isbn_data">
+                    </label>
 
-                <form
-                    action="form.php"
-                    method="POST"
-                    enctype="multipart/form-data"
-                    class="requestForm">
-                    <div class="requestForm-grid">
-                        <!-- LEFT: main book fields -->
-                        <div class="requestForm-left">
-                            <label class="requestForm-field">
-                                <span class="requestForm-label">Title</span>
-                                <input type="text" name="title_data">
-                            </label>
+                    <label class="requestForm-field">
+                        <span class="requestForm-label">Published Date</span>
+                        <input type="date" name="publish_data">
+                    </label>
 
-                            <label class="requestForm-field">
-                                <span class="requestForm-label">Author</span>
-                                <input type="text" name="author_data">
-                            </label>
+                    <label class="requestForm-field">
+                        <span class="requestForm-label">Summary</span>
+                        <textarea rows="10" cols="60" name="summary_data"></textarea>
+                    </label>
 
-                            <label class="requestForm-field">
-                                <span class="requestForm-label">ISBN</span>
-                                <input type="text" name="isbn_data">
-                            </label>
+                    <label class="requestForm-field">
+                        <span class="requestForm-label">Cover image (optional)</span>
+                        <input type="file" name="image" accept="image/png,image/jpeg">
+                    </label>
+                </div>
 
-                            <label class="requestForm-field">
-                                <span class="requestForm-label">Published Date</span>
-                                <input type="date" name="publish_data">
-                            </label>
-
-                            <label class="requestForm-field">
-                                <span class="requestForm-label">Summary</span>
-                                <textarea rows="10" cols="60" name="summary_data"></textarea>
-                            </label>
-
-                            <label class="requestForm-field">
-                                <span class="requestForm-label">Cover image (optional)</span>
-                                <input type="file" name="image" accept="image/png,image/jpeg">
-                            </label>
+                <!-- RIGHT: genres box -->
+                <div class="requestForm-right">
+                    <div class="form-genres">
+                        <div class="form-genres-header">
+                            <span class="requestForm-label">Genres</span>
+                            <span class="form-genres-hint muted">Select all that apply</span>
                         </div>
 
-                        <!-- RIGHT: genres box -->
-                        <div class="requestForm-right">
-                            <div class="form-genres">
-                                <div class="form-genres-header">
-                                    <span class="requestForm-label">Genres</span>
-                                    <span class="form-genres-hint muted">Select all that apply</span>
-                                </div>
-
-                                <div class="form-genres-box">
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Action"> Action
-                                    </label>
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Adventure"> Adventure
-                                    </label>
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Crime"> Crime
-                                    </label>
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Classic"> Classic
-                                    </label>
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Dystopian"> Dystopian
-                                    </label>
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Fantasy"> Fantasy
-                                    </label>
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Historical"> Historical
-                                    </label>
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Horror"> Horror
-                                    </label>
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Non-Fiction"> Non-Fiction
-                                    </label>
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Mystery"> Mystery
-                                    </label>
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Romance"> Romance
-                                    </label>
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Sci-Fi"> Sci-Fi
-                                    </label>
-                                    <label class="form-genre-option">
-                                        <input type="checkbox" name="genre_data[]" value="Thriller"> Thriller
-                                    </label>
-                                </div>
-                            </div>
+                        <div class="form-genres-box">
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Action"> Action
+                            </label>
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Adventure"> Adventure
+                            </label>
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Crime"> Crime
+                            </label>
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Classic"> Classic
+                            </label>
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Dystopian"> Dystopian
+                            </label>
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Fantasy"> Fantasy
+                            </label>
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Historical"> Historical
+                            </label>
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Horror"> Horror
+                            </label>
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Non-Fiction"> Non-Fiction
+                            </label>
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Mystery"> Mystery
+                            </label>
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Romance"> Romance
+                            </label>
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Sci-Fi"> Sci-Fi
+                            </label>
+                            <label class="form-genre-option">
+                                <input type="checkbox" name="genre_data[]" value="Thriller"> Thriller
+                            </label>
                         </div>
                     </div>
-
-                    <div class="requestForm-actions">
-                        <input
-                            type="submit"
-                            name="request_submit"
-                            value="Submit Request"
-                            class="requestForm-submit">
-                    </div>
-                </form>
+                </div>
             </div>
-        </section>
 
-    </main>
-    <script src="/~bdb/bookworm/search.js"></script>
+            <div class="requestForm-actions">
+                <input
+                    type="submit"
+                    name="request_submit"
+                    value="Submit Request"
+                    class="requestForm-submit"
+                >
+            </div>
+        </form>
+    </div>
+</section>
 
-</body>
-
+        </main>
+    </body>
 </html>

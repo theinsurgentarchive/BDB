@@ -29,11 +29,12 @@ function displayResults(json) {
     return;
   }
 
-  json.slice(0, 5).forEach((row) => {
+  json.forEach((row) => {
     let div = document.createElement("div");
     div.innerHTML = `
 				<a class="result-item" href="/~bdb/bookworm/dynBook.php?bid=${row.book_id}">
 					<strong>${row.title}</strong><br>
+          <span>${row.genres}</span><br>
 					<span>${row.author}</span>
 				</a>
 			`;
