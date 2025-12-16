@@ -4,7 +4,7 @@ $db = get_db();
 
 $randomBooks   = $db->query("SELECT * FROM randbooks")->fetchAll();
 $topGenres     = $db->query("SELECT * FROM randbookgenres")->fetchAll();
-$topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
+$topFiveBooks = $db->query("SELECT * FROM topfivebooks")->fetchAll();
 ?>
 
 <!doctype html>
@@ -18,76 +18,49 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
 </head>
 
 <body>
-    <?php //require __DIR__ . '/../../phpTools/navbar.php' 
-    ?>
-    <header>
-        <div class="brand">
-            <!-- add your icon file path here -->
-            <!-- <img class="brand-icon" src="/~bdb/bookworm/images/site-icon.png" alt="Site icon">-->
-            <h1>BookWorm</h1>
-        </div>
+    <?php require_once __DIR__ . '/../../phpTools/navbar.php' ?>
+<section class="homepage-box">
+<main class="homepage-layout">
 
-        <nav aria-label="Primary">
+    <!-- LEFT: random books grid -->
+    <div class="homepage-layout__left">
+        <section class="homepage-random-books">
+            <div class="homepage-random-books__inner">
+                <h2>Check these books out</h2>
 
-            <form class="nav-search live-search-container"
-                action="/~bdb/bookworm/advSearch.php"
-                method="GET">
-
-                <input
-                    type="text"
-                    id="liveSearch"
-                    name="query"
-                    placeholder="Search for books…"
-                    autocomplete="off"
-                    onkeyup="searchpartial(event)"
-                    aria-label="Search books">
-
-                <div id="results"></div>
-            </form>
-
-
-
-            <?php if (isset($_SESSION['user_id'])): ?>
-
-                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                    <a class="tab" href="/~bdb/bookworm/adminTool.php">Admin Tool</a>
+                <?php if (!$randomBooks): ?>
+                    <p class="muted">No books to show yet.</p>
+                <?php else: ?>
+                    <div class="homepage-random-books__grid">
+                        <?php foreach ($randomBooks as $b): ?>
+                            <a class="cardLink" href="<?="/~bdb/bookworm/dynBook.php/?bid=" . htmlspecialchars($b['book_id'] ?? '')?>">
+                                <div class="card">
+                                    <img src="<?= htmlspecialchars($b['image_path'] ?? '') ?>" alt="">
+                                    <div class="title"><?= htmlspecialchars($b['title']) ?></div>
+                                    <div class="author"><?= htmlspecialchars($b['author']) ?></div>
+                                </div>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
+            </div>
+        </section>
+    </div>
 
-                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
+    <!-- RIGHT: stacked sidebar (top genres + top three books) -->
+    <aside class="homepage-layout__right">
 
-                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
-
-                <span class="nav-welcome">
-                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
-                </span>
-
+        <section class="homepage-top-genres">
+            <h2>Top genres</h2>
+            <?php if (!$topGenres): ?>
+                <p class="muted">No genre ratings yet.</p>
             <?php else: ?>
-
-                <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
-
-            <?php endif; ?>
-
-            <a class="tab" href="/~bdb/bookworm/profile.php">Profile</a>
-
-            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
-            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
-        </nav>
-    </header>
-
-    <main>
-        <section>
-            <h2>Random books</h2>
-            <?php if (!$randomBooks): ?>
-                <p class="muted">No books to show yet.</p>
-            <?php else: ?>
-                <div class="grid">
-                    <?php foreach ($randomBooks as $b): ?>
-                        <a class="cardLink" href=<?="/~bdb/bookworm/dynBook.php/?bid=" . htmlspecialchars($b['book_id']) ?? ''?>>
-                            <div class="card">
-                                <img src="<?= htmlspecialchars($b['image_path'] ?? '') ?>" alt="">
-                                <div class="title"><?= htmlspecialchars($b['title']) ?></div>
-                                <div class="author"><?= htmlspecialchars($b['author']) ?></div>
-                                
+                <div class="rows">
+                    <?php foreach ($topGenres as $g): ?>
+                        <a class="cardLink" href="<?= "/~bdb/bookworm/advSearch.php/?genres[]=" . htmlspecialchars($g['genre'] ?? '')?>">
+                            <div class="row">
+                                <div><?= htmlspecialchars($g['genre']) ?></div>
+                                <div><?= number_format((float)$g['avg_rating'], 2) ?></div>
                             </div>
                         </a>
                     <?php endforeach; ?>
@@ -95,45 +68,40 @@ $topThreeBooks = $db->query("SELECT * FROM topthreebooks")->fetchAll();
             <?php endif; ?>
         </section>
 
-        <section>
-            <h2>Top genres (avg rating)</h2>
-            <?php if (!$topGenres): ?>
-                <p class="muted">No genre ratings yet.</p>
-            <?php else: ?>
-                <div class="rows">
-                    <?php foreach ($topGenres as $g): ?>
-                        <div class="row">
-                            <div><?= htmlspecialchars($g['genre']) ?></div>
-                            <div><?= number_format((float)$g['avg_rating'], 2) ?></div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        </section>
-
-        <section>
-            <h2>Top three books</h2>
-            <?php if (!$topThreeBooks): ?>
-                <p class="muted">No book ratings yet.</p>
-            <?php else: ?>
-                <div class="rows">
-                    <?php foreach ($topThreeBooks as $t): ?>
-                        <div class="row">
+<section class="homepage-top-books">
+    <h2>Top Five Books</h2>
+    <?php if (!$topFiveBooks): ?>
+        <p class="muted">No book ratings yet.</p>
+    <?php else: ?>
+        <div class="rows">
+            <?php foreach ($topFiveBooks as $t): ?>
+                <a class="homepage-top-books__link"
+                   href="<?="/~bdb/bookworm/dynBook.php/?bid=" . htmlspecialchars($t['book_id'] ?? '')?>">
+                    <div class="row">
+                        <div class="homepage-top-books__left">
+                            <img
+                                src="<?= htmlspecialchars($t['image_path'] ?? '') ?>"
+                                alt=""
+                                class="homepage-top-books__img">
                             <div>
                                 <div class="title"><?= htmlspecialchars($t['title']) ?></div>
                                 <div class="author"><?= htmlspecialchars($t['author']) ?></div>
                             </div>
-                            <div>
-                                <div>Avg: <?= number_format((float)$t['avg_rating'], 2) ?></div>
-                                <div class="muted">Ratings: <?= (int)$t['totalratings'] ?></div>
-                            </div>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        </section>
-    </main>
-    <script src="/~bdb/bookworm/search.js"></script>
+                        <div class="homepage-top-books__stats">
+                            <div>Avg: <?= number_format((float)$t['avg_rating'], 2) ?></div>
+                            <div class="muted">Ratings: <?= (int)$t['totalratings'] ?></div>
+                        </div>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</section>
+
+    </aside>
+</main>
+</section>
 </body>
 
 </html>

@@ -36,6 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $adminMsg = "You are not registered as an admin.";
             } else {
                 $adminId = (int)$adm['admin_id'];
+                
+                $stmt = $db->prepare("SELECT image_path FROM forms WHERE form_id = ?");
+                $stmt->execute([$formId]);
+                $fd = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                $imagePath = $fd['image_path'] ?? null;
 
                 $call = $db->prepare(
                     "CALL formToBook(:fid, :aid, @new_book_id)"
@@ -45,14 +51,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':aid' => $adminId,
                 ]);
 
-                $row = $db->query("SELECT @new_book_id AS book_id")
-                    ->fetch(PDO::FETCH_ASSOC);
+                $row = $db->query('
+                    SELECT @new_book_id AS book_id
+                ')->fetch(PDO::FETCH_ASSOC);
 
                 if ($row && $row['book_id']) {
-                    $adminMsg = "Request #{$formId} approved (book ID " . (int)$row['book_id'] . ").";
+                    $bid = $row['book_id'];
+                    if ($imagePath) {
+                        $old = '/home/stu/bdb/public_html/images/forms/'. basename($imagePath);
+                        $new = '/home/stu/bdb/public_html/images/books/' . basename($imagePath);
+
+                        if (!copy($old, $new)) {
+                            $adminMsg = "Request #{$formId} approved, but failed to copy image file.";
+                        } else {
+                            $stmt = $db->prepare("UPDATE books SET image_path = ? WHERE book_id = ?");
+                            $stmt->bindValue(1, "/~bdb/images/books/" . basename($imagePath), PDO::PARAM_STR);
+                            $stmt->bindParam(2, $bid, PDO::PARAM_INT);
+                            $stmt->execute();
+
+                            $adminMsg = "Request #{$formId} approved (book ID " . (int)$row['book_id'] . ").";
+                        }
+                    }
                 } else {
-                    $adminMsg = "Request #{$formId} approved.";
+                    $adminMsg = "Request #{$formId} approval could not be verified.";
                 }
+
+
             }
         } catch (Exception $e) {
             $adminMsg = "Error approving request: " . $e->getMessage();
@@ -103,7 +127,7 @@ $query = $db->query(
      LEFT JOIN formgenres AS fg ON fg.form_id = f.form_id
      WHERE f.approve_date IS NULL
      GROUP BY f.form_id
-     ORDER BY f.creation_date DESC"
+     ORDER BY f.creation_date ASC"
 );
 $allForms = $query->fetchAll();
 
@@ -130,67 +154,26 @@ try {
 </head>
 
 <body>
-    <header>
-        <div class="brand">
-            <!-- add your icon file path here -->
-            <img class="brand-icon" src="/~bdb/bookworm/images/site-icon.png" alt="Site icon">
-            <h1>BookWorm</h1>
-        </div>
-
-        <nav aria-label="Primary">
-
-            <form class="nav-search" action="/~bdb/bookworm/search.php" method="GET">
-                <input
-                    type="text"
-                    name="q"
-                    placeholder="Search books..."
-                    aria-label="Search books">
-            </form>
-
-
-            <?php if (isset($_SESSION['user_id'])): ?>
-
-                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                    <a class="tab" href="/~bdb/bookworm/adminTool.php">Admin Tool</a>
-                <?php endif; ?>
-
-                <a class="tab" href="/~bdb/bookworm/form.php">Book Requests</a>
-
-                <a class="tab" href="/~bdb/bookworm/logout.php">Logout</a>
-
-                <span class="nav-welcome">
-                    Welcome, <?= htmlspecialchars($_SESSION['username']) ?>
-                </span>
-
-            <?php else: ?>
-
-                <a class="tab" href="/~bdb/bookworm/signin.php">Login / Create</a>
-
-            <?php endif; ?>
-
-            <a class="tab" href="#">Advance Search</a>
-
-            <a class="tab" href="/~bdb/bookworm/top20.php">Top 20 Books</a>
-            <a class="tab" href="/~bdb/bookworm/about.php">About</a>
-        </nav>
-    </header>
+    <?php require_once __DIR__ . '/../../phpTools/navbar.php' ?>
 
     <main>
 
-        <section>
-            <h2>Pending book requests</h2>
+<section class="adminTool-section adminTool-requests">
+    <div class="adminTool-card">
+        <h2>Pending book requests</h2>
 
-            <?php if ($adminMsg !== ""): ?>
-                <p class="muted"><?= htmlspecialchars($adminMsg) ?></p>
-            <?php endif; ?>
+        <?php if ($adminMsg !== ""): ?>
+            <p class="muted"><?= htmlspecialchars($adminMsg) ?></p>
+        <?php endif; ?>
 
-            <?php if (!$allForms): ?>
-                <p class="muted">No pending requests.</p>
-            <?php else: ?>
+        <?php if (!$allForms): ?>
+            <p class="muted">No pending requests.</p>
+        <?php else: ?>
+            <div class="adminTool-requests-list">
                 <div class="rows">
                     <?php foreach ($allForms as $f): ?>
-                        <div class="row">
-                            <div>
+                        <div class="row adminRequest-row">
+                            <div class="adminRequest-main">
                                 <div class="title">
                                     <?= htmlspecialchars($f['title']) ?> (<?= htmlspecialchars($f['isbn']) ?>)
                                 </div>
@@ -207,7 +190,7 @@ try {
                                 <?php endif; ?>
                             </div>
 
-                            <div>
+                            <div class="adminRequest-meta">
                                 <div class="muted">
                                     Requested by: <?= htmlspecialchars($f['username']) ?>
                                 </div>
@@ -216,46 +199,64 @@ try {
                                 </div>
 
                                 <!-- Approve -->
-                                <form action="adminTool.php" method="POST" style="margin-top:8px;">
+                                <form action="adminTool.php" method="POST" class="adminRequest-form">
                                     <input type="hidden" name="approve_form_id" value="<?= (int)$f['form_id'] ?>">
-                                    <button type="submit">Approve</button>
+                                    <button type="submit" class="adminAction adminAction-approve">
+                                        Approve
+                                    </button>
                                 </form>
 
                                 <!-- Deny -->
-                                <form action="adminTool.php" method="POST" style="margin-top:4px;">
+                                <form action="adminTool.php" method="POST" class="adminRequest-form">
                                     <input type="hidden" name="deny_form_id" value="<?= (int)$f['form_id'] ?>">
-                                    <button type="submit">Deny</button>
+                                    <button type="submit" class="adminAction adminAction-deny">
+                                        Deny
+                                    </button>
                                 </form>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
-            <?php endif; ?>
-        </section>
+            </div>
+        <?php endif; ?>
+    </div>
+</section>
 
 
-        <section style="margin-top:30px;">
-            <h2>Top active users (last 30 days)</h2>
 
-            <?php if (!$activeUsers): ?>
-                <p class="muted">No activity yet.</p>
-            <?php else: ?>
+        <section class="adminTool-section adminTool-users">
+    <div class="adminTool-card">
+        <h2>Top active users (last 30 days)</h2>
+
+        <?php if (!$activeUsers): ?>
+            <p class="muted">No activity yet.</p>
+        <?php else: ?>
+            <div class="adminTool-users-list">
                 <div class="rows">
-                    <?php foreach ($activeUsers as $u): ?>
-                        <div class="row">
-                            <div class="title"><?= htmlspecialchars($u['username']) ?></div>
-                            <div class="muted">
-                                Comments: <?= (int)$u['total_comments'] ?>
-                                &nbsp;|&nbsp;
-                                Ratings: <?= (int)$u['total_ratings'] ?>
-                                &nbsp;|&nbsp;
-                                Total: <?= (int)$u['total_activity'] ?>
+                    <?php foreach ($activeUsers as $i => $u): ?>
+                        <a class="cardLink" href="/~bdb/bookworm/profile.php?uid=<?= $u['user_id']?>">
+                            <div class="row adminUser-row">
+                                <div class="adminUser-rank">
+                                    #<?= $i + 1 ?>
+                                </div>
+                                <div class="adminUser-main">
+                                    <div class="title"><?= htmlspecialchars($u['username']) ?></div>
+                                    <div class="muted">
+                                        Comments: <?= (int)$u['total_comments'] ?>
+                                        &nbsp;|&nbsp;
+                                        Ratings: <?= (int)$u['total_ratings'] ?>
+                                        &nbsp;|&nbsp;
+                                        Total: <?= (int)$u['total_activity'] ?>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     <?php endforeach; ?>
                 </div>
-            <?php endif; ?>
-        </section>
+            </div>
+        <?php endif; ?>
+    </div>
+</section>
 
     </main>
 </body>
